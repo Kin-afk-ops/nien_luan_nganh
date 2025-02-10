@@ -45,3 +45,27 @@ a {
 .container {
   padding: 50px 0;
 }
+
+.main-btn {
+  padding: 10px 0;
+  background-color: var(--primary-color);
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  width: 100%;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.transparent-btn {
+  padding: 10px 0;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 700;
+  color: #616161;
+  width: 100%;
+  outline: none;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}

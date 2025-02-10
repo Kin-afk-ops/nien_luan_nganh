@@ -4,3 +4,14 @@
   display: flex;
   justify-content: center;
 }
+
+.register__head {
+  font-size: 18px;
+  font-weight: 700;
+  color: #aaa;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px 0;
+}

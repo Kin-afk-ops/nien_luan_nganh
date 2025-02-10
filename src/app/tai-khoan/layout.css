@@ -1,3 +1,118 @@
 .auth {
   width: 100%;
 }
+
+.account__container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0 30px;
+  box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.account__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.account__form input {
+  padding: 10px 25px 10px 15px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border-radius: 30px;
+  outline: none;
+  border: 1px solid #ccc;
+}
+.account__form button {
+  border-radius: 30px;
+  margin-bottom: 30px;
+  transition: 0.2s;
+}
+
+.account__form button:hover {
+  opacity: 0.8;
+}
+
+.register__clause {
+  font-size: 14px;
+  color: #616161;
+  font-weight: 500;
+}
+
+.register__clause--link {
+}
+
+.register__clause input {
+  margin-right: 5px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.register__clause label {
+  user-select: none;
+}
+
+.register__boundary {
+  font-size: 16px;
+  color: #616161;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.register__boundary::before {
+  position: absolute;
+  content: "";
+  height: 1px;
+  width: 42%;
+  background-color: #616161;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.register__boundary::after {
+  position: absolute;
+  content: "";
+  height: 1px;
+  width: 42%;
+  background-color: #616161;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.account__change--btn {
+  border-radius: 30px;
+
+  margin-bottom: 30px;
+}
+
+.account__change--btn i {
+  margin-right: 24px;
+  font-size: 18px;
+}
+
+.account__change--phone {
+  color: #00ff33;
+}
+
+.account__change--email {
+  color: #ff0033;
+}
+
+.register__login {
+  font-size: 14px;
+  font-weight: 500;
+  color: #616161;
+  display: flex;
+  justify-content: center;
+}
+
+.register__login--link {
+  cursor: pointer;
+  color: var(--primary-color);
+}
