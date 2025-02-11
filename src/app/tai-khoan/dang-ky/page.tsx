@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import "./register.css";
 import "../layout.css";
+import "./register.css";
+import Link from "next/link";
 
 const RegisterPage = () => {
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
@@ -20,12 +21,28 @@ const RegisterPage = () => {
           </div>
           <div className="c-4 account__container">
             <form className="account__form">
-              <div className="register__head">Đăng ký</div>
+              <div className="account__head">Đăng ký</div>
 
               {phoneMode ? (
-                <input type="text" />
+                <div className="account__phone">
+                  <div className="account__phone--prefix">
+                    <Image
+                      src="/assets/quoc_ky_VN.png"
+                      className="account__phone--img"
+                      width={18}
+                      height={13}
+                      alt="Quoc ky Viet Nam"
+                    ></Image>
+                    +84
+                  </div>
+                  <input type="text" placeholder="Nhập số điện thoại" />
+                </div>
               ) : (
-                <input type="email" placeholder="Nhập email của bạn" />
+                <input
+                  className="account__input"
+                  type="email"
+                  placeholder="Nhập email của bạn"
+                />
               )}
 
               <div className="register__clause">
@@ -41,7 +58,7 @@ const RegisterPage = () => {
               <button className="main-btn">Đăng ký</button>
             </form>
 
-            <div className="register__boundary">Hoặc</div>
+            <div className="account__boundary">Hoặc</div>
 
             {!phoneMode ? (
               <button
@@ -63,7 +80,12 @@ const RegisterPage = () => {
 
             <div className="register__login">
               Bạn đã có sẵn tài khoản?{" "}
-              <span className="register__login--link">&nbsp;Đăng nhập</span>
+              <Link
+                href={"/tai-khoan/dang-nhap"}
+                className="register__login--link"
+              >
+                &nbsp;Đăng nhập
+              </Link>
             </div>
           </div>
         </div>
