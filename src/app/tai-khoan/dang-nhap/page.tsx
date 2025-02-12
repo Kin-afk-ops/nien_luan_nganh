@@ -7,6 +7,7 @@ import Link from "next/link";
 
 const LoginPage = () => {
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
+
   return (
     <div className="register">
       <div className="grid wide">

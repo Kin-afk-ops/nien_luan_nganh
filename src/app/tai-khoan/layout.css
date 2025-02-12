@@ -36,6 +36,30 @@
   border: 1px solid #ccc;
 }
 
+.account__password--block {
+  display: flex;
+  padding: 10px 15px;
+}
+
+.account__password {
+  -webkit-text-security: disc;
+  width: 90%;
+  height: 100%;
+  font-size: 16px;
+  outline: none;
+  border: none;
+}
+
+.account__password--icon {
+  width: 10%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  font-size: 16px;
+  color: #616161;
+}
+
 .account__phone {
   padding: 10px 0;
   border: 1px solid #ccc;
