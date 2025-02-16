@@ -9,9 +9,16 @@ const RegisterPage = () => {
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
 
   const [passwordMode, setPasswordMode] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<boolean>(true);
+  const [phoneError, setPhoneError] = useState<boolean>(true);
+  const [passwordError, setPasswordError] = useState<boolean>(false);
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
-  const [displayPasswordIcon, setDisplayPasswordIcon] =
+  const [displayConfirmPassword, setDisplayConfirmPassword] =
     useState<boolean>(false);
+
+  const [confirmPasswordError, setConfirmPasswordError] =
+    useState<boolean>(false);
+
   return (
     <div className="register">
       <div className="grid wide">
@@ -29,47 +36,140 @@ const RegisterPage = () => {
               {passwordMode ? (
                 <>
                   <div className="account__head">Đặt mật khẩu</div>
-                  <div className="account__input account__password--block">
+                  <div
+                    className={
+                      passwordError
+                        ? "account__input account__password--block account__error"
+                        : "account__input account__password--block"
+                    }
+                  >
                     <input
-                      type="password"
+                      type={displayPassword ? "text" : "password"}
                       className="account__password"
                       placeholder="Nhập mật khẩu của bạn"
                     />
-                    <div className="account__password--icon">
-                      <i className="fa-regular fa-eye"></i>
+                    <div
+                      className="account__password--icon"
+                      onClick={() => setDisplayPassword(!displayPassword)}
+                    >
+                      <i className="account__password--icon-check fa-solid fa-check"></i>
+
+                      {displayPassword ? (
+                        <i
+                          className={
+                            passwordError
+                              ? "fa-regular fa-eye-slash account__error--icon"
+                              : "fa-regular fa-eye-slash"
+                          }
+                        ></i>
+                      ) : (
+                        <i
+                          className={
+                            passwordError
+                              ? "fa-regular fa-eye account__error--icon"
+                              : "fa-regular fa-eye"
+                          }
+                        ></i>
+                      )}
                     </div>
                   </div>
-                  <input
-                    type="password"
-                    className="account__input"
-                    placeholder="Nhập lại mật khẩu của bạn"
-                  />
 
-                  <i className="fa-solid fa-arrow-left"></i>
+                  <div className="account__error--message"></div>
+
+                  <div
+                    className={
+                      confirmPasswordError
+                        ? "account__input account__password--block account__error"
+                        : "account__input account__password--block"
+                    }
+                  >
+                    <input
+                      type={displayConfirmPassword ? "text" : "password"}
+                      className="account__password"
+                      placeholder="Nhập lại mật khẩu của bạn"
+                    />
+                    <div
+                      className="account__password--icon"
+                      onClick={() =>
+                        setDisplayConfirmPassword(!displayConfirmPassword)
+                      }
+                    >
+                      <i className="account__password--icon-check fa-solid fa-check"></i>
+
+                      {displayConfirmPassword ? (
+                        <i
+                          className={
+                            confirmPasswordError
+                              ? "fa-regular fa-eye-slash account__error--icon"
+                              : "fa-regular fa-eye-slash"
+                          }
+                        ></i>
+                      ) : (
+                        <i
+                          className={
+                            confirmPasswordError
+                              ? "fa-regular fa-eye account__error--icon"
+                              : "fa-regular fa-eye"
+                          }
+                        ></i>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="account__error--message"></div>
+
+                  <i
+                    className="account__back--icon fa-solid fa-arrow-left"
+                    onClick={() => setPasswordMode(false)}
+                  ></i>
+
+                  <button className="transparent-btn register__btn ">
+                    Hoàn thành
+                  </button>
                 </>
               ) : (
                 <>
                   <div className="account__head">Đăng ký</div>
                   {phoneMode ? (
-                    <div className="account__phone">
-                      <div className="account__phone--prefix">
-                        <Image
-                          src="/assets/quoc_ky_VN.png"
-                          className="account__phone--img"
-                          width={18}
-                          height={13}
-                          alt="Quoc ky Viet Nam"
-                        ></Image>
-                        +84
+                    <>
+                      <div
+                        className={
+                          phoneError
+                            ? "account__phone account__error"
+                            : "account__phone"
+                        }
+                      >
+                        <div className="account__phone--prefix">
+                          <Image
+                            src="/assets/quoc_ky_VN.png"
+                            className="account__phone--img"
+                            width={18}
+                            height={13}
+                            alt="Quoc ky Viet Nam"
+                          ></Image>
+                          +84
+                        </div>
+                        <input
+                          className={phoneError ? "account__error--input" : ""}
+                          type="text"
+                          placeholder="Nhập số điện thoại"
+                        />
                       </div>
-                      <input type="text" placeholder="Nhập số điện thoại" />
-                    </div>
+                      <div className="account__error--message"></div>
+                    </>
                   ) : (
-                    <input
-                      className="account__input"
-                      type="email"
-                      placeholder="Nhập email của bạn"
-                    />
+                    <>
+                      <input
+                        className={
+                          emailError
+                            ? "account__input account__error--input"
+                            : "account__input"
+                        }
+                        type="email"
+                        placeholder="Nhập email của bạn"
+                      />
+                      <div className="account__error--message"></div>
+                    </>
                   )}
 
                   <div className="register__clause">
@@ -87,7 +187,7 @@ const RegisterPage = () => {
                     </label>
                   </div>
                   <button
-                    className="main-btn"
+                    className="main-btn account__form--btn"
                     onClick={(e) => {
                       e.preventDefault();
                       setPasswordMode(true);

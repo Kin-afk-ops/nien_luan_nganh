@@ -14,6 +14,7 @@
 .account__form {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .account__head {
@@ -29,7 +30,7 @@
 
 .account__input {
   padding: 10px 25px 10px 15px;
-  margin-bottom: 15px;
+
   font-size: 16px;
   border-radius: 30px;
   outline: none;
@@ -39,6 +40,7 @@
 .account__password--block {
   display: flex;
   padding: 10px 15px;
+  margin-bottom: 0;
 }
 
 .account__password {
@@ -58,6 +60,28 @@
   height: 100%;
   font-size: 16px;
   color: #616161;
+  cursor: pointer;
+}
+.account__back--icon {
+  position: absolute;
+  top: 30px;
+  font-size: 18px;
+  color: #616161;
+  transition: 0.2s;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.account__password--icon-check {
+  margin-right: 5px;
+  color: #00cc33;
+}
+
+.account__back--icon:hover {
+  font-size: 25px;
+  color: #ccc;
+  border: 1px solid #ccc;
 }
 
 .account__phone {
@@ -67,7 +91,7 @@
   border-radius: 30px;
   font-size: 16px;
   color: #616161;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 
 .account__phone--prefix {
@@ -97,33 +121,14 @@
   margin-right: 15px;
 }
 
-.account__form button {
+.account__form--btn {
   border-radius: 30px;
   margin-bottom: 30px;
   transition: 0.2s;
 }
 
-.account__form button:hover {
+.account__form--btn:hover {
   opacity: 0.8;
-}
-
-.register__clause {
-  font-size: 14px;
-  color: #616161;
-  font-weight: 500;
-}
-
-.register__clause--link {
-}
-
-.register__clause input {
-  margin-right: 5px;
-  cursor: pointer;
-  accent-color: var(--primary-color);
-}
-
-.register__clause label {
-  user-select: none;
 }
 
 .account__boundary {
@@ -175,6 +180,37 @@
 
 .account__change--email {
   color: #ff0033;
+}
+
+.account__error {
+  border: 1px solid #ff0000;
+}
+
+.account__error--input {
+  border: 1px solid #ff0000;
+  color: #ff0000;
+}
+
+.account__error--input::placeholder {
+  color: #ff0000;
+}
+
+.account__error .account__password {
+  color: #ff0000;
+}
+
+.account__error .account__password::placeholder {
+  color: #ff0000;
+}
+
+.account__error--icon {
+  color: #ff0000;
+}
+
+.account__error--message {
+  color: #ff0000;
+  margin-top: 5px;
+  margin-bottom: 15px;
 }
 
 .register__login {

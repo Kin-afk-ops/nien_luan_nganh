@@ -4,3 +4,39 @@
   display: flex;
   justify-content: center;
 }
+
+.register__clause {
+  font-size: 14px;
+  color: #616161;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.register__clause--link {
+}
+
+.register__clause input {
+  margin-right: 5px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.register__clause label {
+  user-select: none;
+}
+
+.register__btn {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 121, 114, 1) 21%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  color: #fff;
+  border-radius: 30px;
+  transition: 1s;
+}
+
+.register__btn:hover {
+  background: #097972;
+}
