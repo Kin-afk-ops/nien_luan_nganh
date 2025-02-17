@@ -8,9 +8,9 @@ import Link from "next/link";
 const LoginPage = () => {
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
 
-  const [emailError, setEmailError] = useState<boolean>(true);
-  const [phoneError, setPhoneError] = useState<boolean>(true);
-  const [passwordError, setPasswordError] = useState<boolean>(true);
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<boolean>(false);
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
 
   return (
@@ -125,7 +125,7 @@ const LoginPage = () => {
                     >
                       <i className="account__password--icon-check fa-solid fa-check"></i>
 
-                      {displayPassword ? (
+                      {!displayPassword ? (
                         <i
                           className={
                             passwordError
@@ -148,6 +148,12 @@ const LoginPage = () => {
                   <div className="account__error--message"></div>
                 </>
               )}
+
+              <div className="account__forgot--password">
+                <Link className="link " href={"/"}>
+                  Quên mật khẩu?
+                </Link>
+              </div>
 
               <button className="account__form--btn main-btn">Đăng nhập</button>
             </form>

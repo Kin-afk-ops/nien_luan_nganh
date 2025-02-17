@@ -4,13 +4,16 @@ import Image from "next/image";
 import "../layout.css";
 import "./register.css";
 import Link from "next/link";
+import validationEmail from "@/helpers/validation/email";
 
 const RegisterPage = () => {
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
 
   const [passwordMode, setPasswordMode] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<boolean>(true);
-  const [phoneError, setPhoneError] = useState<boolean>(true);
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [emailCheckIcon, setEmailCheckIcon] = useState<boolean>(false);
+  const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
   const [passwordError, setPasswordError] = useState<boolean>(false);
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
   const [displayConfirmPassword, setDisplayConfirmPassword] =
@@ -18,6 +21,44 @@ const RegisterPage = () => {
 
   const [confirmPasswordError, setConfirmPasswordError] =
     useState<boolean>(false);
+
+  const [clausCheck, setClausCheck] = useState<boolean>(false);
+  const [clausCheckError, setClausCheckError] = useState<boolean>(false);
+
+  const [emailValue, setEmailValue] = useState<string>("");
+
+  const handleValidationEmail = (value: string): void => {
+    const vEmail = validationEmail(value);
+    setEmailError(!vEmail.pass);
+    setEmailErrorMessage(vEmail.content);
+    if (vEmail.pass) {
+      setEmailCheckIcon(true);
+    } else {
+      setEmailCheckIcon(false);
+    }
+  };
+
+  const handleChangeContent = (): void => {
+    const vEmail = validationEmail(emailValue);
+    setEmailError(!vEmail.pass);
+    setEmailErrorMessage(vEmail.content);
+    if (!clausCheck) {
+      setClausCheckError(true);
+    } else {
+      setClausCheckError(false);
+    }
+
+    if (vEmail.pass) {
+      setEmailCheckIcon(true);
+    } else {
+      setEmailCheckIcon(false);
+    }
+
+    if (vEmail.pass && clausCheck) {
+      setClausCheckError(false);
+      setPasswordMode(true);
+    }
+  };
 
   return (
     <div className="register">
@@ -39,22 +80,22 @@ const RegisterPage = () => {
                   <div
                     className={
                       passwordError
-                        ? "account__input account__password--block account__error"
-                        : "account__input account__password--block"
+                        ? "account__input--block account__error"
+                        : "account__input--block"
                     }
                   >
                     <input
                       type={displayPassword ? "text" : "password"}
-                      className="account__password"
+                      className="account__input"
                       placeholder="Nhập mật khẩu của bạn"
                     />
                     <div
                       className="account__password--icon"
                       onClick={() => setDisplayPassword(!displayPassword)}
                     >
-                      <i className="account__password--icon-check fa-solid fa-check"></i>
+                      <i className="account__icon--check fa-solid fa-check"></i>
 
-                      {displayPassword ? (
+                      {!displayPassword ? (
                         <i
                           className={
                             passwordError
@@ -79,13 +120,13 @@ const RegisterPage = () => {
                   <div
                     className={
                       confirmPasswordError
-                        ? "account__input account__password--block account__error"
-                        : "account__input account__password--block"
+                        ? "account__input--block account__error"
+                        : "account__input--block"
                     }
                   >
                     <input
                       type={displayConfirmPassword ? "text" : "password"}
-                      className="account__password"
+                      className="account__input"
                       placeholder="Nhập lại mật khẩu của bạn"
                     />
                     <div
@@ -94,9 +135,9 @@ const RegisterPage = () => {
                         setDisplayConfirmPassword(!displayConfirmPassword)
                       }
                     >
-                      <i className="account__password--icon-check fa-solid fa-check"></i>
+                      <i className="account__icon--check fa-solid fa-check"></i>
 
-                      {displayConfirmPassword ? (
+                      {!displayConfirmPassword ? (
                         <i
                           className={
                             confirmPasswordError
@@ -159,16 +200,37 @@ const RegisterPage = () => {
                     </>
                   ) : (
                     <>
-                      <input
+                      <div
                         className={
                           emailError
-                            ? "account__input account__error--input"
-                            : "account__input"
+                            ? "account__input--block account__error"
+                            : "account__input--block"
                         }
-                        type="email"
-                        placeholder="Nhập email của bạn"
-                      />
-                      <div className="account__error--message"></div>
+                      >
+                        <input
+                          className={
+                            emailError
+                              ? "account__input account__error--input"
+                              : "account__input "
+                          }
+                          value={emailValue}
+                          onChange={(e) => setEmailValue(e.target.value)}
+                          onBlur={(e) => handleValidationEmail(e.target.value)}
+                          onFocus={() => {
+                            setEmailError(false);
+                            setEmailErrorMessage("");
+                          }}
+                          type="text"
+                          placeholder="Nhập email của bạn"
+                        />
+                        {emailCheckIcon && (
+                          <i className="account__icon--check fa-solid fa-check"></i>
+                        )}
+                      </div>
+
+                      <div className="account__error--message">
+                        {emailErrorMessage}
+                      </div>
                     </>
                   )}
 
@@ -177,6 +239,15 @@ const RegisterPage = () => {
                       type="checkbox"
                       name=""
                       id="register__clause--check"
+                      checked={clausCheck}
+                      onChange={() => {
+                        setClausCheck(!clausCheck);
+                        if (!emailError) {
+                          setEmailCheckIcon(true);
+                        } else {
+                          setEmailCheckIcon(false);
+                        }
+                      }}
                     />
                     <label htmlFor="register__clause--check">
                       Tôi đồng ý với{" "}
@@ -186,11 +257,18 @@ const RegisterPage = () => {
                       của ...
                     </label>
                   </div>
+
+                  {clausCheckError && (
+                    <div className="account__error--message">
+                      Bạn cần đọc và đồng ý với điều khoản & điều kiện và hợp
+                      đồng của ...
+                    </div>
+                  )}
                   <button
                     className="main-btn account__form--btn"
                     onClick={(e) => {
                       e.preventDefault();
-                      setPasswordMode(true);
+                      handleChangeContent();
                     }}
                   >
                     Đăng ký

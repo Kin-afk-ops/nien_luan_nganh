@@ -28,23 +28,15 @@
   margin: 50px 0;
 }
 
-.account__input {
-  padding: 10px 25px 10px 15px;
-
-  font-size: 16px;
-  border-radius: 30px;
-  outline: none;
-  border: 1px solid #ccc;
-}
-
-.account__password--block {
+.account__input--block {
   display: flex;
   padding: 10px 15px;
   margin-bottom: 0;
+  border-radius: 30px;
+  border: 1px solid #ccc;
 }
 
-.account__password {
-  -webkit-text-security: disc;
+.account__input {
   width: 90%;
   height: 100%;
   font-size: 16px;
@@ -73,7 +65,7 @@
   border-radius: 50%;
 }
 
-.account__password--icon-check {
+.account__icon--check {
   margin-right: 5px;
   color: #00cc33;
 }
@@ -183,34 +175,34 @@
 }
 
 .account__error {
-  border: 1px solid #ff0000;
+  border: 1px solid #ff3333;
 }
 
 .account__error--input {
-  border: 1px solid #ff0000;
-  color: #ff0000;
+  color: #ff3333;
 }
 
 .account__error--input::placeholder {
-  color: #ff0000;
+  color: #ff3333;
 }
 
 .account__error .account__password {
-  color: #ff0000;
+  color: #ff3333;
 }
 
 .account__error .account__password::placeholder {
-  color: #ff0000;
+  color: #ff3333;
 }
 
 .account__error--icon {
-  color: #ff0000;
+  color: #ff3333;
 }
 
 .account__error--message {
-  color: #ff0000;
+  color: #ff3333;
   margin-top: 5px;
   margin-bottom: 15px;
+  font-size: 14px;
 }
 
 .register__login {
