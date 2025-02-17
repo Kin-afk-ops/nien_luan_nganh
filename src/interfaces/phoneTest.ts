@@ -1,4 +1,4 @@
-export interface EmailTestInterface {
+export interface PhoneInterface {
   pass: boolean;
   content: string;
 }

@@ -1,4 +1,4 @@
-export interface EmailTestInterface {
+export interface PasswordInterface {
   pass: boolean;
   content: string;
 }

@@ -1,9 +1,9 @@
-import { emailTestInterface } from "@/interfaces/emailTest";
+import { EmailTestInterface } from "@/interfaces/emailTest";
 
-const validationEmail = (email: string): emailTestInterface => {
+const validationEmail = (email: string): EmailTestInterface => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const emailTest: emailTestInterface = {
+  const emailTest: EmailTestInterface = {
     pass: true,
     content: "",
   };

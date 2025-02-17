@@ -1,25 +1,51 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "../layout.css";
 import "./register.css";
 import Link from "next/link";
 import validationEmail from "@/helpers/validation/email";
+import validationPhone from "@/helpers/validation/phone";
+import validationPassword from "@/helpers/validation/password";
+import validationConfirmPassword from "@/helpers/validation/confirmPassword";
+import { EmailTestInterface } from "@/interfaces/emailTest";
+import { PhoneInterface } from "@/interfaces/phoneTest";
+import { PasswordInterface } from "@/interfaces/passwordTest";
+import axiosInstance from "@/helpers/api/config";
+import { newUserEmail, newUserPhone } from "@/interfaces/user";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
 
   const [passwordMode, setPasswordMode] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<boolean>(false);
   const [emailCheckIcon, setEmailCheckIcon] = useState<boolean>(false);
+
+  const [phoneValue, setPhoneValue] = useState<string>("");
   const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState<string>("");
+  const [phoneIconCheck, setPhoneIconCheck] = useState<boolean>(false);
+
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
+
+  const [passwordValue, setPasswordValue] = useState<string>("");
+  const [passwordCheckIcon, setPasswordCheckIcon] = useState<boolean>(false);
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>("");
+
   const [passwordError, setPasswordError] = useState<boolean>(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>("");
+
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
   const [displayConfirmPassword, setDisplayConfirmPassword] =
     useState<boolean>(false);
 
   const [confirmPasswordError, setConfirmPasswordError] =
+    useState<boolean>(false);
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
+    useState<string>("");
+  const [confirmPasswordCheckIcon, setConfirmPasswordCheckIcon] =
     useState<boolean>(false);
 
   const [clausCheck, setClausCheck] = useState<boolean>(false);
@@ -28,7 +54,7 @@ const RegisterPage = () => {
   const [emailValue, setEmailValue] = useState<string>("");
 
   const handleValidationEmail = (value: string): void => {
-    const vEmail = validationEmail(value);
+    const vEmail: EmailTestInterface = validationEmail(value);
     setEmailError(!vEmail.pass);
     setEmailErrorMessage(vEmail.content);
     if (vEmail.pass) {
@@ -38,25 +64,140 @@ const RegisterPage = () => {
     }
   };
 
-  const handleChangeContent = (): void => {
-    const vEmail = validationEmail(emailValue);
-    setEmailError(!vEmail.pass);
-    setEmailErrorMessage(vEmail.content);
+  const handleValidationPhone = (value: string): void => {
+    const vPhone: PhoneInterface = validationPhone(value);
+    setPhoneError(!vPhone.pass);
+    setPhoneErrorMessage(vPhone.content);
+
+    if (vPhone.pass) {
+      setPhoneIconCheck(true);
+    } else {
+      setPhoneIconCheck(false);
+    }
+  };
+
+  const handleValidationPassword = (value: string): void => {
+    const vPassword: PasswordInterface = validationPassword(value);
+
+    setPasswordError(!vPassword.pass);
+    setPasswordErrorMessage(vPassword.content);
+
+    if (vPassword.pass) {
+      setPasswordCheckIcon(true);
+    } else {
+      setPasswordCheckIcon(false);
+    }
+  };
+
+  const handleValidationConfirmPasswordValue = (value: string): void => {
+    const vConfirmPassword = validationConfirmPassword(passwordValue, value);
+    setConfirmPasswordError(!vConfirmPassword.pass);
+    setConfirmPasswordErrorMessage(vConfirmPassword.content);
+
+    if (vConfirmPassword.pass) {
+      setConfirmPasswordCheckIcon(true);
+    } else {
+      setConfirmPasswordCheckIcon(false);
+    }
+  };
+
+  const handleChangeContent = async (): Promise<void> => {
+    if (phoneMode) {
+      const vPhone = validationPhone(phoneValue);
+      setPhoneError(!vPhone.pass);
+      setPhoneErrorMessage(vPhone.content);
+
+      if (vPhone.pass) {
+        setPhoneIconCheck(true);
+      } else {
+        setPhoneIconCheck(false);
+      }
+
+      if (vPhone.pass && clausCheck) {
+        try {
+          const res = await axiosInstance.post("/auth/register/find/phone", {
+            phone: phoneValue,
+          });
+          setPhoneError(true);
+          setPhoneErrorMessage(res.data.message);
+        } catch (error) {
+          console.log(error);
+
+          setClausCheckError(false);
+          setPasswordMode(true);
+        }
+      }
+    } else {
+      const vEmail = validationEmail(emailValue);
+      setEmailError(!vEmail.pass);
+      setEmailErrorMessage(vEmail.content);
+
+      if (vEmail.pass) {
+        setEmailCheckIcon(true);
+      } else {
+        setEmailCheckIcon(false);
+      }
+
+      if (vEmail.pass && clausCheck) {
+        try {
+          const res = await axiosInstance.post("/auth/register/find/email", {
+            email: emailValue,
+          });
+          setEmailError(true);
+          setEmailErrorMessage(res.data.message);
+        } catch (error) {
+          console.log(error);
+          setClausCheckError(false);
+          setPasswordMode(true);
+        }
+      }
+    }
+
     if (!clausCheck) {
       setClausCheckError(true);
     } else {
       setClausCheckError(false);
     }
+  };
 
-    if (vEmail.pass) {
-      setEmailCheckIcon(true);
+  const handleRegister = async (): Promise<void> => {
+    handleValidationPassword(passwordValue);
+    if (phoneMode) {
+      if (!phoneError && !passwordError && !confirmPasswordError) {
+        const newUser: newUserPhone = {
+          phone: phoneValue,
+          password: passwordValue,
+        };
+        try {
+          const res = await axiosInstance.post("/auth/register/phone", newUser);
+          console.log(res.data);
+
+          alert("đăng ký thành công");
+          setTimeout(() => {
+            router.push("/tai-khoan/dang-nhap");
+          }, 3000);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     } else {
-      setEmailCheckIcon(false);
-    }
+      if (!emailError && !passwordError && !confirmPasswordError) {
+        const newUser: newUserEmail = {
+          email: emailValue,
+          password: passwordValue,
+        };
+        try {
+          const res = await axiosInstance.post("/auth/register/email", newUser);
+          console.log(res.data);
 
-    if (vEmail.pass && clausCheck) {
-      setClausCheckError(false);
-      setPasswordMode(true);
+          alert("đăng ký thành công");
+          setTimeout(() => {
+            router.push("/tai-khoan/dang-nhap");
+          }, 3000);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
   };
 
@@ -85,15 +226,38 @@ const RegisterPage = () => {
                     }
                   >
                     <input
+                      value={passwordValue}
                       type={displayPassword ? "text" : "password"}
-                      className="account__input"
+                      className={
+                        passwordError
+                          ? "account__input account__error--input"
+                          : "account__input"
+                      }
                       placeholder="Nhập mật khẩu của bạn"
+                      onChange={(e) => setPasswordValue(e.target.value)}
+                      onFocus={() => {
+                        setPasswordError(false);
+                        setPasswordErrorMessage("");
+                      }}
+                      onBlur={() => {
+                        if (validationPassword(passwordValue).pass) {
+                          setPasswordCheckIcon(true);
+                        } else {
+                          setPasswordCheckIcon(false);
+                        }
+                      }}
                     />
                     <div
                       className="account__password--icon"
-                      onClick={() => setDisplayPassword(!displayPassword)}
+                      onClick={() => {
+                        setDisplayPassword(!displayPassword);
+                        setPasswordError(false);
+                        setPasswordErrorMessage("");
+                      }}
                     >
-                      <i className="account__icon--check fa-solid fa-check"></i>
+                      {passwordCheckIcon && (
+                        <i className="account__icon--check fa-solid fa-check"></i>
+                      )}
 
                       {!displayPassword ? (
                         <i
@@ -115,7 +279,9 @@ const RegisterPage = () => {
                     </div>
                   </div>
 
-                  <div className="account__error--message"></div>
+                  <div className="account__error--message">
+                    {passwordErrorMessage}
+                  </div>
 
                   <div
                     className={
@@ -126,8 +292,17 @@ const RegisterPage = () => {
                   >
                     <input
                       type={displayConfirmPassword ? "text" : "password"}
-                      className="account__input"
+                      className={
+                        confirmPasswordError
+                          ? "account__input account__error--input"
+                          : "account__input"
+                      }
                       placeholder="Nhập lại mật khẩu của bạn"
+                      value={confirmPasswordValue}
+                      onChange={(e) => {
+                        setConfirmPasswordValue(e.target.value);
+                        handleValidationConfirmPasswordValue(e.target.value);
+                      }}
                     />
                     <div
                       className="account__password--icon"
@@ -135,7 +310,9 @@ const RegisterPage = () => {
                         setDisplayConfirmPassword(!displayConfirmPassword)
                       }
                     >
-                      <i className="account__icon--check fa-solid fa-check"></i>
+                      {confirmPasswordCheckIcon && (
+                        <i className="account__icon--check fa-solid fa-check"></i>
+                      )}
 
                       {!displayConfirmPassword ? (
                         <i
@@ -157,14 +334,22 @@ const RegisterPage = () => {
                     </div>
                   </div>
 
-                  <div className="account__error--message"></div>
+                  <div className="account__error--message">
+                    {confirmPasswordErrorMessage}
+                  </div>
 
                   <i
                     className="account__back--icon fa-solid fa-arrow-left"
                     onClick={() => setPasswordMode(false)}
                   ></i>
 
-                  <button className="transparent-btn register__btn ">
+                  <button
+                    className="transparent-btn register__btn "
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleRegister();
+                    }}
+                  >
                     Hoàn thành
                   </button>
                 </>
@@ -193,10 +378,22 @@ const RegisterPage = () => {
                         <input
                           className={phoneError ? "account__error--input" : ""}
                           type="text"
+                          value={phoneValue}
+                          onChange={(e) => setPhoneValue(e.target.value)}
+                          onBlur={(e) => handleValidationPhone(e.target.value)}
+                          onFocus={() => {
+                            setPhoneError(false);
+                            setPhoneErrorMessage("");
+                          }}
                           placeholder="Nhập số điện thoại"
                         />
+                        {phoneIconCheck && (
+                          <i className="account__icon--check fa-solid fa-check"></i>
+                        )}
                       </div>
-                      <div className="account__error--message"></div>
+                      <div className="account__error--message">
+                        {phoneErrorMessage}
+                      </div>
                     </>
                   ) : (
                     <>
