@@ -14,6 +14,7 @@ import { PhoneInterface } from "@/interfaces/phoneTest";
 import { PasswordInterface } from "@/interfaces/passwordTest";
 import axiosInstance from "@/helpers/api/config";
 import { newUserEmail, newUserPhone } from "@/interfaces/user";
+import OtpInput from "@/components/otpInput/OtpInput";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -52,6 +53,9 @@ const RegisterPage = () => {
   const [clausCheckError, setClausCheckError] = useState<boolean>(false);
 
   const [emailValue, setEmailValue] = useState<string>("");
+  const [otpMode, setOptMode] = useState<boolean>(false);
+  const [otpCheck, setOtpCheck] = useState<boolean>(false);
+  const [otpValue, setOtpValue] = useState<string[]>(new Array(6).fill(""));
 
   const handleValidationEmail = (value: string): void => {
     const vEmail: EmailTestInterface = validationEmail(value);
@@ -162,6 +166,7 @@ const RegisterPage = () => {
 
   const handleRegister = async (): Promise<void> => {
     handleValidationPassword(passwordValue);
+
     if (phoneMode) {
       if (!phoneError && !passwordError && !confirmPasswordError) {
         const newUser: newUserPhone = {
@@ -172,10 +177,11 @@ const RegisterPage = () => {
           const res = await axiosInstance.post("/auth/register/phone", newUser);
           console.log(res.data);
 
-          alert("đăng ký thành công");
-          setTimeout(() => {
-            router.push("/tai-khoan/dang-nhap");
-          }, 3000);
+          // alert("đăng ký thành công");
+          // setTimeout(() => {
+          //   router.push("/tai-khoan/dang-nhap");
+          // }, 3000);
+          setOptMode(true);
         } catch (error) {
           console.log(error);
         }
@@ -190,14 +196,31 @@ const RegisterPage = () => {
           const res = await axiosInstance.post("/auth/register/email", newUser);
           console.log(res.data);
 
-          alert("đăng ký thành công");
-          setTimeout(() => {
-            router.push("/tai-khoan/dang-nhap");
-          }, 3000);
+          // alert("đăng ký thành công");
+          // setTimeout(() => {
+          //   router.push("/tai-khoan/dang-nhap");
+          // }, 3000);
+          setOptMode(true);
         } catch (error) {
           console.log(error);
         }
       }
+    }
+  };
+
+  const handleVerifyOtp = async (): Promise<void> => {
+    try {
+      const res = await axiosInstance.post(`/auth/verify-otp`, {
+        emailValue,
+        otpValue,
+      });
+      //console.log(response.data);
+      if (res.status === 200 || res.status === 201) {
+        localStorage.setItem("userToken", res.data.user.token);
+        alert("xac thuc thanh cong");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -217,141 +240,164 @@ const RegisterPage = () => {
             <form className="account__form">
               {passwordMode ? (
                 <>
-                  <div className="account__head">Đặt mật khẩu</div>
-                  <div
-                    className={
-                      passwordError
-                        ? "account__input--block account__error"
-                        : "account__input--block"
-                    }
-                  >
-                    <input
-                      value={passwordValue}
-                      type={displayPassword ? "text" : "password"}
-                      className={
-                        passwordError
-                          ? "account__input account__error--input"
-                          : "account__input"
-                      }
-                      placeholder="Nhập mật khẩu của bạn"
-                      onChange={(e) => setPasswordValue(e.target.value)}
-                      onFocus={() => {
-                        setPasswordError(false);
-                        setPasswordErrorMessage("");
-                      }}
-                      onBlur={() => {
-                        if (validationPassword(passwordValue).pass) {
-                          setPasswordCheckIcon(true);
-                        } else {
-                          setPasswordCheckIcon(false);
+                  {otpMode ? (
+                    <>
+                      <div className="account__head">Xác thực tài khoản</div>
+                      <OtpInput otp={otpValue} setOtp={setOtpValue} />
+                      <i
+                        className="account__back--icon fa-solid fa-arrow-left"
+                        onClick={() => setOptMode(false)}
+                      ></i>
+                      <button
+                        className="transparent-btn register__btn "
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // handleVerifyOtp();
+                        }}
+                      >
+                        Xác thực
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="account__head">Đặt mật khẩu</div>
+                      <div
+                        className={
+                          passwordError
+                            ? "account__input--block account__error"
+                            : "account__input--block"
                         }
-                      }}
-                    />
-                    <div
-                      className="account__password--icon"
-                      onClick={() => {
-                        setDisplayPassword(!displayPassword);
-                        setPasswordError(false);
-                        setPasswordErrorMessage("");
-                      }}
-                    >
-                      {passwordCheckIcon && (
-                        <i className="account__icon--check fa-solid fa-check"></i>
-                      )}
-
-                      {!displayPassword ? (
-                        <i
+                      >
+                        <input
+                          value={passwordValue}
+                          type={displayPassword ? "text" : "password"}
                           className={
                             passwordError
-                              ? "fa-regular fa-eye-slash account__error--icon"
-                              : "fa-regular fa-eye-slash"
+                              ? "account__input account__error--input"
+                              : "account__input"
                           }
-                        ></i>
-                      ) : (
-                        <i
-                          className={
-                            passwordError
-                              ? "fa-regular fa-eye account__error--icon"
-                              : "fa-regular fa-eye"
-                          }
-                        ></i>
-                      )}
-                    </div>
-                  </div>
+                          placeholder="Nhập mật khẩu của bạn"
+                          onChange={(e) => setPasswordValue(e.target.value)}
+                          onFocus={() => {
+                            setPasswordError(false);
+                            setPasswordErrorMessage("");
+                          }}
+                          onBlur={() => {
+                            if (validationPassword(passwordValue).pass) {
+                              setPasswordCheckIcon(true);
+                            } else {
+                              setPasswordCheckIcon(false);
+                            }
+                          }}
+                        />
+                        <div
+                          className="account__password--icon"
+                          onClick={() => {
+                            setDisplayPassword(!displayPassword);
+                            setPasswordError(false);
+                            setPasswordErrorMessage("");
+                          }}
+                        >
+                          {passwordCheckIcon && (
+                            <i className="account__icon--check fa-solid fa-check"></i>
+                          )}
 
-                  <div className="account__error--message">
-                    {passwordErrorMessage}
-                  </div>
+                          {!displayPassword ? (
+                            <i
+                              className={
+                                passwordError
+                                  ? "fa-regular fa-eye-slash account__error--icon"
+                                  : "fa-regular fa-eye-slash"
+                              }
+                            ></i>
+                          ) : (
+                            <i
+                              className={
+                                passwordError
+                                  ? "fa-regular fa-eye account__error--icon"
+                                  : "fa-regular fa-eye"
+                              }
+                            ></i>
+                          )}
+                        </div>
+                      </div>
 
-                  <div
-                    className={
-                      confirmPasswordError
-                        ? "account__input--block account__error"
-                        : "account__input--block"
-                    }
-                  >
-                    <input
-                      type={displayConfirmPassword ? "text" : "password"}
-                      className={
-                        confirmPasswordError
-                          ? "account__input account__error--input"
-                          : "account__input"
-                      }
-                      placeholder="Nhập lại mật khẩu của bạn"
-                      value={confirmPasswordValue}
-                      onChange={(e) => {
-                        setConfirmPasswordValue(e.target.value);
-                        handleValidationConfirmPasswordValue(e.target.value);
-                      }}
-                    />
-                    <div
-                      className="account__password--icon"
-                      onClick={() =>
-                        setDisplayConfirmPassword(!displayConfirmPassword)
-                      }
-                    >
-                      {confirmPasswordCheckIcon && (
-                        <i className="account__icon--check fa-solid fa-check"></i>
-                      )}
+                      <div className="account__error--message">
+                        {passwordErrorMessage}
+                      </div>
 
-                      {!displayConfirmPassword ? (
-                        <i
+                      <div
+                        className={
+                          confirmPasswordError
+                            ? "account__input--block account__error"
+                            : "account__input--block"
+                        }
+                      >
+                        <input
+                          type={displayConfirmPassword ? "text" : "password"}
                           className={
                             confirmPasswordError
-                              ? "fa-regular fa-eye-slash account__error--icon"
-                              : "fa-regular fa-eye-slash"
+                              ? "account__input account__error--input"
+                              : "account__input"
                           }
-                        ></i>
-                      ) : (
-                        <i
-                          className={
-                            confirmPasswordError
-                              ? "fa-regular fa-eye account__error--icon"
-                              : "fa-regular fa-eye"
+                          placeholder="Nhập lại mật khẩu của bạn"
+                          value={confirmPasswordValue}
+                          onChange={(e) => {
+                            setConfirmPasswordValue(e.target.value);
+                            handleValidationConfirmPasswordValue(
+                              e.target.value
+                            );
+                          }}
+                        />
+                        <div
+                          className="account__password--icon"
+                          onClick={() =>
+                            setDisplayConfirmPassword(!displayConfirmPassword)
                           }
-                        ></i>
-                      )}
-                    </div>
-                  </div>
+                        >
+                          {confirmPasswordCheckIcon && (
+                            <i className="account__icon--check fa-solid fa-check"></i>
+                          )}
 
-                  <div className="account__error--message">
-                    {confirmPasswordErrorMessage}
-                  </div>
+                          {!displayConfirmPassword ? (
+                            <i
+                              className={
+                                confirmPasswordError
+                                  ? "fa-regular fa-eye-slash account__error--icon"
+                                  : "fa-regular fa-eye-slash"
+                              }
+                            ></i>
+                          ) : (
+                            <i
+                              className={
+                                confirmPasswordError
+                                  ? "fa-regular fa-eye account__error--icon"
+                                  : "fa-regular fa-eye"
+                              }
+                            ></i>
+                          )}
+                        </div>
+                      </div>
 
-                  <i
-                    className="account__back--icon fa-solid fa-arrow-left"
-                    onClick={() => setPasswordMode(false)}
-                  ></i>
+                      <div className="account__error--message">
+                        {confirmPasswordErrorMessage}
+                      </div>
 
-                  <button
-                    className="transparent-btn register__btn "
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleRegister();
-                    }}
-                  >
-                    Hoàn thành
-                  </button>
+                      <i
+                        className="account__back--icon fa-solid fa-arrow-left"
+                        onClick={() => setPasswordMode(false)}
+                      ></i>
+                      <button
+                        className="transparent-btn register__btn "
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRegister();
+                        }}
+                      >
+                        Hoàn thành
+                      </button>
+                    </>
+                  )}
                 </>
               ) : (
                 <>
