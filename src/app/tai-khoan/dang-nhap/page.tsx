@@ -57,6 +57,15 @@ const LoginPage = () => {
   };
 
   const handleLogin = async (): Promise<void> => {
+    if (!emailError && !passwordError) {
+      const loginUser: LoginUser = {
+        phone: phoneValue,
+        password: passwordValue,
+        email: emailValue,
+      };
+      login(dispatch, loginUser, setNoAccount, phoneMode);
+    }
+
     if (!phoneError && !passwordError) {
       const loginUser: LoginUser = {
         phone: phoneValue,

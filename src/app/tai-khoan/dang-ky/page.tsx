@@ -209,14 +209,16 @@ const RegisterPage = () => {
   };
 
   const handleVerifyOtp = async (): Promise<void> => {
+    console.log(otpValue);
+
     try {
       const res = await axiosInstance.post(`/auth/verify-otp`, {
-        emailValue,
-        otpValue,
+        email: emailValue,
+        otp: otpValue.join(""),
       });
-      //console.log(response.data);
       if (res.status === 200 || res.status === 201) {
-        localStorage.setItem("userToken", res.data.user.token);
+        // localStorage.setItem("userToken", res.data.user.token);
+        console.log(res.data);
         alert("xac thuc thanh cong");
       }
     } catch (error) {
@@ -252,7 +254,7 @@ const RegisterPage = () => {
                         className="transparent-btn register__btn "
                         onClick={(e) => {
                           e.preventDefault();
-                          // handleVerifyOtp();
+                          handleVerifyOtp();
                         }}
                       >
                         Xác thực

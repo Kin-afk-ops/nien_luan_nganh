@@ -36,6 +36,7 @@ export const login = async (
       const res = await axiosInstance.post("/auth/login/email", user);
       dispatch(loginSuccess(res.data));
       setNoAccount(false);
+      alert("!đăng nhập thành công");
     } catch (err) {
       console.log(err);
 
