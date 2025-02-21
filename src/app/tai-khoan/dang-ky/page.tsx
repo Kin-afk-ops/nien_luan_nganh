@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "../layout.css";
@@ -16,7 +16,9 @@ import axiosInstance from "@/helpers/api/config";
 import { newUserEmail, newUserPhone } from "@/interfaces/user";
 import OtpInput from "@/components/otpInput/OtpInput";
 
-const RegisterPage = () => {
+import Countdown from "@/components/countdown/Countdown";
+
+const RegisterPage: React.FC = () => {
   const router = useRouter();
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
 
@@ -56,6 +58,8 @@ const RegisterPage = () => {
   const [otpMode, setOptMode] = useState<boolean>(false);
   const [otpCheck, setOtpCheck] = useState<boolean>(false);
   const [otpValue, setOtpValue] = useState<string[]>(new Array(6).fill(""));
+  const [otpError, setOtpError] = useState<boolean>(false);
+  const [otpErrorMessage, setOtpErrorMessage] = useState<string>("");
 
   const handleValidationEmail = (value: string): void => {
     const vEmail: EmailTestInterface = validationEmail(value);
@@ -211,18 +215,102 @@ const RegisterPage = () => {
   const handleVerifyOtp = async (): Promise<void> => {
     console.log(otpValue);
 
-    try {
-      const res = await axiosInstance.post(`/auth/verify-otp`, {
+    let otpLength: number = 0;
+
+    while (otpLength <= 6) {
+      if (otpValue[otpLength] === "") {
+        setOtpErrorMessage("Hãy nhập đầy đủ mã OTP");
+        return;
+      } else {
+        otpLength++;
+        console.log("hiii");
+      }
+      console.log(otpValue[otpLength]);
+    }
+
+    await axiosInstance
+      .post(`/auth/verify-otp`, {
         email: emailValue,
         otp: otpValue.join(""),
-      });
-      if (res.status === 200 || res.status === 201) {
-        // localStorage.setItem("userToken", res.data.user.token);
+      })
+      .then((res) => {
         console.log(res.data);
+
+        setOtpValue(new Array(6).fill(""));
+        setOtpErrorMessage("");
+        setOptMode(false);
+        setPasswordMode(false);
         alert("xac thuc thanh cong");
+        window.localStorage.removeItem("countdown");
+      })
+      .catch((error) => {
+        console.log(error);
+        setOtpErrorMessage(error.response.data.message);
+      });
+    // try {
+    //   if (res.status === 200 || res.status === 201) {
+    //     // localStorage.setItem("userToken", res.data.user.token);
+    //     console.log(res.data);
+    //     alert("xac thuc thanh cong");
+    //   }
+    // } catch (error) {
+    //   // setOtpErrorMessage(error.message);
+    //   console.log(error);
+    //   if (axios.isAxiosError(error)) {
+    //     console.error(
+    //       "📢 Lỗi từ server:",
+    //       error.response?.data?.message || "Lỗi không xác định"
+    //     );
+    //   }
+    // }
+  };
+
+  const handleSendBack = async (): Promise<void> => {
+    setOtpValue(new Array(6).fill(""));
+    setOtpErrorMessage("");
+    handleValidationPassword(passwordValue);
+
+    if (phoneMode) {
+      if (!phoneError && !passwordError && !confirmPasswordError) {
+        const newUser: newUserPhone = {
+          phone: phoneValue,
+          password: passwordValue,
+        };
+        try {
+          const res = await axiosInstance.post("/auth/register/phone", newUser);
+          console.log(res.data);
+
+          // alert("đăng ký thành công");
+          // setTimeout(() => {
+          //   router.push("/tai-khoan/dang-nhap");
+          // }, 3000);
+          alert("Đã gửi lại mã");
+
+          window.localStorage.setItem("restart", "ok");
+        } catch (error) {
+          console.log(error);
+        }
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      if (!emailError && !passwordError && !confirmPasswordError) {
+        const newUser: newUserEmail = {
+          email: emailValue,
+          password: passwordValue,
+        };
+        try {
+          const res = await axiosInstance.post("/auth/register/email", newUser);
+          console.log(res.data);
+
+          // alert("đăng ký thành công");
+          // setTimeout(() => {
+          //   router.push("/tai-khoan/dang-nhap");
+          // }, 3000);
+          alert("Đã gửi lại mã");
+          window.localStorage.setItem("restart", "ok");
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
   };
 
@@ -245,7 +333,12 @@ const RegisterPage = () => {
                   {otpMode ? (
                     <>
                       <div className="account__head">Xác thực tài khoản</div>
+                      <Countdown time={5 * 60} />
+
                       <OtpInput otp={otpValue} setOtp={setOtpValue} />
+                      <div className="account__error--message">
+                        {otpErrorMessage}
+                      </div>
                       <i
                         className="account__back--icon fa-solid fa-arrow-left"
                         onClick={() => setOptMode(false)}
@@ -258,6 +351,19 @@ const RegisterPage = () => {
                         }}
                       >
                         Xác thực
+                      </button>
+
+                      <button
+                        className="main-btn register__replay--btn"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setOtpValue([]);
+                          setOtpErrorMessage("");
+
+                          handleSendBack();
+                        }}
+                      >
+                        Gửi lại mã
                       </button>
                     </>
                   ) : (

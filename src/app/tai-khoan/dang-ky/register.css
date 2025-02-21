@@ -37,6 +37,11 @@
   transition: 1s;
 }
 
+.register__replay--btn {
+  border-radius: 30px;
+  margin-top: 15px;
+}
+
 .register__btn:hover {
   background: #097972;
 }
