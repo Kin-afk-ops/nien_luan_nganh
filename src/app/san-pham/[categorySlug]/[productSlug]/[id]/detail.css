@@ -1,0 +1,55 @@
+.main-info-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.sub-container {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.product-image-container {
+    width: 100%;
+    height: 440px;
+
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-image {
+    margin-left: 40px;
+    width: 75%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.row-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+       gap: 20px;
+}
+.minus-button, .plus-button{
+    border-radius: 10px;
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.867);
+    width: 45px;
+    height: 45px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(230, 227, 227);
+    cursor: pointer;
+}
+
+.disabled-button{
+    background-color: rgba(180, 177, 177, 0.5);
+    border: 1px solid rgba(230, 227, 227);
+    cursor: not-allowed;
+}
