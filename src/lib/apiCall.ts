@@ -5,12 +5,19 @@ import {
 } from "./features/user/userSlice";
 
 import axiosInstance from "../helpers/api/config";
-import { LoginUser } from "@/interfaces/loginUser";
+import { LoginUser, LoginUserGoogle } from "@/interfaces/loginUser";
 import { AppDispatch } from "./store";
 
 // Khai báo các loại (types) cho tham số
 
 // Hàm login
+export const loginGoogle = async (
+  dispatch: AppDispatch,
+  user: LoginUserGoogle
+): Promise<void> => {
+  dispatch(loginStart());
+};
+
 export const login = async (
   dispatch: AppDispatch,
   user: LoginUser,

@@ -1,5 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { auth, facebookProvider, googleProvider } from "../../../../firebase";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  signInWithPopup,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "../layout.css";
@@ -17,9 +24,18 @@ import { newUserEmail, newUserPhone } from "@/interfaces/user";
 import OtpInput from "@/components/otpInput/OtpInput";
 
 import Countdown from "@/components/countdown/Countdown";
+import googleLogo from "../../../../public/assets/google_logo.png";
+import { useAppDispatch } from "@/lib/store";
+import { loginGoogle } from "@/lib/apiCall";
+import { LoginUserGoogle } from "@/interfaces/loginUser";
 
 const RegisterPage: React.FC = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [recaptchaVerifier, setRecaptchaVerifier] =
+    useState<RecaptchaVerifier | null>(null);
+  const [confirmationResult, setConfirmationResult] =
+    useState<ConfirmationResult | null>(null);
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
 
   const [passwordMode, setPasswordMode] = useState<boolean>(false);
@@ -60,6 +76,21 @@ const RegisterPage: React.FC = () => {
   const [otpValue, setOtpValue] = useState<string[]>(new Array(6).fill(""));
   const [otpError, setOtpError] = useState<boolean>(false);
   const [otpErrorMessage, setOtpErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    const recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+      }
+    );
+
+    setRecaptchaVerifier(recaptchaVerifier);
+    return () => {
+      recaptchaVerifier.clear();
+    };
+  }, [auth]);
 
   const handleValidationEmail = (value: string): void => {
     const vEmail: EmailTestInterface = validationEmail(value);
@@ -177,18 +208,34 @@ const RegisterPage: React.FC = () => {
           phone: phoneValue,
           password: passwordValue,
         };
-        try {
-          const res = await axiosInstance.post("/auth/register/phone", newUser);
-          console.log(res.data);
 
-          // alert("đăng ký thành công");
-          // setTimeout(() => {
-          //   router.push("/tai-khoan/dang-nhap");
-          // }, 3000);
-          setOptMode(true);
+        if (!recaptchaVerifier) {
+          return setOtpErrorMessage("RecaptchaVerifier is not initialized");
+        }
+        try {
+          const confirmationResult = await signInWithPhoneNumber(
+            auth,
+            "+84589443320",
+            recaptchaVerifier
+          );
+          setConfirmationResult(confirmationResult);
+          console.log("ok phone");
         } catch (error) {
           console.log(error);
         }
+
+        // try {
+        //   const res = await axiosInstance.post("/auth/register/phone", newUser);
+        //   console.log(res.data);
+
+        //   // alert("đăng ký thành công");
+        //   // setTimeout(() => {
+        //   //   router.push("/tai-khoan/dang-nhap");
+        //   // }, 3000);
+        //   setOptMode(true);
+        // } catch (error) {
+        //   console.log(error);
+        // }
       }
     } else {
       if (!emailError && !passwordError && !confirmPasswordError) {
@@ -242,6 +289,9 @@ const RegisterPage: React.FC = () => {
         setPasswordMode(false);
         alert("xac thuc thanh cong");
         window.localStorage.removeItem("countdown");
+        setTimeout(() => {
+          router.push("/tai-khoan/dang-nhap");
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
@@ -311,6 +361,45 @@ const RegisterPage: React.FC = () => {
           console.log(error);
         }
       }
+    }
+  };
+
+  const handleGoogleLogin = async (): Promise<void> => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("User Info:", user);
+
+      // Lấy Access Token từ Firebase
+      // const idToken = await user.getIdToken();
+
+      // console.log("Access Token:", idToken);
+
+      // const res = await axiosInstance.post("/auth/firebase-login", {
+      //   token: idToken,
+      // });
+
+      // console.log("Server Response:", res.data);
+
+      const userLogin: LoginUserGoogle = {
+        email: user.email,
+        accessToken: user.accessToken,
+      };
+      loginGoogle(dispatch, userLogin);
+      alert("Đăng nhập Google thành công!");
+    } catch (error) {
+      console.error("Google Login Error:", error);
+    }
+  };
+
+  const handleFacebookLogin = async (): Promise<void> => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
+      console.log("User Info:", user);
+      alert("Đăng nhập Facebook thành công!");
+    } catch (error) {
+      console.error("Facebook Login Error:", error);
     }
   };
 
@@ -649,6 +738,28 @@ const RegisterPage: React.FC = () => {
                     <span>Đăng ký với Email</span>
                   </button>
                 )}
+                <button
+                  className="transparent-btn account__change--btn"
+                  onClick={() => handleGoogleLogin()}
+                >
+                  <div className="account__change--img">
+                    <Image
+                      src={googleLogo}
+                      alt="google logo"
+                      width={18}
+                      height={18}
+                    />
+                  </div>
+                  <span>Đăng ký với Google</span>
+                </button>
+
+                <button
+                  className="transparent-btn account__change--btn"
+                  onClick={() => handleFacebookLogin()}
+                >
+                  <i className="account__change--facebook fa-brands fa-facebook"></i>
+                  <span>Đăng ký với Facebook</span>
+                </button>
               </>
             )}
 
@@ -666,6 +777,7 @@ const RegisterPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <div id="recaptcha-container"></div>
     </div>
   );
 };

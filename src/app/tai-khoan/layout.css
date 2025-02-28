@@ -157,11 +157,25 @@
   border-radius: 30px;
 
   margin-bottom: 30px;
+
+  display: flex;
+  align-items: center;
 }
 
 .account__change--btn i {
-  margin-right: 24px;
+  width: 20%;
   font-size: 18px;
+}
+
+.account__change--img {
+  width: 20%;
+}
+
+.account__change--btn span {
+  width: 80%;
+  display: flex;
+  font-weight: 400;
+  font-size: 16px;
 }
 
 .account__change--phone {
@@ -170,6 +184,10 @@
 
 .account__change--email {
   color: #ff0033;
+}
+
+.account__change--facebook {
+  color: #1877f2;
 }
 
 .account__error {

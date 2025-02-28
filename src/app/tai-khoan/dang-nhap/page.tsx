@@ -12,10 +12,11 @@ import validationPassword from "@/helpers/validation/password";
 import { PasswordInterface } from "@/interfaces/passwordTest";
 import { newUserPhone } from "@/interfaces/user";
 import axiosInstance from "@/helpers/api/config";
-import { useDispatch } from "react-redux";
+
 import { login } from "@/lib/apiCall";
 import { LoginUser } from "@/interfaces/loginUser";
 import { useAppDispatch } from "@/lib/store";
+import googleLogo from "../../../../public/assets/google_logo.png";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
@@ -75,6 +76,10 @@ const LoginPage = () => {
       login(dispatch, loginUser, setNoAccount, phoneMode);
     }
   };
+
+  const handleGoogleLogin = async (): Promise<void> => {};
+
+  const handleFaceBookLogin = async (): Promise<void> => {};
 
   return (
     <div className="register">
@@ -248,6 +253,29 @@ const LoginPage = () => {
                 <span>Đăng nhập với Email</span>
               </button>
             )}
+
+            <button
+              className="transparent-btn account__change--btn"
+              onClick={() => handleGoogleLogin()}
+            >
+              <div className="account__change--img">
+                <Image
+                  src={googleLogo}
+                  alt="google logo"
+                  width={18}
+                  height={18}
+                />
+              </div>
+              <span>Đăng nhập với Google</span>
+            </button>
+
+            <button
+              className="transparent-btn account__change--btn"
+              onClick={() => handleFaceBookLogin(false)}
+            >
+              <i className="account__change--facebook fa-brands fa-facebook"></i>
+              <span>Đăng nhập với Facebook</span>
+            </button>
 
             <div className="register__login">
               Bạn chưa có tài khoản?{" "}
