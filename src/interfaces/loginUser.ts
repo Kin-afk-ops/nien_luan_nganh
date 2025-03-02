@@ -5,6 +5,7 @@ export interface LoginUser {
 }
 
 export interface LoginUserGoogle {
-  email: string;
   accessToken: string;
+  email: string | null;
+  phone: string;
 }

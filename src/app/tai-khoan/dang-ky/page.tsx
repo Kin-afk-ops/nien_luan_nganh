@@ -26,10 +26,17 @@ import OtpInput from "@/components/otpInput/OtpInput";
 import Countdown from "@/components/countdown/Countdown";
 import googleLogo from "../../../../public/assets/google_logo.png";
 import { useAppDispatch } from "@/lib/store";
-import { loginGoogle } from "@/lib/apiCall";
 import { LoginUserGoogle } from "@/interfaces/loginUser";
+import {
+  loginFailure,
+  loginStart,
+  loginSuccess,
+} from "@/lib/features/user/userSlice";
+
+import Loading from "@/components/loading/Loading";
 
 const RegisterPage: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [recaptchaVerifier, setRecaptchaVerifier] =
@@ -141,6 +148,7 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleChangeContent = async (): Promise<void> => {
+    setLoading(true);
     if (phoneMode) {
       const vPhone = validationPhone(phoneValue);
       setPhoneError(!vPhone.pass);
@@ -159,8 +167,10 @@ const RegisterPage: React.FC = () => {
           });
           setPhoneError(true);
           setPhoneErrorMessage(res.data.message);
+          setLoading(false);
         } catch (error) {
           console.log(error);
+          setLoading(false);
 
           setClausCheckError(false);
           setPasswordMode(true);
@@ -184,8 +194,10 @@ const RegisterPage: React.FC = () => {
           });
           setEmailError(true);
           setEmailErrorMessage(res.data.message);
+          setLoading(false);
         } catch (error) {
           console.log(error);
+          setLoading(false);
           setClausCheckError(false);
           setPasswordMode(true);
         }
@@ -201,6 +213,7 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async (): Promise<void> => {
     handleValidationPassword(passwordValue);
+    setLoading(true);
 
     if (phoneMode) {
       if (!phoneError && !passwordError && !confirmPasswordError) {
@@ -251,9 +264,11 @@ const RegisterPage: React.FC = () => {
           // setTimeout(() => {
           //   router.push("/tai-khoan/dang-nhap");
           // }, 3000);
+          setLoading(false);
           setOptMode(true);
         } catch (error) {
           console.log(error);
+          setLoading(false);
         }
       }
     }
@@ -261,6 +276,7 @@ const RegisterPage: React.FC = () => {
 
   const handleVerifyOtp = async (): Promise<void> => {
     console.log(otpValue);
+    setLoading(true);
 
     let otpLength: number = 0;
 
@@ -282,7 +298,7 @@ const RegisterPage: React.FC = () => {
       })
       .then((res) => {
         console.log(res.data);
-
+        setLoading(false);
         setOtpValue(new Array(6).fill(""));
         setOtpErrorMessage("");
         setOptMode(false);
@@ -296,6 +312,7 @@ const RegisterPage: React.FC = () => {
       .catch((error) => {
         console.log(error);
         setOtpErrorMessage(error.response.data.message);
+        setLoading(false);
       });
     // try {
     //   if (res.status === 200 || res.status === 201) {
@@ -365,6 +382,8 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleGoogleLogin = async (): Promise<void> => {
+    dispatch(loginStart());
+
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
@@ -382,13 +401,16 @@ const RegisterPage: React.FC = () => {
       // console.log("Server Response:", res.data);
 
       const userLogin: LoginUserGoogle = {
+        accessToken: await user.getIdToken(),
         email: user.email,
-        accessToken: user.accessToken,
+        phone: "none",
       };
-      loginGoogle(dispatch, userLogin);
+
+      dispatch(loginSuccess(userLogin));
       alert("Đăng nhập Google thành công!");
     } catch (error) {
       console.error("Google Login Error:", error);
+      dispatch(loginFailure());
     }
   };
 
@@ -405,6 +427,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="register">
+      {loading && <Loading />}
       <div className="grid wide">
         <div className="row no-gutters">
           <div className="c-8 register__image">
@@ -421,7 +444,12 @@ const RegisterPage: React.FC = () => {
                 <>
                   {otpMode ? (
                     <>
-                      <div className="account__head">Xác thực tài khoản</div>
+                      <div className="account__head">
+                        Xác thực tài khoản
+                        <hr />
+                        Hãy kiểm tra Email của bạn
+                      </div>
+
                       <Countdown time={5 * 60} />
 
                       <OtpInput otp={otpValue} setOtp={setOtpValue} />
