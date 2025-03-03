@@ -1,0 +1,9 @@
+.profile__info {
+  padding: 50px;
+}
+
+.profile__info--left {
+}
+.profile__info--right {
+  background-color: blue;
+}

@@ -3,6 +3,13 @@
   flex-direction: column;
 }
 
+.customer__nav h3 {
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  color: rgb(51, 51, 51);
+}
+
 .customer__nav--info {
   display: flex;
   align-items: center;

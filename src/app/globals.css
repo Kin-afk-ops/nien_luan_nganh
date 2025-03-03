@@ -14,7 +14,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: var(--background-color);
+  background-color: var(--background-color) !important;
 }
 
 body {
@@ -46,6 +46,15 @@ a {
   padding: 50px 0;
 }
 
+.main-container {
+  margin: 20px 0;
+  background-color: #fff;
+  border-radius: 5px;
+  -webkit-box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
+}
+
 .main-btn {
   padding: 10px 0;
   background-color: var(--primary-color);
@@ -73,4 +82,23 @@ a {
 .link {
   color: inherit;
   text-decoration: none;
+}
+
+/* nprocess */
+
+/* Màu và kích thước thanh loading */
+#nprogress .bar {
+  background: #ff3333; /* Màu thanh */
+  height: 4px; /* Độ dày */
+}
+
+/* Hiệu ứng load */
+#nprogress .peg {
+  box-shadow: 0 0 10px #ff3333, 0 0 5px #ff3333;
+}
+
+/* Tùy chỉnh vòng loading */
+#nprogress .spinner-icon {
+  border-top-color: #ff3333;
+  border-left-color: #ff3333;
 }
