@@ -67,6 +67,26 @@ a {
   cursor: pointer;
 }
 
+.secondary-btn {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 121, 114, 1) 21%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  padding: 10px 0;
+  border-radius: 30px;
+  transition: 1s;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+.secondary-btn:hover {
+  background: #097972;
+}
+
 .transparent-btn {
   padding: 10px 0;
   background-color: white;

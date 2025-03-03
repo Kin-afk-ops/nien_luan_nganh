@@ -38,6 +38,25 @@ const ProfilePage = () => {
             <label htmlFor="profile__info--form-date">Ngày sinh</label>
             <input type="date" name="" id="profile__info--form-date" />
           </div>
+
+          <div className="profile__info--form-block">
+            <p>Địa chỉ</p>
+            <button>
+              <i className="fa-solid fa-plus"></i>
+              Thêm mới
+            </button>
+          </div>
+
+          <div className="profile__info--form-block">
+            <label htmlFor="profile__info--form-introduce">Giới thiệu</label>
+            <textarea
+              placeholder="Nhập nhận xét của bạn về sản phẩm"
+              name=""
+              id="profile__info--form-introduce"
+              cols="70"
+              rows="10"
+            />
+          </div>
         </form>
       </div>
     </>

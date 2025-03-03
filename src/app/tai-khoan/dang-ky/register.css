@@ -25,23 +25,15 @@
   user-select: none;
 }
 
-.register__btn {
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 121, 114, 1) 21%,
-    rgba(0, 212, 255, 1) 100%
-  );
-  color: #fff;
-  border-radius: 30px;
-  transition: 1s;
-}
-
 .register__replay--btn {
   border-radius: 30px;
   margin-top: 15px;
 }
 
-.register__btn:hover {
-  background: #097972;
+.countdown {
+  font-size: 50px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
 }

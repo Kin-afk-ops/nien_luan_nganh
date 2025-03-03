@@ -79,10 +79,21 @@ const RegisterPage: React.FC = () => {
 
   const [emailValue, setEmailValue] = useState<string>("");
   const [otpMode, setOptMode] = useState<boolean>(false);
-  const [otpCheck, setOtpCheck] = useState<boolean>(false);
   const [otpValue, setOtpValue] = useState<string[]>(new Array(6).fill(""));
-  const [otpError, setOtpError] = useState<boolean>(false);
   const [otpErrorMessage, setOtpErrorMessage] = useState<string>("");
+  const [timeLeft, setTimeLeft] = useState<number>(300);
+
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "Trinh duyet se reload"; // Cần thiết cho trình duyệt hiển thị cảnh báo
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
 
   useEffect(() => {
     const recaptchaVerifier = new RecaptchaVerifier(
@@ -148,7 +159,6 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleChangeContent = async (): Promise<void> => {
-    setLoading(true);
     if (phoneMode) {
       const vPhone = validationPhone(phoneValue);
       setPhoneError(!vPhone.pass);
@@ -161,6 +171,7 @@ const RegisterPage: React.FC = () => {
       }
 
       if (vPhone.pass && clausCheck) {
+        setLoading(true);
         try {
           const res = await axiosInstance.post("/auth/register/find/phone", {
             phone: phoneValue,
@@ -188,6 +199,7 @@ const RegisterPage: React.FC = () => {
       }
 
       if (vEmail.pass && clausCheck) {
+        setLoading(true);
         try {
           const res = await axiosInstance.post("/auth/register/find/email", {
             email: emailValue,
@@ -266,6 +278,7 @@ const RegisterPage: React.FC = () => {
           // }, 3000);
           setLoading(false);
           setOptMode(true);
+          setIsRunning(true);
         } catch (error) {
           console.log(error);
           setLoading(false);
@@ -276,7 +289,6 @@ const RegisterPage: React.FC = () => {
 
   const handleVerifyOtp = async (): Promise<void> => {
     console.log(otpValue);
-    setLoading(true);
 
     let otpLength: number = 0;
 
@@ -290,6 +302,7 @@ const RegisterPage: React.FC = () => {
       }
       console.log(otpValue[otpLength]);
     }
+    setLoading(true);
 
     await axiosInstance
       .post(`/auth/verify-otp`, {
@@ -312,8 +325,8 @@ const RegisterPage: React.FC = () => {
       .catch((error) => {
         console.log(error);
         setOtpErrorMessage(error.response.data.message);
-        setLoading(false);
       });
+    setLoading(false);
     // try {
     //   if (res.status === 200 || res.status === 201) {
     //     // localStorage.setItem("userToken", res.data.user.token);
@@ -338,6 +351,7 @@ const RegisterPage: React.FC = () => {
     handleValidationPassword(passwordValue);
 
     if (phoneMode) {
+      setLoading(true);
       if (!phoneError && !passwordError && !confirmPasswordError) {
         const newUser: newUserPhone = {
           phone: phoneValue,
@@ -351,12 +365,14 @@ const RegisterPage: React.FC = () => {
           // setTimeout(() => {
           //   router.push("/tai-khoan/dang-nhap");
           // }, 3000);
-          alert("Đã gửi lại mã");
 
-          window.localStorage.setItem("restart", "ok");
+          alert("Đã gửi lại mã");
+          setLoading(false);
+          setTimeLeft(300);
         } catch (error) {
           console.log(error);
         }
+        setLoading(false);
       }
     } else {
       if (!emailError && !passwordError && !confirmPasswordError) {
@@ -364,6 +380,7 @@ const RegisterPage: React.FC = () => {
           email: emailValue,
           password: passwordValue,
         };
+        setLoading(true);
         try {
           const res = await axiosInstance.post("/auth/register/email", newUser);
           console.log(res.data);
@@ -372,11 +389,13 @@ const RegisterPage: React.FC = () => {
           // setTimeout(() => {
           //   router.push("/tai-khoan/dang-nhap");
           // }, 3000);
+          setTimeLeft(300);
+          setLoading(false);
           alert("Đã gửi lại mã");
-          window.localStorage.setItem("restart", "ok");
         } catch (error) {
           console.log(error);
         }
+        setLoading(false);
       }
     }
   };
@@ -425,6 +444,37 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    return `${minutes.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    if (!isRunning) return;
+    console.log(timeLeft);
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsRunning(false);
+          window.localStorage.removeItem("countdown");
+          return 0;
+        }
+
+        const newTime = prev - 1;
+
+        return newTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isRunning]);
+
   return (
     <div className="register">
       {loading && <Loading />}
@@ -450,7 +500,10 @@ const RegisterPage: React.FC = () => {
                         Hãy kiểm tra Email của bạn
                       </div>
 
-                      <Countdown time={5 * 60} />
+                      <div className="countdown">
+                        {" "}
+                        <p>{formatTime(timeLeft)}</p>
+                      </div>
 
                       <OtpInput otp={otpValue} setOtp={setOtpValue} />
                       <div className="account__error--message">
@@ -458,10 +511,15 @@ const RegisterPage: React.FC = () => {
                       </div>
                       <i
                         className="account__back--icon fa-solid fa-arrow-left"
-                        onClick={() => setOptMode(false)}
+                        onClick={() => {
+                          setOptMode(false);
+                          setIsRunning(false);
+                          setTimeLeft(300);
+                          window.localStorage.removeItem("countdown");
+                        }}
                       ></i>
                       <button
-                        className="transparent-btn register__btn "
+                        className="secondary-btn "
                         onClick={(e) => {
                           e.preventDefault();
                           handleVerifyOtp();
@@ -613,7 +671,7 @@ const RegisterPage: React.FC = () => {
                         onClick={() => setPasswordMode(false)}
                       ></i>
                       <button
-                        className="transparent-btn register__btn "
+                        className=" secondary-btn "
                         onClick={(e) => {
                           e.preventDefault();
                           handleRegister();

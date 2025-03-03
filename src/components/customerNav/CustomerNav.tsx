@@ -6,23 +6,21 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./customerNav.css";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const CustomerNav = () => {
+  const pathname = usePathname();
   const user =
     useSelector((state: RootState) => state.user.currentUser) || null;
-
-  const [slug, setSlug] = useState<string | undefined>(undefined);
+  const slug = pathname.split("/")[2];
   const [userEmail, setUserEmail] = useState<string | null>(null);
+
   useEffect(() => {
-    setSlug(window.location.pathname.split("/")[2]);
     if (user) {
       setUserEmail(user.email ?? "Đang tải...");
     }
 
     // Lấy slug từ URL khi client tải xong
-    if (typeof window !== "undefined") {
-      setSlug(window.location.pathname.split("/")[2]);
-    }
   }, [user]);
 
   return (
