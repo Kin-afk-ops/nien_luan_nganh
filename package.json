@@ -20,6 +20,7 @@
     "nprogress-v2": "^1.1.10",
     "react": "^19.0.0",
     "react-countdown": "^2.3.6",
+    "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "react-redux": "^9.2.0",
