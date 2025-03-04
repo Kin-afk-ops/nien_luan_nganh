@@ -5,9 +5,14 @@ import "./page.css";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import formatDate from "@/helpers/format/formattedDate";
+import AddressModal from "@/components/addressModal/AddressModal";
 
 const ProfilePage = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [addressModal, setAddressModal] = useState<boolean>(false);
+  const [birthday, setBirthday] = useState<string>("Chọn ngày");
+
   return (
     <>
       <h3 className="profile__header">Thông tin của tôi</h3>
@@ -52,12 +57,12 @@ const ProfilePage = () => {
           <div className="profile__info--form-block">
             <label htmlFor="">Giới tính</label>
             <div className="profile__info--form-gender">
-              <input type="radio" name="gender" id="" />
-              <span>Nam</span>
-              <input type="radio" name="gender" id="" />
-              <span>Nữ</span>
-              <input type="radio" name="gender" id="" />
-              <span>Khác</span>
+              <input type="radio" name="gender" id="gender__nam" />
+              <label htmlFor="gender__nam">Nam</label>
+              <input type="radio" name="gender" id="gender__nu" />
+              <label htmlFor="gender__nu">Nữ</label>
+              <input type="radio" name="gender" id="gender__khac" />
+              <label htmlFor="gender__khac">Khác</label>
             </div>
           </div>
           <div className="profile__info--form-block">
@@ -66,13 +71,27 @@ const ProfilePage = () => {
             <DatePicker
               className="profile__info--form-date"
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) =>
+                setBirthday(formatDate(new Date(date as Date)))
+              }
+              value={birthday}
+              id="profile__info--form-date"
             />
+            <label htmlFor="profile__info--form-date">
+              <i className="profile__info--form-date-icon fa-regular fa-calendar-minus"></i>
+            </label>
           </div>
 
           <div className="profile__info--form-block">
             <p className="profile__info--form-address">Địa chỉ</p>
-            <button className="profile__info--form-address-btn">
+            <button
+              className="profile__info--form-address-btn"
+              onClick={(e) => {
+                e.preventDefault();
+
+                setAddressModal(true);
+              }}
+            >
               <i className="fa-solid fa-plus"></i>
               Thêm mới
             </button>
@@ -85,7 +104,7 @@ const ProfilePage = () => {
               name=""
               id="profile__info--form-introduce"
               cols="50"
-              rows="10"
+              rows="8"
             />
           </div>
 
@@ -94,6 +113,12 @@ const ProfilePage = () => {
           </button>
         </form>
       </div>
+      {addressModal && (
+        <AddressModal
+          addressModal={addressModal}
+          setAddressModal={setAddressModal}
+        />
+      )}
     </>
   );
 };

@@ -56,7 +56,19 @@
   display: flex;
 
   align-items: center;
+  position: relative;
 }
+
+.profile__info--form-date-icon {
+  font-size: 18px;
+  color: #616161;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 30%;
+  cursor: pointer;
+}
+
 .profile__info--form-address,
 .profile__info--form-block label {
   display: block;
@@ -99,12 +111,19 @@
   border: 1px solid var(--error);
 }
 
+.profile__info--form-gender {
+  display: flex;
+}
+
 .profile__info--form-gender input {
   margin-right: 5px;
 }
 
-.profile__info--form-gender span {
+.profile__info--form-gender label {
   margin-right: 30px;
+  width: 35px;
+  text-align: left;
+  cursor: pointer;
 }
 
 .profile__info--form-address-btn {
