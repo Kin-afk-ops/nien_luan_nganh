@@ -1,8 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import "./addressModal.css";
-import axios from "axios";
-import { ProvinceInterface } from "@/interfaces/address";
+import {
+  DistrictInterface,
+  ProvinceInterface,
+  WardInterface,
+} from "@/interfaces/address";
+import {
+  getDistrictAddress,
+  getProvincesAddress,
+  getWardAddress,
+} from "@/helpers/getAddress/getAddress";
 
 interface ChildProps {
   addressModal: boolean;
@@ -12,20 +20,37 @@ interface ChildProps {
 const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
   const [modalCheck, setModalCheck] = useState<boolean>(false);
   const [provinces, setProvinces] = useState<ProvinceInterface[]>([]);
+  const [districts, setDistricts] = useState<DistrictInterface[]>([]);
+  const [wards, setWards] = useState<WardInterface[]>([]);
 
   useEffect(() => {
     const getProvince = async (): Promise<void> => {
-      try {
-        const resProvince = await axios.get(
-          "https://api.vnappmob.com/api/v2/province/"
-        );
-        setProvinces(resProvince.data.results);
-      } catch (error) {
-        console.log(error);
+      const provinceAddress = await getProvincesAddress();
+      if (provinceAddress.length !== 0) {
+        setProvinces(provinceAddress);
       }
     };
+
     getProvince();
   }, []);
+
+  const handleChangDistrict = async (value: string): Promise<void> => {
+    if (value) {
+      const districtAddress = await getDistrictAddress(value.split("_")[1]);
+      if (districtAddress.length !== 0) {
+        setDistricts(districtAddress);
+      }
+    }
+  };
+
+  const handleChangeWard = async (value: string): Promise<void> => {
+    if (value) {
+      const wardAddress = await getWardAddress(value.split("_")[1]);
+      if (wardAddress.length !== 0) {
+        setWards(wardAddress);
+      }
+    }
+  };
 
   return (
     <>
@@ -52,10 +77,17 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
           <div className="address__modal--block">
             <label htmlFor="address__modal--province">Tỉnh / thành phố</label>
 
-            <select name="province" id="">
+            <select
+              name="province"
+              id=""
+              onChange={(e) => handleChangDistrict(e.target.value)}
+            >
               <option>Chọn tỉnh / thành phố</option>
-              {provinces?.map((p, index) => (
-                <option value={p?.province_name} key={index}>
+              {provinces?.map((p) => (
+                <option
+                  value={p?.province_name + "_" + p?.province_id}
+                  key={p?.province_id}
+                >
                   {p?.province_name}
                 </option>
               ))}
@@ -65,9 +97,21 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
           <div className="address__modal--block">
             <label htmlFor="address__modal--district">Quận / huyện</label>
 
-            <select name="district" id="">
+            <select
+              name="district"
+              id="address__modal--district"
+              onChange={(e) => handleChangeWard(e.target.value)}
+            >
               <option>Chọn quận / huyện</option>
-              <option value="">Chọn </option>
+
+              {districts?.map((d) => (
+                <option
+                  value={d.district_name + "_" + d.district_id}
+                  key={d.district_id}
+                >
+                  {d?.district_name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -76,7 +120,12 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
 
             <select name="ward" id="">
               <option>Chọn phường / xã</option>
-              <option value="">Chọn </option>
+
+              {wards?.map((w) => (
+                <option value={w.ward_name + "_" + w.ward_id} key={w.ward_id}>
+                  {w.ward_name}
+                </option>
+              ))}
             </select>
           </div>
 
