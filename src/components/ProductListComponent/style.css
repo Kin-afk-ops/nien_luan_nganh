@@ -1,0 +1,15 @@
+.main_container {
+    width: 100%;
+    padding: 30px 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.flex{
+    display: flex;
+    gap: 30px;
+}
+
+.similar_title{
+    padding: 20px;
+}

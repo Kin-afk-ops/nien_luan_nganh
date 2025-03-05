@@ -1,14 +1,19 @@
 export interface ProductModel {
     id: number;
     name: string;
+    sellerId: number;
     description: string;
     price: number;
-    category: string;
+    discount: number;
+    shippingFee: string;
+    size: string;
+    categoryId: number;
     quantityStock: number;
     createdAt: Date;
     updatedAt: Date;
-    imageUri: string;
+    imageUris: string[];
     location: string;
+    status: string;
     slug: string;
     categorySlug: string;
 }

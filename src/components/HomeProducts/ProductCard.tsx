@@ -11,10 +11,16 @@ interface Props{
 
 const ProductCard = (props: Props) => {
   const { product } = props;
+
+  const handleReload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.location.href = (e.currentTarget as HTMLAnchorElement).href;
+  };
   return (
-    <Link className={styles.card} href={`/san-pham/${product?.categorySlug}/${product?.slug}/${product?.id}`}>
+    <Link className={styles.card} href={`/san-pham/${product?.categorySlug}/${product?.slug}/${product?.id}`} 
+      onClick={handleReload}>
       <div className={styles.image}>
-        <img src={product?.imageUri} alt="product"/>
+        <img src={product?.imageUris[0]} alt="product"/>
       </div>
       <div className={styles.info}>
         <div className={styles.nameField}>
