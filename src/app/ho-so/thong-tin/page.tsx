@@ -7,11 +7,24 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import formatDate from "@/helpers/format/formattedDate";
 import AddressModal from "@/components/addressModal/AddressModal";
+import { AddressInterface } from "@/interfaces/addressUser";
 
 const ProfilePage = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [addressModal, setAddressModal] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
+
+  const [name, setName] = useState<string>("");
+  const [nameError, setNameError] = useState<boolean>(false);
+  const [gender, setGender] = useState<string>("");
+  const [genderError, setGenderError] = useState<boolean>(true);
   const [birthday, setBirthday] = useState<string>("Chọn ngày");
+  const [birthdayError, setBirthdayError] = useState<boolean>(true);
+  const [addresses, setAddresses] = useState<AddressInterface[]>([]);
+  const [indexAddress, setIndexAddress] = useState<number | null>(null);
+  const [editAddressMode, setEditAddressMode] = useState<boolean>(false);
+
+  const [introduce, setIntroduce] = useState<string>("");
 
   return (
     <>
@@ -47,39 +60,79 @@ const ProfilePage = () => {
             <label htmlFor="profile__info--form-name">Tên đầy đủ</label>
 
             <input
-              className="profile__info--form-name success"
+              className={
+                nameError
+                  ? "profile__info--form-name error"
+                  : "profile__info--form-name success"
+              }
+              value={name}
               type="text"
               id="profile__info--form-name"
               placeholder="Nhập họ và tên"
+              onChange={(e) => {
+                if (e.target.value === "") setNameError(true);
+                else setNameError(false);
+                setName(e.target.value);
+              }}
             />
+            {nameError && (
+              <span className="profile__info--message error">
+                Vui lòng không được để trống
+              </span>
+            )}
           </div>
 
           <div className="profile__info--form-block">
             <label htmlFor="">Giới tính</label>
             <div className="profile__info--form-gender">
-              <input type="radio" name="gender" id="gender__nam" />
+              <input
+                type="radio"
+                name="gender"
+                id="gender__nam"
+                checked={gender === "Nam"}
+                onChange={() => setGender("Nam")}
+              />
               <label htmlFor="gender__nam">Nam</label>
-              <input type="radio" name="gender" id="gender__nu" />
+              <input
+                type="radio"
+                name="gender"
+                id="gender__nu"
+                checked={gender === "Nữ"}
+                onChange={() => setGender("Nữ")}
+              />
               <label htmlFor="gender__nu">Nữ</label>
-              <input type="radio" name="gender" id="gender__khac" />
+              <input
+                type="radio"
+                name="gender"
+                id="gender__khac"
+                checked={gender === "Khác"}
+                onChange={() => setGender("Khác")}
+              />
               <label htmlFor="gender__khac">Khác</label>
+              {genderError && (
+                <span className="profile__info--message error">
+                  Vui lòng không được để trống
+                </span>
+              )}
             </div>
           </div>
+
           <div className="profile__info--form-block">
             <label htmlFor="profile__info--form-date">Ngày sinh</label>
 
-            <DatePicker
+            <input
               className="profile__info--form-date"
-              selected={startDate}
-              onChange={(date) =>
-                setBirthday(formatDate(new Date(date as Date)))
-              }
-              value={birthday}
+              type="date"
+              name=""
               id="profile__info--form-date"
+              value={birthday}
+              onChange={(e) => setBirthday(formatDate(e.target.value))}
             />
-            <label htmlFor="profile__info--form-date">
-              <i className="profile__info--form-date-icon fa-regular fa-calendar-minus"></i>
-            </label>
+            {birthdayError && (
+              <span className="profile__info--message error">
+                Vui lòng không được để trống
+              </span>
+            )}
           </div>
 
           <div className="profile__info--form-block">
@@ -88,7 +141,6 @@ const ProfilePage = () => {
               className="profile__info--form-address-btn"
               onClick={(e) => {
                 e.preventDefault();
-
                 setAddressModal(true);
               }}
             >
@@ -117,6 +169,10 @@ const ProfilePage = () => {
         <AddressModal
           addressModal={addressModal}
           setAddressModal={setAddressModal}
+          addresses={addresses}
+          setAddresses={setAddresses}
+          indexAddress={indexAddress}
+          editAddressMode={editAddressMode}
         />
       )}
     </>

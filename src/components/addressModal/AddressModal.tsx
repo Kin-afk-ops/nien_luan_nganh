@@ -11,17 +11,33 @@ import {
   getProvincesAddress,
   getWardAddress,
 } from "@/helpers/getAddress/getAddress";
+import { AddressInterface } from "@/interfaces/addressUser";
 
 interface ChildProps {
   addressModal: boolean;
   setAddressModal: React.Dispatch<React.SetStateAction<boolean>>;
+  addresses: AddressInterface[];
+  setAddresses: React.Dispatch<React.SetStateAction<AddressInterface[]>>;
+  indexAddress: number;
+  editAddressMode: boolean;
 }
 
-const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
+const AddressModal: React.FC<ChildProps> = ({
+  setAddressModal,
+  addresses,
+  setAddresses,
+  indexAddress,
+  editAddressMode,
+}) => {
   const [modalCheck, setModalCheck] = useState<boolean>(false);
   const [provinces, setProvinces] = useState<ProvinceInterface[]>([]);
   const [districts, setDistricts] = useState<DistrictInterface[]>([]);
   const [wards, setWards] = useState<WardInterface[]>([]);
+
+  const [province, setProvince] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
+  const [ward, setWard] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
 
   useEffect(() => {
     const getProvince = async (): Promise<void> => {
@@ -75,12 +91,39 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
         </div>
         <form className="address__modal">
           <div className="address__modal--block">
+            <label htmlFor="address__modal--name">Tên</label>
+
+            <input
+              className="address__modal--name"
+              type="text"
+              id="profile__info--name"
+              placeholder="Nhập tên đầy đủ"
+            />
+          </div>
+
+          <div className="address__modal--block">
+            <label htmlFor="address__modal--phone">Số điện thoại</label>
+            <div className="address__modal--phone">
+              <span>+84</span>
+              <input
+                className=""
+                type="text"
+                id="profile__info--phone"
+                placeholder="Nhập số điện thoại"
+              />
+            </div>
+          </div>
+
+          <div className="address__modal--block">
             <label htmlFor="address__modal--province">Tỉnh / thành phố</label>
 
             <select
               name="province"
               id=""
-              onChange={(e) => handleChangDistrict(e.target.value)}
+              onChange={(e) => {
+                handleChangDistrict(e.target.value);
+                setProvince(e.target.value);
+              }}
             >
               <option>Chọn tỉnh / thành phố</option>
               {provinces?.map((p) => (
@@ -100,7 +143,11 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
             <select
               name="district"
               id="address__modal--district"
-              onChange={(e) => handleChangeWard(e.target.value)}
+              onChange={(e) => {
+                handleChangeWard(e.target.value);
+
+                setDistrict(e.target.value);
+              }}
             >
               <option>Chọn quận / huyện</option>
 
@@ -118,7 +165,7 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
           <div className="address__modal--block">
             <label htmlFor="address__modal--ward">Phường / xã</label>
 
-            <select name="ward" id="">
+            <select name="ward" id="" onChange={(e) => setWard(e.target.value)}>
               <option>Chọn phường / xã</option>
 
               {wards?.map((w) => (
@@ -133,6 +180,8 @@ const AddressModal: React.FC<ChildProps> = ({ setAddressModal }) => {
             <label htmlFor="address__modal--ward">Địa chỉ</label>
 
             <textarea
+              value={ward}
+              onChange={(e) => setAddress(e.target.value)}
               placeholder="Nhập địa chỉ"
               name=""
               id="address__modal--address"

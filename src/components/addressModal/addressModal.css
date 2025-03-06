@@ -49,6 +49,7 @@
   font-size: 14px;
   align-items: center;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .address__modal--block label {
@@ -59,6 +60,33 @@
   color: #616161;
 }
 
+.address__modal--phone input {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  width: 85%;
+  padding-left: 10px;
+}
+
+.address__modal--block span {
+  padding-right: 10px;
+  position: relative;
+}
+
+.address__modal--block span::before {
+  position: absolute;
+  content: "";
+  width: 1px;
+  height: 120%;
+  background-color: #ccc;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.address__modal--phone,
+.address__modal--name,
 .address__modal--block select {
   color: #616161;
   font-size: 14px;
