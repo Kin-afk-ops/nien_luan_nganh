@@ -9,6 +9,8 @@ import { FillerProductModel } from "@/models/FillerProductModel";
 import sortValue from "@/models/sortValue";
 import ProductCard from "@/components/HomeProducts/ProductCard";
 import { DiVim } from "react-icons/di";
+import axios from "axios";
+import axiosInstance from "@/helpers/api/config";
 
 const FillerProductByCategory = () => {
   const router = useRouter();
@@ -22,25 +24,23 @@ const FillerProductByCategory = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const res = await fetch(
-        `http://localhost:8000/api/categories/${categorySlug}`
-      );
-      const data = await res.json();
-      setCategory(data);
+      const res = await axiosInstance(`/categories/${categorySlug}`);
+      setCategory(res.data);
     };
     fetchCategory();
   }, [categorySlug]);
 
   useEffect(() => {
-    const fectchData = () => {
-      fetch(
-        `http://localhost:8000/api/categories/products/${category?.id}?page=${page}&limit=${limit}&sort=${sort}`
-      )
-        .then((res) => res.json())
-        .then((data) => setData(data))
+    const fetchData = async (): Promise<void> => {
+      await axiosInstance
+        .get(
+          `/categories/products/${category?.id}?page=${page}&limit=${limit}&sort=${sort}`
+        )
+
+        .then((res) => setData(res.data))
         .catch((err) => console.log(err));
     };
-    fectchData();
+    fetchData();
   }, [category?.id, page, sort]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

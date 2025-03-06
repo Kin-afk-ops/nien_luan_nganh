@@ -39,38 +39,44 @@ const ProductDetail = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
-  const [differentProduct, setDifferntProduct] = useState<ProductModel[]>([]);
+  const [differentProduct, setDifferentProduct] = useState<ProductModel[]>([]);
   const [similarProduct, setSimilarProduct] = useState<ProductModel[]>([]);
 
   useEffect(() => {
-    if (product) {
-      fetch(
-        `http://localhost:8000/api/products/differentP/${product?.sellerId}`
-      )
-        .then((res) => res.json())
-        .then((result) => setDifferntProduct(result))
-        .catch((err) => console.error("Lỗi khi fetch dữ liệu:", err));
-      console.log("InView");
-    }
+    const getProductSeller = async (): Promise<void> => {
+      if (product) {
+        await axiosInstance
+          .get(`/products/differentP/${product?.sellerId}`)
+
+          .then((res) => setDifferentProduct(res.data))
+          .catch((err) => console.error("Lỗi khi fetch dữ liệu:", err));
+        console.log("InView");
+      }
+    };
+
+    getProductSeller();
   }, [inView]);
 
   useEffect(() => {
-    if (product) {
-      axiosInstance
-        .get(`/products/similar/${product?.categoryId}`)
-        .then((res) => res.json())
-        .then((result) => setSimilarProduct(result))
-        .catch((err) => console.error("Lỗi khi fetch dữ liệu:", err));
-      console.log("InView");
-    }
+    const getProductCategories = (): void => {
+      if (product) {
+        axiosInstance
+          .get(`/products/similar/${product?.categoryId}`)
+
+          .then((res) => setSimilarProduct(res.data))
+          .catch((err) => console.error("Lỗi khi fetch dữ liệu:", err));
+        console.log("InView");
+      }
+    };
+
+    getProductCategories();
   }, [inView]);
 
   useEffect(() => {
     if (!id) return;
     axiosInstance
       .get(`/products/${id}`)
-      .then((response) => response.json())
-      .then((data) => setProduct(data))
+      .then((res) => setProduct(res.data))
       .catch((error) => console.error(error));
   }, [id]);
 
@@ -78,8 +84,7 @@ const ProductDetail = () => {
     if (!product?.sellerId) return;
     axiosInstance
       .get(`/seller/${product?.sellerId}`)
-      .then((reponse) => reponse.json())
-      .then((data) => setSellerInfo(data))
+      .then((res) => setSellerInfo(res.data))
       .catch((error) => console.error(error));
   }, [product?.sellerId]);
 
