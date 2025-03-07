@@ -97,7 +97,7 @@
   outline: none;
 }
 
-.address__modal--block.address__modal--ward {
+.address__modal--address {
   align-items: start;
 }
 
@@ -161,4 +161,28 @@
   padding: 7px 30px;
   border-radius: 5px;
   margin-left: 15px;
+}
+
+.address__modal--address textarea.success,
+.address__modal--block select.success,
+.address__modal--phone.success,
+.address__modal--name.success {
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.address__modal--phone.success input {
+  color: var(--success);
+}
+
+.address__modal--address textarea.error,
+.address__modal--block select.error,
+.address__modal--phone.error,
+.address__modal--name.error {
+  border: 1px solid var(--error);
+  color: var(--error);
+}
+
+.address__modal--phone.error input {
+  color: var(--error);
 }

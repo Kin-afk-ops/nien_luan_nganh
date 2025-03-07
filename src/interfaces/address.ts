@@ -18,3 +18,13 @@ export interface WardInterface {
   ward_name: string;
   ward_type: string;
 }
+
+export interface AddressForm {
+  nameAddress: string;
+  phoneAddress: string;
+  province: string;
+  district: string;
+  ward: string;
+  address: string;
+  default: boolean;
+}

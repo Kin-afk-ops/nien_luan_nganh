@@ -13,6 +13,7 @@
 }
 
 .profile__info--top-image {
+  border-radius: 50%;
 }
 
 .profile__info--top label {
@@ -68,9 +69,6 @@
   margin-right: 30px;
 }
 
-.profile__info--form-block input {
-}
-
 .profile__info--form-date,
 /* .profile__info--form-introduce, */
 .profile__info--form-name {
@@ -92,11 +90,13 @@
   color: rgb(51, 51, 51);
 } */
 
+.profile__info--form-date.success,
 .profile__info--form-name.success {
   border: 1px solid var(--success);
   color: var(--success);
 }
 
+.profile__info--form-date.error,
 .profile__info--form-name.error {
   border: 1px solid var(--error);
   color: var(--error);

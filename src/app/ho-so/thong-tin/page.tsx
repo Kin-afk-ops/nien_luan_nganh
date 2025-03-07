@@ -1,18 +1,24 @@
 "use client";
 import Image from "next/image";
+import Cropper, { Area } from "react-easy-crop";
 import "../layout.css";
 import "./page.css";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import formatDate from "@/helpers/format/formattedDate";
 import AddressModal from "@/components/addressModal/AddressModal";
 import { AddressInterface } from "@/interfaces/addressUser";
 
+import { AvatarInterface } from "@/interfaces/avatar";
+
 const ProfilePage = () => {
+  const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState<number>(1.1);
+  const [checkFile, setCheckFile] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const [avatar, setAvatar] = useState<AvatarInterface | null>(null);
 
   const [name, setName] = useState<string>("");
   const [nameError, setNameError] = useState<boolean>(false);
@@ -26,19 +32,42 @@ const ProfilePage = () => {
 
   const [introduce, setIntroduce] = useState<string>("");
 
+  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+    console.log(croppedArea, croppedAreaPixels);
+  };
   return (
     <>
       <h3 className="profile__header">Thông tin của tôi</h3>
       <div className="main-container profile__info">
+        <Cropper
+          image="/assets/account/avatar_default.png"
+          crop={crop}
+          zoom={zoom}
+          aspect={4 / 3}
+          onCropChange={setCrop}
+          onCropComplete={onCropComplete}
+          onZoomChange={setZoom}
+        />
         <div className="profile__info--top">
           <label htmlFor="profile__info--avatar">
-            <Image
-              className="profile__info--top-image"
-              src="/assets/account/avatar_default.png"
-              alt="avatar default"
-              width={108}
-              height={108}
-            />
+            {checkFile ? (
+              <Image
+                className="profile__info--top-image"
+                src={file ? URL.createObjectURL(file) : ""}
+                alt="avatar "
+                width={108}
+                height={108}
+              />
+            ) : (
+              <Image
+                className="profile__info--top-image"
+                src="/assets/account/avatar_default.png"
+                alt="avatar default"
+                width={108}
+                height={108}
+              />
+            )}
+
             <div className="profile__info--top-input">
               <i className="fa-solid fa-camera"></i>
             </div>
@@ -52,6 +81,11 @@ const ProfilePage = () => {
             type="file"
             className="display-none"
             id="profile__info--avatar"
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+
+              setCheckFile(true);
+            }}
           />
         </div>
 
@@ -121,7 +155,11 @@ const ProfilePage = () => {
             <label htmlFor="profile__info--form-date">Ngày sinh</label>
 
             <input
-              className="profile__info--form-date"
+              className={
+                birthdayError
+                  ? "profile__info--form-date error"
+                  : "profile__info--form-date success"
+              }
               type="date"
               name=""
               id="profile__info--form-date"
