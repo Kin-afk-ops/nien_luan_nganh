@@ -14,7 +14,7 @@ const ProductListComponent = (props: Props) => {
   return (
     <div className={`main_container`}>
         {title && <h3 style={{marginBottom: 30}}>{title}</h3>}
-        <div className={`list_container ${flexable}`}>
+        <div className={`list_product_container ${flexable}`}>
             {products.map((product, index) => (
                 <div key={index}>
                     <ProductCard product={product}/>

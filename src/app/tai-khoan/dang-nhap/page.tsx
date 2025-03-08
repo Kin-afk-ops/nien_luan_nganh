@@ -4,14 +4,82 @@ import Image from "next/image";
 import "../layout.css";
 import "./login.css";
 import Link from "next/link";
+import { EmailTestInterface } from "@/interfaces/emailTest";
+import validationEmail from "@/helpers/validation/email";
+import { PhoneInterface } from "@/interfaces/phoneTest";
+import validationPhone from "@/helpers/validation/phone";
+import validationPassword from "@/helpers/validation/password";
+import { PasswordInterface } from "@/interfaces/passwordTest";
+import { newUserPhone } from "@/interfaces/user";
+import axiosInstance from "@/helpers/api/config";
+
+import { login } from "@/lib/apiCall";
+import { LoginUser } from "@/interfaces/loginUser";
+import { useAppDispatch } from "@/lib/store";
+import googleLogo from "../../../../public/assets/google_logo.png";
 
 const LoginPage = () => {
+  const dispatch = useAppDispatch();
+  const [noAccount, setNoAccount] = useState<boolean>(false);
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
+  const [phoneValue, setPhoneValue] = useState<string>("");
+  const [emailValue, setEmailValue] = useState<string>("");
 
-  const [emailError, setEmailError] = useState<boolean>(true);
-  const [phoneError, setPhoneError] = useState<boolean>(true);
-  const [passwordError, setPasswordError] = useState<boolean>(true);
+  const [passwordValue, setPasswordValue] = useState<string>("");
+
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
+
+  const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState<string>("");
+
+  const [passwordError, setPasswordError] = useState<boolean>(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>("");
+
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
+
+  const handleValidationEmail = (value: string): void => {
+    const vEmail: EmailTestInterface = validationEmail(value);
+    setEmailError(!vEmail.pass);
+    setEmailErrorMessage(vEmail.content);
+  };
+
+  const handleValidationPhone = (value: string): void => {
+    const vPhone: PhoneInterface = validationPhone(value);
+    setPhoneError(!vPhone.pass);
+    setPhoneErrorMessage(vPhone.content);
+  };
+
+  const handleValidationPassword = (value: string): void => {
+    const vPassword: PasswordInterface = validationPassword(value);
+
+    setPasswordError(!vPassword.pass);
+    setPasswordErrorMessage(vPassword.content);
+  };
+
+  const handleLogin = async (): Promise<void> => {
+    if (!emailError && !passwordError) {
+      const loginUser: LoginUser = {
+        phone: phoneValue,
+        password: passwordValue,
+        email: emailValue,
+      };
+      login(dispatch, loginUser, setNoAccount, phoneMode);
+    }
+
+    if (!phoneError && !passwordError) {
+      const loginUser: LoginUser = {
+        phone: phoneValue,
+        password: passwordValue,
+        email: emailValue,
+      };
+      login(dispatch, loginUser, setNoAccount, phoneMode);
+    }
+  };
+
+  const handleGoogleLogin = async (): Promise<void> => {};
+
+  const handleFaceBookLogin = async (): Promise<void> => {};
 
   return (
     <div className="register">
@@ -51,105 +119,119 @@ const LoginPage = () => {
                     <input
                       className={phoneError ? "account__error--input" : ""}
                       type="text"
+                      value={phoneValue}
+                      onChange={(e) => setPhoneValue(e.target.value)}
+                      onBlur={(e) => handleValidationPhone(e.target.value)}
+                      onFocus={() => {
+                        setPhoneError(false);
+                        setPhoneErrorMessage("");
+                      }}
                       placeholder="Nhập số điện thoại"
                     />
                   </div>
-                  <div
-                    className={
-                      passwordError
-                        ? "account__input account__password--block account__error"
-                        : "account__input account__password--block"
-                    }
-                  >
-                    <input
-                      className="account__password"
-                      type={displayPassword ? "text" : "password"}
-                      placeholder="Nhập mật khẩu của bạn"
-                    />
-                    <div
-                      className="account__password--icon"
-                      onClick={() => setDisplayPassword(!displayPassword)}
-                    >
-                      <i className="account__password--icon-check fa-solid fa-check"></i>
-
-                      {displayPassword ? (
-                        <i
-                          className={
-                            passwordError
-                              ? "fa-regular fa-eye-slash account__error--icon"
-                              : "fa-regular fa-eye-slash"
-                          }
-                        ></i>
-                      ) : (
-                        <i
-                          className={
-                            passwordError
-                              ? "fa-regular fa-eye account__error--icon"
-                              : "fa-regular fa-eye"
-                          }
-                        ></i>
-                      )}
-                    </div>
+                  <div className="account__error--message">
+                    {phoneErrorMessage}
                   </div>
-
-                  <div className="account__error--message"></div>
                 </>
               ) : (
                 <>
-                  <input
-                    className={
-                      emailError
-                        ? "account__input account__error--input"
-                        : "account__input"
-                    }
-                    type="email"
-                    placeholder="Nhập email của bạn"
-                  />
-                  <div className="account__error--message"></div>
-
                   <div
                     className={
-                      passwordError
-                        ? "account__input account__password--block account__error"
-                        : "account__input account__password--block"
+                      emailError
+                        ? "account__input--block account__error"
+                        : "account__input--block"
                     }
                   >
                     <input
-                      className="account__password"
-                      type={displayPassword ? "text" : "password"}
-                      placeholder="Nhập mật khẩu của bạn"
+                      className={
+                        emailError
+                          ? "account__input account__error--input"
+                          : "account__input "
+                      }
+                      value={emailValue}
+                      onChange={(e) => setEmailValue(e.target.value)}
+                      onBlur={(e) => handleValidationEmail(e.target.value)}
+                      onFocus={() => {
+                        setEmailError(false);
+                        setEmailErrorMessage("");
+                      }}
+                      type="text"
+                      placeholder="Nhập email của bạn"
                     />
-                    <div
-                      className="account__password--icon"
-                      onClick={() => setDisplayPassword(!displayPassword)}
-                    >
-                      <i className="account__password--icon-check fa-solid fa-check"></i>
-
-                      {displayPassword ? (
-                        <i
-                          className={
-                            passwordError
-                              ? "fa-regular fa-eye-slash account__error--icon"
-                              : "fa-regular fa-eye-slash"
-                          }
-                        ></i>
-                      ) : (
-                        <i
-                          className={
-                            passwordError
-                              ? "fa-regular fa-eye account__error--icon"
-                              : "fa-regular fa-eye"
-                          }
-                        ></i>
-                      )}
-                    </div>
                   </div>
-
-                  <div className="account__error--message"></div>
+                  <div className="account__error--message">
+                    {emailErrorMessage}
+                  </div>
                 </>
               )}
+              <div
+                className={
+                  passwordError
+                    ? "account__input--block account__error"
+                    : "account__input--block"
+                }
+              >
+                <input
+                  className={
+                    passwordError
+                      ? "account__input account__error--input"
+                      : "account__input"
+                  }
+                  type={displayPassword ? "text" : "password"}
+                  placeholder="Nhập mật khẩu của bạn"
+                  value={passwordValue}
+                  onChange={(e) => {
+                    setPasswordValue(e.target.value);
+                    handleValidationPassword(e.target.value);
+                  }}
+                  onFocus={() => {
+                    setPasswordError(false);
+                    setPasswordErrorMessage("");
+                  }}
+                />
+                <div
+                  className="account__password--icon"
+                  onClick={() => setDisplayPassword(!displayPassword)}
+                >
+                  {displayPassword ? (
+                    <i
+                      className={
+                        passwordError
+                          ? "fa-regular fa-eye-slash account__error--icon"
+                          : "fa-regular fa-eye-slash"
+                      }
+                    ></i>
+                  ) : (
+                    <i
+                      className={
+                        passwordError
+                          ? "fa-regular fa-eye account__error--icon"
+                          : "fa-regular fa-eye"
+                      }
+                    ></i>
+                  )}
+                </div>
+              </div>
 
-              <button className="account__form--btn main-btn">Đăng nhập</button>
+              <div className="account__error--message">
+                {passwordErrorMessage}
+              </div>
+
+              <div className="account__forgot--password">
+                <Link className="link " href={"/"}>
+                  Quên mật khẩu?
+                </Link>
+              </div>
+
+              <button
+                className="account__form--btn main-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLogin();
+                }}
+              >
+                Đăng nhập
+              </button>
             </form>
 
             <div className="account__boundary">Hoặc</div>
@@ -171,6 +253,29 @@ const LoginPage = () => {
                 <span>Đăng nhập với Email</span>
               </button>
             )}
+
+            <button
+              className="transparent-btn account__change--btn"
+              onClick={() => handleGoogleLogin()}
+            >
+              <div className="account__change--img">
+                <Image
+                  src={googleLogo}
+                  alt="google logo"
+                  width={18}
+                  height={18}
+                />
+              </div>
+              <span>Đăng nhập với Google</span>
+            </button>
+
+            <button
+              className="transparent-btn account__change--btn"
+              onClick={() => handleFaceBookLogin(false)}
+            >
+              <i className="account__change--facebook fa-brands fa-facebook"></i>
+              <span>Đăng nhập với Facebook</span>
+            </button>
 
             <div className="register__login">
               Bạn chưa có tài khoản?{" "}
