@@ -115,7 +115,7 @@
   font-size: 14px;
   position: absolute;
   top: 100%;
-  right: 47%;
+  right: 55%;
 }
 
 .profile__info--form-gender {
@@ -179,7 +179,8 @@
 
 .profile__info--address-info {
   display: flex;
-  padding-top: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e2e2;
 }
 
 .profile__info--address-container {

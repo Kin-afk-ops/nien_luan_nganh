@@ -14,6 +14,11 @@ import { validationEmpty } from "@/helpers/validation/address";
 import axiosInstance from "@/helpers/api/config";
 import { useSelector } from "react-redux";
 import { RootState } from "@/hooks/useAppDispatch";
+import uploadImage from "@/helpers/image/uploadImage";
+import { InfoUserInterface } from "@/interfaces/infoUser";
+import formatDate from "@/helpers/format/formattedDate";
+import formatDateToInput from "@/helpers/format/formatDateToInput";
+import { ImageUploadInterface } from "@/interfaces/imageUpload";
 
 const ProfilePage = () => {
   const user =
@@ -25,7 +30,7 @@ const ProfilePage = () => {
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
-  // const [avatar, setAvatar] = useState<AvatarInterface | null>(null);
+  const [avatar, setAvatar] = useState<ImageUploadInterface | null>(null);
 
   const [name, setName] = useState<string>("");
   const [nameError, setNameError] = useState<boolean>(false);
@@ -40,6 +45,7 @@ const ProfilePage = () => {
   const [introduce, setIntroduce] = useState<string>("");
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
   const [addressId, setAddressId] = useState<string>("");
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
   //   console.log(croppedArea, croppedAreaPixels);
@@ -49,45 +55,94 @@ const ProfilePage = () => {
     if (user) {
       setUserId(user._id);
     }
+    const getInfoUser = async (): Promise<void> => {
+      await axiosInstance
+        .get(`/infoUser/${user?._id}`)
+        .then((res) => {
+          setEditMode(true);
+          if (res.data.avatar) {
+            setCheckFile(true);
+            setAvatar(res.data.avatar);
+          }
+
+          setName(res.data.name);
+          setGender(res.data.gender);
+          setBirthday(formatDateToInput(res.data.birthday));
+          setIntroduce(res.data.introduce);
+        })
+        .catch((error) => {
+          console.log(error);
+
+          if (error.status === 404) {
+            setEditMode(false);
+          }
+        });
+    };
+
     const getAddressInfoUser = async (): Promise<void> => {
       try {
-        const res = await axiosInstance.get(`/addressInfoUser/${userId}`);
+        const res = await axiosInstance.get(`/addressInfoUser/${user?._id}`);
         setAddresses(res.data);
       } catch (error) {
         console.log(error);
       }
     };
     getAddressInfoUser();
+    getInfoUser();
   }, [user, userId, loadingAddress]);
 
-  const validationName = (): void => {
+  const validationName = (): boolean => {
     if (validationEmpty(name)) {
       setNameError(false);
+      return true;
     } else {
       setNameError(true);
+      return false;
     }
   };
 
-  const validationBirthday = (): void => {
+  const validationBirthday = (): boolean => {
     if (validationEmpty(birthday)) {
       setBirthdayError(false);
+      return true;
     } else {
       setBirthdayError(true);
+      return false;
     }
   };
 
-  const validationGender = (): void => {
+  const validationGender = (): boolean => {
     if (validationEmpty(gender)) {
       setGenderError(false);
+      return true;
     } else {
       setGenderError(true);
+      return false;
     }
   };
 
   const handleSubmit = async (): Promise<void> => {
-    validationBirthday();
     validationName();
+    validationBirthday();
     validationGender();
+    if (validationName() && validationBirthday() && validationGender()) {
+      if (!editMode) {
+        const image = await uploadImage(file);
+        const infoUserForm: InfoUserInterface = {
+          avatar: image,
+          name: name,
+          gender: gender,
+          birthday: formatDate(birthday),
+          introduce: introduce,
+        };
+        await axiosInstance
+          .post(`/infoUser/${userId}`, infoUserForm)
+          .then((res) => console.log(res))
+          .catch((error) => console.log(error));
+      } else {
+        console.log("editMode");
+      }
+    }
   };
 
   const handleDeleteAddress = async (id: string): Promise<void> => {
@@ -118,7 +173,7 @@ const ProfilePage = () => {
             {checkFile ? (
               <Image
                 className="profile__info--top-image"
-                src={file ? URL.createObjectURL(file) : ""}
+                src={file ? URL.createObjectURL(file) : avatar?.path}
                 alt="avatar "
                 width={108}
                 height={108}
