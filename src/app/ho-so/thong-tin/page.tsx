@@ -19,6 +19,8 @@ import { InfoUserInterface } from "@/interfaces/infoUser";
 import formatDate from "@/helpers/format/formattedDate";
 import formatDateToInput from "@/helpers/format/formatDateToInput";
 import { ImageUploadInterface } from "@/interfaces/imageUpload";
+import updateImage from "@/helpers/image/updateImage";
+import Loading from "@/components/loading/Loading";
 
 const ProfilePage = () => {
   const user =
@@ -30,7 +32,12 @@ const ProfilePage = () => {
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
-  const [avatar, setAvatar] = useState<ImageUploadInterface | null>(null);
+  const [avatar, setAvatar] = useState<ImageUploadInterface>({
+    path: "/assets/account/avatar_default.png",
+    publicId: "",
+  });
+
+  const [avatarError, setAvatarError] = useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [nameError, setNameError] = useState<boolean>(false);
@@ -46,6 +53,7 @@ const ProfilePage = () => {
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
   const [addressId, setAddressId] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
   //   console.log(croppedArea, croppedAreaPixels);
@@ -56,12 +64,12 @@ const ProfilePage = () => {
       setUserId(user._id);
     }
     const getInfoUser = async (): Promise<void> => {
+      setLoading(true);
       await axiosInstance
         .get(`/infoUser/${user?._id}`)
         .then((res) => {
           setEditMode(true);
           if (res.data.avatar) {
-            setCheckFile(true);
             setAvatar(res.data.avatar);
           }
 
@@ -77,6 +85,7 @@ const ProfilePage = () => {
             setEditMode(false);
           }
         });
+      setLoading(false);
     };
 
     const getAddressInfoUser = async (): Promise<void> => {
@@ -122,10 +131,16 @@ const ProfilePage = () => {
   };
 
   const handleSubmit = async (): Promise<void> => {
+    setLoading(true);
     validationName();
     validationBirthday();
     validationGender();
-    if (validationName() && validationBirthday() && validationGender()) {
+    if (
+      validationName() &&
+      validationBirthday() &&
+      validationGender() &&
+      !avatarError
+    ) {
       if (!editMode) {
         const image = await uploadImage(file);
         const infoUserForm: InfoUserInterface = {
@@ -139,9 +154,26 @@ const ProfilePage = () => {
           .post(`/infoUser/${userId}`, infoUserForm)
           .then((res) => console.log(res))
           .catch((error) => console.log(error));
+
+        setLoading(false);
       } else {
         console.log("editMode");
+
+        const infoUserForm: InfoUserInterface = {
+          avatar: checkFile
+            ? await updateImage(file, avatar?.publicId)
+            : avatar,
+          name: name,
+          gender: gender,
+          birthday: formatDate(birthday),
+          introduce: introduce,
+        };
+        await axiosInstance
+          .put(`/infoUser/${userId}`, infoUserForm)
+          .then((res) => console.log(res))
+          .catch((error) => console.log(error));
       }
+      setLoading(false);
     }
   };
 
@@ -157,6 +189,7 @@ const ProfilePage = () => {
 
   return (
     <>
+      {loading && <Loading />}
       <h3 className="profile__header">Thông tin của tôi</h3>
       <div className="main-container profile__info">
         {/* <Cropper
@@ -170,23 +203,13 @@ const ProfilePage = () => {
         /> */}
         <div className="profile__info--top">
           <label htmlFor="profile__info--avatar">
-            {checkFile ? (
-              <Image
-                className="profile__info--top-image"
-                src={file ? URL.createObjectURL(file) : avatar?.path}
-                alt="avatar "
-                width={108}
-                height={108}
-              />
-            ) : (
-              <Image
-                className="profile__info--top-image"
-                src="/assets/account/avatar_default.png"
-                alt="avatar default"
-                width={108}
-                height={108}
-              />
-            )}
+            <Image
+              className="profile__info--top-image"
+              src={file ? URL.createObjectURL(file) : avatar?.path}
+              alt="avatar "
+              width={108}
+              height={108}
+            />
 
             <div className="profile__info--top-input">
               <i className="fa-solid fa-camera"></i>
@@ -204,9 +227,19 @@ const ProfilePage = () => {
             onChange={(e) => {
               setFile(e.target.files[0]);
 
+              if (e.target.files[0].type.startsWith("image/")) {
+                setAvatarError(false);
+              } else {
+                setAvatarError(true);
+              }
+
               setCheckFile(true);
             }}
           />
+
+          {avatarError && (
+            <p className="profile__avatar--error">Hãy chọn một hình ảnh</p>
+          )}
         </div>
 
         <form

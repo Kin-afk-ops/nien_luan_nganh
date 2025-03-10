@@ -10,6 +10,13 @@
   align-self: center;
   position: relative;
   margin-bottom: 30px;
+  position: relative;
+}
+
+.profile__avatar--error {
+  position: absolute;
+  top: 110%;
+  color: var(--error);
 }
 
 .profile__info--top-image {
