@@ -21,6 +21,8 @@ import formatDateToInput from "@/helpers/format/formatDateToInput";
 import { ImageUploadInterface } from "@/interfaces/imageUpload";
 import updateImage from "@/helpers/image/updateImage";
 import Loading from "@/components/loading/Loading";
+import NotificationModal from "@/components/notificationModal/NotificationModal";
+import ProfileAccount from "@/components/profileAccount/ProfileAccount";
 
 const ProfilePage = () => {
   const user =
@@ -54,6 +56,9 @@ const ProfilePage = () => {
   const [addressId, setAddressId] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [notificationModal, setNotificationModal] = useState<boolean>(false);
 
   // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
   //   console.log(croppedArea, croppedAreaPixels);
@@ -62,6 +67,9 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       setUserId(user._id);
+      if (user.email !== "none") setEmail(user.email);
+
+      if (user.phone !== "none") setPhone(user.phone);
     }
     const getInfoUser = async (): Promise<void> => {
       setLoading(true);
@@ -216,9 +224,9 @@ const ProfilePage = () => {
             </div>
           </label>
           <div className="profile__info--name">
-            <p>Nguyen Vu Linh</p>
-            <p>email</p>
-            <p>sdt</p>
+            {name !== "none" && <p>{name}</p>}
+            {email !== "none" && <p>{email}</p>}
+            {phone !== "none" && <p>{phone}</p>}
           </div>
           <input
             type="file"
@@ -406,6 +414,7 @@ const ProfilePage = () => {
           </button>
         </form>
       </div>
+
       {addressModal && (
         <AddressModal
           addressModal={addressModal}
@@ -419,6 +428,8 @@ const ProfilePage = () => {
           addressId={addressId}
         />
       )}
+
+      <ProfileAccount phone={phone} email={email} userId={userId} />
     </>
   );
 };

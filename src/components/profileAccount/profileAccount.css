@@ -1,0 +1,151 @@
+.profile__account {
+  padding: 50px;
+}
+
+.profile__account--overlay {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.profile__account h4 {
+  color: #616161;
+  font-size: 18px;
+  margin-left: 50px;
+}
+
+.profile__account--content {
+  margin-left: 100px;
+  margin-top: 30px;
+}
+
+.profile__account--block {
+  display: flex;
+  margin-bottom: 30px;
+}
+.profile__account--label {
+  font-weight: 500;
+  color: rgb(51, 51, 51);
+  text-align: right;
+  width: 100px;
+  margin-right: 30px;
+  color: rgb(51, 51, 51);
+}
+
+.profile__account--add {
+  background-color: #fff;
+  border: none;
+  font-size: 16px;
+  transition: 1s;
+  cursor: pointer;
+  color: var(--success);
+}
+
+.profile__account--add:hover {
+  text-decoration: underline;
+}
+
+.profile__account--change {
+  margin-left: 30px;
+  color: var(--primary-color);
+  background-color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.profile__account--change:hover {
+  text-decoration: underline;
+}
+
+.profile__account--modal {
+  width: 40%;
+  position: fixed;
+  z-index: 20;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  padding: 0 15px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.profile__account--close {
+  position: absolute;
+  top: 20%;
+}
+
+.profile__account--modal h5 {
+  font-weight: 600;
+  color: rgb(51, 51, 51);
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+.profile__account--close {
+  position: absolute;
+  top: 10px;
+  font-size: 20px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.profile__account--modal span {
+  font-size: 16px;
+  text-align: center;
+  color: #616161;
+}
+
+.profile__account--modal form {
+  margin: 30px 0 50px;
+  width: 100%;
+  padding: 0 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile__account--modal-block {
+  display: flex;
+  font-size: 16px;
+  color: #616161;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.profile__account--modal-block p:first-child,
+.profile__account--modal-block label {
+  width: 170px;
+  text-align: right;
+  font-size: 16px;
+  color: #616161;
+  margin-right: 20px;
+}
+
+.profile__account--modal-block input {
+  width: 60%;
+  padding: 10px 25px 10px 15px;
+  border-radius: 30px;
+  outline: none;
+  border: 1px solid var(--success);
+  font-size: 16px;
+}
+
+.profile__account--modal form button {
+  width: 50%;
+}
+
+.profile__account--modal form button:last-child {
+  border-radius: 30px;
+  margin-top: 20px;
+}
+
+.profile__account--modal-block input.error {
+  border: 1px solid var(--error);
+}

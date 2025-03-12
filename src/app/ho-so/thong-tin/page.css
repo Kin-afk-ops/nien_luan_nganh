@@ -210,3 +210,13 @@
   margin-left: 15px;
   cursor: pointer;
 }
+
+.profile__user {
+  padding: 50px;
+}
+
+.profile__user h4 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #616161;
+}
