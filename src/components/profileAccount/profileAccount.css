@@ -149,3 +149,8 @@
 .profile__account--modal-block input.error {
   border: 1px solid var(--error);
 }
+
+.profile__opt--error {
+  color: var(--error);
+  margin-bottom: 10px;
+}

@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import "./customerNav.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import axiosInstance from "@/helpers/api/config";
 
 const CustomerNav = () => {
   const pathname = usePathname();
@@ -14,13 +15,25 @@ const CustomerNav = () => {
     useSelector((state: RootState) => state.user.currentUser) || null;
   const slug = pathname.split("/")[2];
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
       setUserEmail(user.email ?? "Đang tải...");
     }
 
-    // Lấy slug từ URL khi client tải xong
+    const getInfoUser = async (): Promise<void> => {
+      await axiosInstance
+        .get(`/infoUser/${user?._id}`)
+        .then((res) => {
+          setName(res.data.name);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    getInfoUser();
   }, [user]);
 
   return (
@@ -34,7 +47,7 @@ const CustomerNav = () => {
           height={60}
         />
         {userEmail && (
-          <p className="customer__nav--name">{userEmail ?? "Đang tải..."}</p>
+          <p className="customer__nav--name">{name ? name : userEmail}</p>
         )}
       </div>
 
@@ -78,6 +91,20 @@ const CustomerNav = () => {
           >
             <i className="customer__nav--icon fa-regular fa-bell"></i>
             <p>Thông báo</p>
+          </Link>
+        </li>
+
+        <li>
+          <Link
+            href={"/ho-so/thay-doi-mat-khau"}
+            className={
+              slug === "thay-doi-mat-khau"
+                ? "customer__nav--link active"
+                : "customer__nav--link"
+            }
+          >
+            <i className="customer__nav--icon fa-regular fa-edit"></i>
+            <p>Thay đổi mật khẩu</p>
           </Link>
         </li>
       </ul>

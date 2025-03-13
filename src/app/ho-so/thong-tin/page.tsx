@@ -59,6 +59,7 @@ const ProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [notificationModal, setNotificationModal] = useState<boolean>(false);
+  
 
   // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
   //   console.log(croppedArea, croppedAreaPixels);

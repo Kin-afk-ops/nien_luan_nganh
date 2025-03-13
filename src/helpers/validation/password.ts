@@ -1,4 +1,4 @@
-import { PasswordInterface } from "@/interfaces/PasswordInterface";
+import { PasswordInterface } from "@/interfaces/passwordTest";
 
 const validationPassword = (password: string): PasswordInterface => {
   const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;

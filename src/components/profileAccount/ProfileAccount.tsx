@@ -22,6 +22,9 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
   const [emailValue, setEmailValue] = useState<string>("");
   const [emailError, setEmailError] = useState<boolean>(false);
   const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [otpError, setOtpError] = useState<boolean>(false);
+  const [otpErrorMessage, setOtpErrorMessage] = useState<string>("");
+
   // Khóa cuộn trang khi mở modal
   useEffect(() => {
     if (changeModel) {
@@ -105,7 +108,11 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
           console.log(res.data);
           alert("da chinh sua");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setOtpError(true);
+          setOtpErrorMessage(error.message);
+        });
     }
   };
 
@@ -216,6 +223,9 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
                     }}
                   >
                     <OtpInput otp={otpValue} setOtp={setOtpValue} />
+                    {otpError && (
+                      <p className="profile__opt--error">{otpErrorMessage}</p>
+                    )}
                     <button type="submit" className="secondary-btn ">
                       Xác thực
                     </button>
