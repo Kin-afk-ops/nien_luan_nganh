@@ -66,7 +66,9 @@ const ChangePasswordPage = () => {
           }}
         >
           <div className="profile__changePassword--block">
-            <label htmlFor="profile__changePassword--password">Mật khẩu</label>
+            <label htmlFor="profile__changePassword--password">
+              Mật khẩu mới
+            </label>
             <input
               id="profile__changePassword--password"
               type={displayPassword ? "text" : "password"}

@@ -1,0 +1,39 @@
+.categories__block--wrap {
+  position: absolute;
+  top: 100%;
+  background-color: #fff;
+  display: flex;
+  z-index: 20;
+}
+
+.categories__block {
+  width: 210px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+}
+
+.categories__block ul {
+  list-style: none;
+  padding: 30px 0 30px 30px;
+  font-size: 16px;
+  color: #616161;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.categories__block ul li {
+  padding: 5px 10px 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.categories__block ul li i {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.categories__block ul li:hover {
+  background-color: #e9f0fc;
+}

@@ -1,0 +1,152 @@
+[
+  {
+    "_id": "65f1234567890abcdef12345",
+    "name": "Thời trang",
+    "slug": "thoi-trang",
+    "parentId": null
+  },
+  {
+    "_id": "65f2234567890abcdef12346",
+    "name": "Quần áo nam",
+    "slug": "quan-ao-nam",
+    "parentId": "65f1234567890abcdef12345"
+  },
+  {
+    "_id": "65f3234567890abcdef12347",
+    "name": "Áo thun nam",
+    "slug": "ao-thun-nam",
+    "parentId": "65f2234567890abcdef12346"
+  },
+  {
+    "_id": "65f4234567890abcdef12348",
+    "name": "Áo sơ mi nam",
+    "slug": "ao-so-mi-nam",
+    "parentId": "65f2234567890abcdef12346"
+  },
+  {
+    "_id": "65f5234567890abcdef12349",
+    "name": "Quần dài nam",
+    "slug": "quan-dai-nam",
+    "parentId": "65f2234567890abcdef12346"
+  },
+  {
+    "_id": "65f6234567890abcdef12350",
+    "name": "Quần short nam",
+    "slug": "quan-short-nam",
+    "parentId": "65f2234567890abcdef12346"
+  },
+  {
+    "_id": "65f7234567890abcdef12351",
+    "name": "Quần áo nữ",
+    "slug": "quan-ao-nu",
+    "parentId": "65f1234567890abcdef12345"
+  },
+  {
+    "_id": "65f8234567890abcdef12352",
+    "name": "Áo thun nữ",
+    "slug": "ao-thun-nu",
+    "parentId": "65f7234567890abcdef12351"
+  },
+  {
+    "_id": "65f9234567890abcdef12353",
+    "name": "Áo sơ mi nữ",
+    "slug": "ao-so-mi-nu",
+    "parentId": "65f7234567890abcdef12351"
+  },
+  {
+    "_id": "65fa234567890abcdef12354",
+    "name": "Quần dài nữ",
+    "slug": "quan-dai-nu",
+    "parentId": "65f7234567890abcdef12351"
+  },
+  {
+    "_id": "65fb234567890abcdef12355",
+    "name": "Quần short nữ",
+    "slug": "quan-short-nu",
+    "parentId": "65f7234567890abcdef12351"
+  },
+  {
+    "_id": "65fc234567890abcdef12356",
+    "name": "Phụ kiện thời trang",
+    "slug": "phu-kien-thoi-trang",
+    "parentId": null
+  },
+  {
+    "_id": "65fd234567890abcdef12357",
+    "name": "Đồng hồ",
+    "slug": "dong-ho",
+    "parentId": "65fc234567890abcdef12356"
+  },
+  {
+    "_id": "65fe234567890abcdef12358",
+    "name": "Kính mắt",
+    "slug": "kinh-mat",
+    "parentId": "65fc234567890abcdef12356"
+  },
+  {
+    "_id": "65ff234567890abcdef12359",
+    "name": "Thắt lưng",
+    "slug": "that-lung",
+    "parentId": "65fc234567890abcdef12356"
+  },
+  {
+    "_id": "6600234567890abcdef12360",
+    "name": "Trang sức",
+    "slug": "trang-suc",
+    "parentId": "65fc234567890abcdef12356"
+  },
+  {
+    "_id": "6601234567890abcdef12361",
+    "name": "Nhẫn",
+    "slug": "nhan",
+    "parentId": "6600234567890abcdef12360"
+  },
+  {
+    "_id": "6602234567890abcdef12362",
+    "name": "Dây chuyền",
+    "slug": "day-chuyen",
+    "parentId": "6600234567890abcdef12360"
+  },
+  {
+    "_id": "6603234567890abcdef12363",
+    "name": "Hoa tai",
+    "slug": "hoa-tai",
+    "parentId": "6600234567890abcdef12360"
+  },
+  {
+    "_id": "6604234567890abcdef12364",
+    "name": "Giày dép",
+    "slug": "giay-dep",
+    "parentId": null
+  },
+  {
+    "_id": "6605234567890abcdef12365",
+    "name": "Giày thể thao",
+    "slug": "giay-the-thao",
+    "parentId": "6604234567890abcdef12364"
+  },
+  {
+    "_id": "6606234567890abcdef12366",
+    "name": "Giày lười",
+    "slug": "giay-luoi",
+    "parentId": "6604234567890abcdef12364"
+  },
+  {
+    "_id": "6607234567890abcdef12367",
+    "name": "Giày cao gót",
+    "slug": "giay-cao-got",
+    "parentId": "6604234567890abcdef12364"
+  },
+  {
+    "_id": "6608234567890abcdef12368",
+    "name": "Giày bệt",
+    "slug": "giay-bet",
+    "parentId": "6604234567890abcdef12364"
+  },
+  {
+    "_id": "6609234567890abcdef12369",
+    "name": "Giày sandal",
+    "slug": "giay-sandal",
+    "parentId": "6604234567890abcdef12364"
+  }
+]

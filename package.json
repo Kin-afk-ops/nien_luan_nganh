@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.1",
+    "@tanstack/react-table": "^8.21.2",
     "axios": "^1.8.2",
     "crypto": "^1.0.1",
     "firebase": "^11.3.1",
