@@ -4,6 +4,7 @@ import "./page.css";
 import formatDate from "@/helpers/format/formattedDate";
 import formatDateToInput from "@/helpers/format/formatDateToInput";
 import CategoriesBlock from "@/components/categoriesBlock/CategoriesBlock";
+import ProductTable from "@/components/productTable/ProductTable";
 
 const AddProductPage = () => {
   const [dateValue, setDateValue] = useState<string>("");
@@ -62,6 +63,7 @@ const AddProductPage = () => {
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
+      <ProductTable userId={userId} />
     </>
   );
 };

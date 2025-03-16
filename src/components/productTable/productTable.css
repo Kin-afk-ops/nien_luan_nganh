@@ -1,0 +1,68 @@
+.product__table--container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.product__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.product__table th,
+.product__table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+.product__table thead {
+  background-color: #fff;
+}
+
+.product__table tbody {
+  background-color: #f1f1f1;
+}
+
+.product__table th {
+  font-weight: bold;
+  color: #333;
+}
+
+.product__table .statusActive {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.product__table .statusInactive {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.product__table .editButton,
+.product__table .deleteButton {
+  padding: 6px 12px;
+  margin: 0 4px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.product__table .editButton {
+  background-color: #007bff;
+}
+
+.product__table .editButton:hover {
+  background-color: #0056b3;
+}
+
+.product__table .deleteButton {
+  background-color: #dc3545;
+}
+
+.product__table .deleteButton:hover {
+  background-color: #c82333;
+}
