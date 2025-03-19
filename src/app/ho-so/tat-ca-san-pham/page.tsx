@@ -21,6 +21,9 @@ const AddProductPage = () => {
     null
   );
   const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchMode, setSearchMode] = useState<boolean>(false);
+
   useEffect(() => {
     if (user) {
       setUserId(user._id);
@@ -43,9 +46,23 @@ const AddProductPage = () => {
       <h3 className="profile__header">Tất cả sản phẩm</h3>
       <div className="main-container profile__product--filler ">
         <div className="profile__product--filler-wrap">
-          <input type="text" placeholder="Nhập từ khoá ở đây" />
-          <i className="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="text"
+            placeholder="Nhập từ khoá ở đây"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                setSearchMode(true);
+              }
+            }}
+          />
         </div>
+
+        <button className="secondary-btn" onClick={() => setSearchMode(true)}>
+          <i className="fa-solid fa-magnifying-glass"></i>
+        </button>
         <div className="profile__product--filler-wrap">
           <div
             className="profile__product--filler-categories"
@@ -59,6 +76,7 @@ const AddProductPage = () => {
               setDisplayCategories={setDisplayCategories}
               categories={categories}
               setCateLabel={setCateLabel}
+              setSearchMode={setSearchMode}
             />
           )}
         </div>
@@ -71,14 +89,17 @@ const AddProductPage = () => {
               }
             }}
           >
-            {dateValue === "" ? "Chọn ngày" : dateValue}
+            {dateValue === "" ? "Chọn ngày" : formatDate(dateValue)}
             <i className="fa-regular fa-calendar"></i>
           </label>
           <input
             type="date"
             name=""
             value={dateValue}
-            onChange={(e) => setDateValue(formatDate(e.target.value))}
+            onChange={(e) => {
+              setDateValue(e.target.value);
+              setSearchMode(true);
+            }}
             id="profile__product--date"
             ref={dateRef}
             placeholder="Chọn ngày"
@@ -91,13 +112,14 @@ const AddProductPage = () => {
             <option value="">Đã bán</option>
           </select>
         </div>
-        <button className="secondary-btn">
-          <i className="fa-solid fa-magnifying-glass"></i>
-        </button>
       </div>
       <ProductTable
         userId={userId}
-        cateLabelId={cateLabel ? cateLabel?.id : null}
+        cateLabelId={cateLabel ? cateLabel?.id : ""}
+        searchMode={searchMode}
+        searchValue={searchValue}
+        setSearchMode={setSearchMode}
+        dateValue={dateValue}
       />
     </>
   );

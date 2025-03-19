@@ -8,33 +8,37 @@ import formatDate from "@/helpers/format/formattedDate";
 interface ChildProps {
   userId: string | null;
   cateLabelId: string | null;
+  searchMode: boolean;
+  searchValue: string;
+  setSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
+  dateValue: string;
 }
 
-const ProductTable: React.FC<ChildProps> = ({ userId, cateLabelId }) => {
+const ProductTable: React.FC<ChildProps> = ({
+  userId,
+  cateLabelId,
+  searchMode,
+  searchValue,
+  setSearchMode,
+  dateValue,
+}) => {
   const [products, setProducts] = useState<ProductInterface[] | null>(null);
 
   useEffect(() => {
-    const getProduct = async (): Promise<void> => {
-      if (userId) {
-        try {
-          const res = await axiosInstance.get(`/product/${userId}`);
-          setProducts(res.data);
-        } catch (error) {
-          console.log(error);
-          setProducts(null);
-        }
-      } else {
-        console.log("chua dang nhap");
-      }
-    };
+    console.log(searchValue);
 
-    const getProductByCategories = async (): Promise<void> => {
+    const getProducts = async (): Promise<void> => {
       if (userId) {
         await axiosInstance
-          .get(`/product/categories/${cateLabelId}`)
-          .then((res) => setProducts(res.data))
+          .get(`/product/seller/${userId}`)
+          .then((res) => {
+            setProducts(res.data);
+
+            console.log(res.data);
+          })
           .catch((error) => {
             console.log(error);
+
             setProducts(null);
           });
       } else {
@@ -42,13 +46,35 @@ const ProductTable: React.FC<ChildProps> = ({ userId, cateLabelId }) => {
       }
     };
 
-    if (cateLabelId) {
-      getProductByCategories();
-      console.log(products);
+    const getProductBySearchMode = async (): Promise<void> => {
+      console.log(userId);
+
+      if (userId) {
+        await axiosInstance
+          .get(
+            `/product/search?searchValue=${encodeURIComponent(
+              searchValue
+            )}&cateValue=${cateLabelId?.toString()}&dateValue=${dateValue.toString()}`
+          )
+          .then((res) => {
+            setProducts(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+
+            setProducts(null);
+          });
+      } else {
+        console.log("chua dang nhap");
+      }
+    };
+
+    if (searchMode) {
+      getProductBySearchMode();
     } else {
-      getProduct();
+      getProducts();
     }
-  }, [userId, cateLabelId]);
+  }, [userId, searchMode, searchValue, setSearchMode, cateLabelId, dateValue]);
 
   return (
     <div className="main-container product__table--container">

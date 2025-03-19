@@ -10,12 +10,14 @@ interface ChildProps {
     React.SetStateAction<CategoriesInterface | null>
   >;
   categories: CategoriesInterface[] | null;
+  setSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CategoriesBlock: React.FC<ChildProps> = ({
   setDisplayCategories,
   categories,
   setCateLabel,
+  setSearchMode,
 }) => {
   const [childrenCate, setChildrenCate] = useState<
     CategoriesInterface[] | null
@@ -58,7 +60,10 @@ const CategoriesBlock: React.FC<ChildProps> = ({
                     handleGetChildren(c.id);
                     setGrandChildren(null);
                   }}
-                  onClick={() => setCateLabel(c)}
+                  onClick={() => {
+                    setCateLabel(c);
+                    setSearchMode(true);
+                  }}
                 >
                   {c.name}
                   <i className="fa-solid fa-angle-right"></i>
@@ -74,7 +79,10 @@ const CategoriesBlock: React.FC<ChildProps> = ({
               <li
                 key={c.id}
                 onMouseEnter={() => handleGetGrandChildren(c.id)}
-                onClick={() => setCateLabel(c)}
+                onClick={() => {
+                  setCateLabel(c);
+                  setSearchMode(true);
+                }}
               >
                 {c.name}
                 <i className="fa-solid fa-angle-right"></i>
@@ -87,7 +95,13 @@ const CategoriesBlock: React.FC<ChildProps> = ({
         <div className="main-container categories__block categories__block--children">
           <ul>
             {grandChildren.map((c) => (
-              <li key={c.id} onClick={() => setCateLabel(c)}>
+              <li
+                key={c.id}
+                onClick={() => {
+                  setCateLabel(c);
+                  setSearchMode(true);
+                }}
+              >
                 {c.name}
                 <i className="fa-solid fa-angle-right"></i>
               </li>

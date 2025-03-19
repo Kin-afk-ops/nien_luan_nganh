@@ -15,7 +15,7 @@
 .profile__product--filler-wrap select,
 .profile__product--filler-wrap label,
 .profile__product--filler-wrap input {
-  padding: 10px 25px 10px 15px;
+  padding: 10px 15px;
   outline: none;
   border: 1px solid #ccc;
   border-radius: 30px;
@@ -46,4 +46,5 @@
 
 .profile__product--filler button {
   width: 70px;
+  margin-right: 10px;
 }
