@@ -66,3 +66,29 @@
 .product__table .deleteButton:hover {
   background-color: #c82333;
 }
+
+.product__table--name:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--primary-color);
+  transition: 0.3s;
+}
+
+.product__table button {
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.product__table button:first-child {
+  background-color: var(--success);
+  border: none;
+  color: #fff;
+}
+
+.product__table button:last-child {
+  margin-left: 5px;
+  background-color: var(--error);
+  border: none;
+  color: #fff;
+}

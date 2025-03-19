@@ -7,9 +7,10 @@ import formatDate from "@/helpers/format/formattedDate";
 
 interface ChildProps {
   userId: string | null;
+  cateLabelId: string | null;
 }
 
-const ProductTable: React.FC<ChildProps> = ({ userId }) => {
+const ProductTable: React.FC<ChildProps> = ({ userId, cateLabelId }) => {
   const [products, setProducts] = useState<ProductInterface[] | null>(null);
 
   useEffect(() => {
@@ -18,17 +19,36 @@ const ProductTable: React.FC<ChildProps> = ({ userId }) => {
         try {
           const res = await axiosInstance.get(`/product/${userId}`);
           setProducts(res.data);
-          console.log(res.data);
         } catch (error) {
           console.log(error);
+          setProducts(null);
         }
       } else {
         console.log("chua dang nhap");
       }
     };
 
-    getProduct();
-  }, [userId]);
+    const getProductByCategories = async (): Promise<void> => {
+      if (userId) {
+        await axiosInstance
+          .get(`/product/categories/${cateLabelId}`)
+          .then((res) => setProducts(res.data))
+          .catch((error) => {
+            console.log(error);
+            setProducts(null);
+          });
+      } else {
+        console.log("chua dang nhap");
+      }
+    };
+
+    if (cateLabelId) {
+      getProductByCategories();
+      console.log(products);
+    } else {
+      getProduct();
+    }
+  }, [userId, cateLabelId]);
 
   return (
     <div className="main-container product__table--container">
@@ -44,21 +64,27 @@ const ProductTable: React.FC<ChildProps> = ({ userId }) => {
           </tr>
         </thead>
         <tbody>
-          {products?.map((p, index) => (
-            <tr key={p._id}>
-              <td>{index + 1}</td>
-              <td>{p.name}</td>
-              <td>{p.categories?.name || "N/A"}</td>
+          {products !== null ? (
+            products?.map((p, index) => (
+              <tr key={p._id}>
+                <td>{index + 1}</td>
+                <td className="product__table--name">{p.name}</td>
+                <td>{p.categories?.name || "N/A"}</td>
 
-              <td>{p?.updatedAt ? formatDate(p.updatedAt) : "N/A"}</td>
+                <td>{p?.updatedAt ? formatDate(p.updatedAt) : "N/A"}</td>
 
-              <td>wow</td>
-              <td>
-                <button>Sửa</button>
-                <button>Xóa</button>
-              </td>
+                <td>wow</td>
+                <td>
+                  <button>Sửa</button>
+                  <button>Xóa</button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6}>Không có dữ liệu</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

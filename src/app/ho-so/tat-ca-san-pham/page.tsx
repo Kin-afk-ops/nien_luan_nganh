@@ -7,6 +7,8 @@ import CategoriesBlock from "@/components/categoriesBlock/CategoriesBlock";
 import ProductTable from "@/components/productTable/ProductTable";
 import { useSelector } from "react-redux";
 import { RootState } from "@/hooks/useAppDispatch";
+import { CategoriesInterface } from "@/interfaces/categories";
+import axiosInstance from "@/helpers/api/config";
 
 const AddProductPage = () => {
   const user =
@@ -15,10 +17,25 @@ const AddProductPage = () => {
   const [dateValue, setDateValue] = useState<string>("");
   const [displayCategories, setDisplayCategories] = useState<boolean>(false);
   const dateRef = useRef<HTMLInputElement>(null);
+  const [categories, setCategories] = useState<CategoriesInterface[] | null>(
+    null
+  );
+  const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
   useEffect(() => {
     if (user) {
       setUserId(user._id);
     }
+
+    const getCategories = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get("/categories");
+        setCategories(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCategories();
   }, [user]);
 
   return (
@@ -34,11 +51,15 @@ const AddProductPage = () => {
             className="profile__product--filler-categories"
             onClick={() => setDisplayCategories(true)}
           >
-            Danh mục
+            {cateLabel ? cateLabel.name : "Danh mục"}
             <i className="fa-solid fa-angle-down"></i>
           </div>
           {displayCategories && (
-            <CategoriesBlock setDisplayCategories={setDisplayCategories} />
+            <CategoriesBlock
+              setDisplayCategories={setDisplayCategories}
+              categories={categories}
+              setCateLabel={setCateLabel}
+            />
           )}
         </div>
         <div className="profile__product--filler-wrap">
@@ -74,7 +95,10 @@ const AddProductPage = () => {
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
-      <ProductTable userId={userId} />
+      <ProductTable
+        userId={userId}
+        cateLabelId={cateLabel ? cateLabel?.id : null}
+      />
     </>
   );
 };

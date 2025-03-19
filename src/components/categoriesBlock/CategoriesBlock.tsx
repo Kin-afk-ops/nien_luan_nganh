@@ -1,39 +1,38 @@
 "use client";
 import "./categoriesBlock.css";
-import categories from "../../app/test/categoriesTest.json";
+// import categories from "../../app/test/categoriesTest.json";
 import { useState } from "react";
+import { CategoriesInterface } from "@/interfaces/categories";
 
 interface ChildProps {
   setDisplayCategories: React.Dispatch<React.SetStateAction<boolean>>;
+  setCateLabel: React.Dispatch<
+    React.SetStateAction<CategoriesInterface | null>
+  >;
+  categories: CategoriesInterface[] | null;
 }
 
-const CategoriesBlock: React.FC<ChildProps> = ({ setDisplayCategories }) => {
+const CategoriesBlock: React.FC<ChildProps> = ({
+  setDisplayCategories,
+  categories,
+  setCateLabel,
+}) => {
   const [childrenCate, setChildrenCate] = useState<
-    {
-      _id: string;
-      name: string;
-      slug: string;
-      parentId: string | null;
-    }[]
-  >([]);
+    CategoriesInterface[] | null
+  >(null);
 
   const [grandChildren, setGrandChildren] = useState<
-    {
-      _id: string;
-      name: string;
-      slug: string;
-      parentId: string | null;
-    }[]
-  >([]);
+    CategoriesInterface[] | null
+  >(null);
 
   const handleGetChildren = (id: string | null): void => {
-    if (categories.length !== 0) {
+    if (categories) {
       setChildrenCate(categories.filter((c) => c.parentId === id));
     }
   };
 
-  const handleGetGrandChildren = (id: string): void => {
-    if (categories.length !== 0) {
+  const handleGetGrandChildren = (id: string | null): void => {
+    if (categories) {
       setGrandChildren(categories.filter((c) => c.parentId === id));
     }
   };
@@ -49,16 +48,17 @@ const CategoriesBlock: React.FC<ChildProps> = ({ setDisplayCategories }) => {
     >
       <div className="main-container categories__block">
         <ul>
-          {categories?.length !== 0 &&
+          {categories &&
             categories
               .filter((c) => c.parentId === null)
               .map((c) => (
                 <li
-                  key={c._id}
+                  key={c.id}
                   onMouseEnter={() => {
-                    handleGetChildren(c._id);
-                    setGrandChildren([]);
+                    handleGetChildren(c.id);
+                    setGrandChildren(null);
                   }}
+                  onClick={() => setCateLabel(c)}
                 >
                   {c.name}
                   <i className="fa-solid fa-angle-right"></i>
@@ -67,13 +67,14 @@ const CategoriesBlock: React.FC<ChildProps> = ({ setDisplayCategories }) => {
         </ul>
       </div>
 
-      {childrenCate.length !== 0 && (
+      {childrenCate && (
         <div className="main-container categories__block categories__block--children">
           <ul>
             {childrenCate.map((c) => (
               <li
-                key={c._id}
-                onMouseEnter={() => handleGetGrandChildren(c._id)}
+                key={c.id}
+                onMouseEnter={() => handleGetGrandChildren(c.id)}
+                onClick={() => setCateLabel(c)}
               >
                 {c.name}
                 <i className="fa-solid fa-angle-right"></i>
@@ -82,11 +83,11 @@ const CategoriesBlock: React.FC<ChildProps> = ({ setDisplayCategories }) => {
           </ul>
         </div>
       )}
-      {grandChildren.length !== 0 && (
+      {grandChildren && (
         <div className="main-container categories__block categories__block--children">
           <ul>
             {grandChildren.map((c) => (
-              <li key={c._id}>
+              <li key={c.id} onClick={() => setCateLabel(c)}>
                 {c.name}
                 <i className="fa-solid fa-angle-right"></i>
               </li>
