@@ -2,17 +2,33 @@
 import { useEffect, useState } from "react";
 import "./productTable.css";
 import { ProductInterface } from "@/interfaces/product";
+import axiosInstance from "@/helpers/api/config";
+import formatDate from "@/helpers/format/formattedDate";
 
 interface ChildProps {
   userId: string | null;
 }
 
 const ProductTable: React.FC<ChildProps> = ({ userId }) => {
-  const [product, setProduct] = useState<ProductInterface | null>(null);
+  const [products, setProducts] = useState<ProductInterface[] | null>(null);
 
-    useEffect(()=>{
-        const getProduct = async ():Promise<void>
-    },[userId])
+  useEffect(() => {
+    const getProduct = async (): Promise<void> => {
+      if (userId) {
+        try {
+          const res = await axiosInstance.get(`/product/${userId}`);
+          setProducts(res.data);
+          console.log(res.data);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        console.log("chua dang nhap");
+      }
+    };
+
+    getProduct();
+  }, [userId]);
 
   return (
     <div className="main-container product__table--container">
@@ -28,45 +44,21 @@ const ProductTable: React.FC<ChildProps> = ({ userId }) => {
           </tr>
         </thead>
         <tbody>
-          {/* {products.map((product, index) => (
-            <tr key={product.id}>
+          {products?.map((p, index) => (
+            <tr key={p._id}>
               <td>{index + 1}</td>
-              <td>{product.name}</td>
-              <td>{product.category}</td>
-              <td>{product.date}</td>
-              <td
-                className={
-                  product.status === "Đang bán"
-                    ? styles.statusActive
-                    : styles.statusInactive
-                }
-              >
-                {product.status}
-              </td>
+              <td>{p.name}</td>
+              <td>{p.categories?.name || "N/A"}</td>
+
+              <td>{p?.updatedAt ? formatDate(p.updatedAt) : "N/A"}</td>
+
+              <td>wow</td>
               <td>
-                <button
-                  onClick={() => handleEdit(product.id)}
-                  className={styles.editButton}
-                >
-                  Sửa
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className={styles.deleteButton}
-                >
-                  Xóa
-                </button>
+                <button>Sửa</button>
+                <button>Xóa</button>
               </td>
             </tr>
-          ))} */}
-          <tr>
-            <td>1</td>
-            <th>hua</th>
-            <th>hua</th>
-            <th>hua</th>
-            <th>hua</th>
-            <th>hua</th>
-          </tr>
+          ))}
         </tbody>
       </table>
     </div>

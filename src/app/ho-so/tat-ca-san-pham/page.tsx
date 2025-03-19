@@ -1,15 +1,26 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./page.css";
 import formatDate from "@/helpers/format/formattedDate";
 import formatDateToInput from "@/helpers/format/formatDateToInput";
 import CategoriesBlock from "@/components/categoriesBlock/CategoriesBlock";
 import ProductTable from "@/components/productTable/ProductTable";
+import { useSelector } from "react-redux";
+import { RootState } from "@/hooks/useAppDispatch";
 
 const AddProductPage = () => {
+  const user =
+    useSelector((state: RootState) => state.user.currentUser) || null;
+  const [userId, setUserId] = useState<string | null>(null);
   const [dateValue, setDateValue] = useState<string>("");
   const [displayCategories, setDisplayCategories] = useState<boolean>(false);
   const dateRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (user) {
+      setUserId(user._id);
+    }
+  }, [user]);
+
   return (
     <>
       <h3 className="profile__header">Tất cả sản phẩm</h3>

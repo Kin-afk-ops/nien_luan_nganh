@@ -5,6 +5,7 @@ export interface ICategory {
 }
 
 export interface ProductInterface {
+  _id: string;
   name: string;
   sellerId: string;
   categories?: ICategory;
