@@ -1,0 +1,174 @@
+/* styles/global.css */
+@keyframes rotateDown {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(180deg);
+    }
+}
+
+@keyframes rotateUp {
+    from {
+        transform: rotate(180deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes slideDown {
+    from {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      max-height: 400px; /* Đặt giá trị phù hợp với nội dung */
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      max-height: 400px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+.dropdown_menu {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgb(228, 222, 222);
+  }
+.label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 100;
+}
+h3 {
+    font-weight: 600;
+}
+
+.dropdown_list {
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-radius: 4px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.dropdown_list.open {
+    animation: slideDown 0.3s ease-in-out forwards;
+}
+
+.dropdown_list.closed {
+    animation: slideUp 0.5s ease-in-out forwards;
+}
+
+
+.dropdown_list li {
+    padding: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.dropdown_list li:hover {
+    background: #f0f0f0;
+    text-decoration: none;
+}
+
+.arrow_icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.arrow-icon.open {
+    animation: rotateDown 0.3s forwards;
+}
+
+.arrow-icon.close {
+    animation: rotateUp 0.3s forwards;
+}
+
+.checkbox_label{
+    display: flex;
+    gap: 20px;
+}
+
+
+.checkbox_label input[type="checkbox"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d3d5d7; /* Custom border color */
+    border-radius: 4px;
+    cursor: pointer;
+}
+.checkbox_label.price input[type="checkbox"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #d3d5d7; /* Custom border color */
+    border-radius: 50px;
+    cursor: pointer;
+}
+.checkbox_label input[type="checkbox"]:checked {
+    background-color: #458aeb; /* Custom background color when checked */
+}
+.checkbox_label.price input[type="checkbox"]:checked {
+    background-color: #eb7a1d; /* Custom background color when checked */
+}
+
+.checkbox_label input[type="checkbox"]:checked::after {
+    content: '';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.row_item {
+    padding:  2px 8px;
+    background-color: rgb(8, 240, 159);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 15px;
+    color: white;
+}
+
+
+.show_all_button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(77, 77, 236);
+    cursor: pointer;
+}

@@ -18,6 +18,7 @@ const userSlice = createSlice({
     loginSuccess: (
       state,
       action: PayloadAction<{
+        _id: string,
         accessToken: string;
         phone: string;
         email: string;

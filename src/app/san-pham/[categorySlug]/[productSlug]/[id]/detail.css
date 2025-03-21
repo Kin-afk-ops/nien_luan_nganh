@@ -267,6 +267,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    max-height: 1200px;
   }
 
   .link { 
@@ -288,4 +289,13 @@
   .link_item:hover{
     color: #4980f5;
     text-decoration: underline;
+  }
+
+  .show_all_container{
+    color: #4980f5;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    cursor: pointer;
   }

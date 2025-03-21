@@ -17,10 +17,10 @@ const ProductCard = (props: Props) => {
     window.location.href = (e.currentTarget as HTMLAnchorElement).href;
   };
   return (
-    <Link className={styles.card} href={`/san-pham/${product?.categorySlug}/${product?.slug}/${product?.id}`} 
+    <Link className={styles.card} href={`/san-pham/${product?.categories.slug}/${product?.slug}/${product?._id}`} 
       onClick={handleReload}>
       <div className={styles.image}>
-        <img src={product?.imageUris[0]} alt="product"/>
+        <img src={product?.images.url[0]} alt="product"/>
       </div>
       <div className={styles.info}>
         <div className={styles.nameField}>
@@ -29,7 +29,7 @@ const ProductCard = (props: Props) => {
         <p className={styles.price}>{`${product?.price}đ`}</p>
         <div className={styles.location}>
           <FaLocationDot/>
-          <p>{product?.location}</p>
+          <p>{product?.address.province}</p>
         </div>
       </div>
     </Link>
