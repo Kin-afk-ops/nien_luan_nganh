@@ -154,52 +154,10 @@ const CustomerNav = () => {
             <p>Đơn bán</p>
           </Link>
         </li>
-
-        <li>
-          <Link
-            href={"/ho-so/ho-so-shop"}
-            className={
-              slug === "ho-so-shop"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-solid fa-shop"></i>
-            <p>Hồ sơ shop</p>
-          </Link>
-        </li>
-
-        <li>
-          <Link
-            href={"/ho-so/xac-minh-danh-tinh"}
-            className={
-              slug === "xac-minh-danh-tinh"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-solid fa-user-tag"></i>
-            <p>Xác minh danh tính</p>
-          </Link>
-        </li>
       </ul>
 
       <h3>Mua hàng</h3>
       <ul className="customer__nav--list">
-        <li>
-          <Link
-            href={"/ho-so/yeu-thich"}
-            className={
-              slug === "yeu-thich"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-regular fa-heart"></i>
-            <p>Yêu thích</p>
-          </Link>
-        </li>
-
         <li>
           <Link
             href={"/ho-so/don-mua"}
