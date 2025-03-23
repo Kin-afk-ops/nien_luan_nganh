@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import "./productTable.css";
+import "./responsive.css";
 import { ProductInterface } from "@/interfaces/product";
 import axiosInstance from "@/helpers/api/config";
 import formatDate from "@/helpers/format/formattedDate";

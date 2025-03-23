@@ -2,6 +2,7 @@
   padding: 30px 20px;
   width: 100%;
   display: flex;
+  align-items: center;
 }
 
 .profile__product--filler-wrap {

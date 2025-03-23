@@ -5,11 +5,16 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./customerNav.css";
+import "./responsive.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/helpers/api/config";
 
-const CustomerNav = () => {
+interface ChildProps {
+  setMenuToggle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
   const pathname = usePathname();
   const user =
     useSelector((state: RootState) => state.user.currentUser) || null;
@@ -38,6 +43,10 @@ const CustomerNav = () => {
 
   return (
     <div className="customer__nav">
+      <i
+        className="fa-solid fa-xmark customer__nav--close-mobile"
+        onClick={() => setMenuToggle(false)}
+      ></i>
       <div className="customer__nav--info">
         <Image
           className="customer__nav--image"
@@ -52,7 +61,7 @@ const CustomerNav = () => {
       </div>
 
       <ul className="customer__nav--list">
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/thong-tin"}
             className={
@@ -66,7 +75,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/tin-nhan"}
             className={
@@ -80,7 +89,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/thong-bao"}
             className={
@@ -94,7 +103,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/thay-doi-mat-khau"}
             className={
@@ -112,7 +121,7 @@ const CustomerNav = () => {
       <h3>Bán hàng</h3>
 
       <ul className="customer__nav--list">
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/them-san-pham"}
             className={
@@ -127,7 +136,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/tat-ca-san-pham"}
             className={
@@ -141,7 +150,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/don-ban"}
             className={
@@ -158,7 +167,7 @@ const CustomerNav = () => {
 
       <h3>Mua hàng</h3>
       <ul className="customer__nav--list">
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/don-mua"}
             className={

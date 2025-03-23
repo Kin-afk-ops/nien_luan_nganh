@@ -1,0 +1,31 @@
+/* tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .profile__grid {
+    width: 100% !important;
+  }
+}
+
+/* mobile */
+@media (max-width: 767px) {
+  .profile__header {
+    padding: 15px 40px !important;
+  }
+  .profile__grid {
+    position: relative;
+  }
+
+  .profile__grid--label {
+    position: absolute;
+    font-size: 30px;
+    top: 10px;
+    left: 5px;
+  }
+
+  .customer__nav--mobile {
+    display: block !important;
+  }
+
+  .customer__nav--mobile.on {
+    transform: translateX(0);
+  }
+}

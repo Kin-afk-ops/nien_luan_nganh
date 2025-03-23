@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import "./page.css";
+import "./responsive.css";
 import validationPassword from "@/helpers/validation/password";
 import validationConfirmPassword from "@/helpers/validation/confirmPassword";
 import { PasswordInterface } from "@/interfaces/passwordTest";

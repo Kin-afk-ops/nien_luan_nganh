@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import "./profileAccount.css";
+import "./responsive.css";
 import OtpInput from "../otpInput/OtpInput";
 import axiosInstance from "@/helpers/api/config";
 import validationEmail from "@/helpers/validation/email";

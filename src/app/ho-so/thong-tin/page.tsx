@@ -3,6 +3,7 @@ import Image from "next/image";
 // import Cropper, { Area } from "react-easy-crop";
 import "../layout.css";
 import "./page.css";
+import "./responsive.css";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 // import formatDate from "@/helpers/format/formattedDate";
@@ -59,7 +60,6 @@ const ProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [notificationModal, setNotificationModal] = useState<boolean>(false);
-  
 
   // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
   //   console.log(croppedArea, croppedAreaPixels);
@@ -401,6 +401,17 @@ const ProfilePage = () => {
               name=""
               id="profile__info--form-introduce"
               cols="50"
+              rows="8"
+              value={introduce}
+              onChange={(e) => setIntroduce(e.target.value)}
+            />
+
+            <textarea
+              placeholder="Nhập giới thiệu"
+              name=""
+              id="profile__info--form-introduce-mobile"
+              className="profile__info--form-introduce-mobile"
+              cols="43"
               rows="8"
               value={introduce}
               onChange={(e) => setIntroduce(e.target.value)}
