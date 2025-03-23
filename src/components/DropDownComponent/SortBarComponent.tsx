@@ -42,7 +42,9 @@ const SortBarComponent = (props: Props) => {
     },[filterList])
 
     const handleSetOffer = (value: string) => {
-        setOffer(offer === value ? '' : value);
+        const newOffer = offer === value ? "" : value;
+        setFilter('isFreeShip', newOffer);
+        setOffer(newOffer);
     }
     const handleSetPrice = (value: string) => {
         const newPrice = price === value ? "" : value;
@@ -54,11 +56,7 @@ const SortBarComponent = (props: Props) => {
         setFilter('status', newStatus);
         setStatus(newStatus);
     }
-    const handleSetSize = (value: string) => {
-        const newSize = size === value ? "" : value;
-        setFilter('size', newSize);
-        setSize(newSize);
-    }
+    
     const handleSelectAttributes = (name: string, value: string) => {
         if(filterList[name]?.includes(value)){
             removeFilter(name);

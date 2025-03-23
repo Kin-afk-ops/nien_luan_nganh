@@ -63,3 +63,14 @@
 .isLike {
     color: blue;
 }
+
+.icon_group{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-left: 50px;
+}
+
+.icon_group > div {
+    cursor: pointer;
+}

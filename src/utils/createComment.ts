@@ -44,3 +44,25 @@ export const unlikeComment = async (commentId: string, userId: string) => {
         throw new Error("Failed to unlike comment");
     }
 }
+
+export const updateComment = async (commentId: string, userId: string, content: string) => {
+    try {
+        const response = await axiosInstance.put(`/commentProduct/${commentId}/${userId}`, {content});
+        return response.data;
+        
+    } catch(error) {
+        console.error(error);
+        throw new Error("Failed to update comment");
+    }
+}
+
+export const deleteComment = async (commentId: string, userId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/commentProduct/${commentId}/${userId}`);
+        return response.data;
+        
+    } catch(error) {
+        console.error(error);
+        throw new Error("Failed to delete comment");
+    }
+}

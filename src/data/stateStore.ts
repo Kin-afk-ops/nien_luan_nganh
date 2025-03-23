@@ -4,6 +4,7 @@ interface FilterInterface {
     price?: string;
     status?: string;
     size?: string;
+    isFreeShip?: string; // Mới thêm cho filter isFreeShip
     [key: string]: string | undefined; // Chỉ cho phép string, không có array
 }
 
@@ -21,6 +22,7 @@ export const useGlobalState = create<GlobalState>((set) => ({
         price: "",
         status: "",
         size: "",
+        isFreeShip:"",
     },
     isResetFilterList: false,
     

@@ -3,6 +3,7 @@ import React from 'react'
 import styles from './HomeProduct.module.css'
 import { ProductCardModel, ProductModel } from '@/models/ProductModel'
 import { FaLocationDot } from "react-icons/fa6";
+import { FaTruck, FaCoins } from "react-icons/fa";
 import Link from "next/link";
 
 interface Props{
@@ -32,6 +33,11 @@ const ProductCard = (props: Props) => {
           <p>{product?.address.province}</p>
         </div>
       </div>
+       {product?.isFreeShip && 
+        <div className={styles.row_item}>
+          <FaTruck size={15} />
+          <p style={{fontSize: 15}}>Freeship</p>
+        </div> }
     </Link>
     
   )

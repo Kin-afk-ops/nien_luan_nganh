@@ -16,6 +16,7 @@ import SortBarComponent from "@/components/DropDownComponent/SortBarComponent";
 import FilterListComponent from "@/components/filterComponent/FilterListComponent";
 import {useGlobalState} from '../../data/stateStore';
 import { priceData, statusData, clothSize } from '../../data/sortData';
+import PaginationComponent from "@/components/PaginationComponent/PaginationComponent";
 
 
 const FillerProductByCategory = () => {
@@ -28,8 +29,9 @@ const FillerProductByCategory = () => {
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || 0);
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || 1000000000);
   const [status, setStatus] = useState(searchParams.get("status") || "all");
-  const limit = 48; // Số sản phẩm tối đa trong 1 lần tải trang
+  const limit = 8; // Số sản phẩm tối đa trong 1 lần tải trang
   const [sort, setSort] = useState(searchParams.get("sort") || "newest");
+  const [isFreeShip, setFreeShip] = useState(searchParams.get("isFreeShip") || "");
   const {filterList} = useGlobalState();
 
 
@@ -52,6 +54,7 @@ const FillerProductByCategory = () => {
       minPrice: minPrice.toString(),
       maxPrice: maxPrice.toString(),
       conditions: status,
+  
   });
     // Thêm các bộ lọc từ filterList (ngoại trừ minPrice, maxPrice, conditions)
     Object.entries(filterList).forEach(([key, value]) => {
@@ -125,6 +128,19 @@ const FillerProductByCategory = () => {
     router.push(`?${query.toString()}`);
     }, [filterList.status]);
 
+    useEffect(() => {
+      const query = new URLSearchParams(window.location.search);
+      if(filterList.isFreeShip) {
+        setFreeShip(filterList.isFreeShip);
+        query.set("isFreeShip", filterList.isFreeShip);
+      }else {
+        setFreeShip("");
+        query.delete("isFreeShip");
+      }
+
+      router.push(`?${query.toString()}`);
+    },[filterList.isFreeShip])
+
 
 
 
@@ -176,6 +192,10 @@ const FillerProductByCategory = () => {
               ) : (
                 <div></div>
               )}
+            </div>
+            <div className="pagination">
+              <PaginationComponent currentPage={page} totalPages={data?.totalPages ?? 0} onPageChange={setPage}></PaginationComponent>
+              
             </div>
           </main>
         </div>

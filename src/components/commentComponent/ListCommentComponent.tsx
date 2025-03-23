@@ -3,11 +3,18 @@ import { getComments, likeComment, unlikeComment } from '@/utils/createComment';
 import React, { useEffect, useState } from 'react'
 import { AiFillLike } from "react-icons/ai";
 import "./commentStyle.css"
+import { FaEdit, FaTrashAlt  } from "react-icons/fa";
+
+
 interface Props {
     productId: string;
+    editComment: (comment: comments) => void;
+    deleteComment: (commentId: string) => void;
+    userId?: string;
+    forceUpdate: boolean;
 }
 const ListCommentComponent = (props: Props) => {
-    const { productId } = props;
+    const { productId, editComment, userId, deleteComment, forceUpdate } = props;
     const[comments, setComments] = useState<comments[]>([]);
     
 
@@ -21,7 +28,7 @@ const ListCommentComponent = (props: Props) => {
             }
         }
         fetchComments();
-    },[productId]);
+    },[productId, forceUpdate]);
 
 
     const handlePressLike = async (commentId: string, userId: string) => {
@@ -66,7 +73,12 @@ const ListCommentComponent = (props: Props) => {
                         <p>{comment.user.name}</p>
                     </div>
                     <div className="icon_group">
-
+                        <div className="edit" onClick={() => editComment(comment)}>
+                            {comment.userId === userId && <FaEdit size={20}/>}
+                        </div>
+                        <div className="delete" onClick={() => deleteComment(comment._id)}>
+                            {comment.userId === userId && <FaTrashAlt size={20}/>}
+                        </div>
                     </div>
                 </div>
                 <div className="comment_content">
