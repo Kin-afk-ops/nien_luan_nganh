@@ -115,7 +115,7 @@ const AddProductPage = () => {
         </div>
       </div>
 
-      <div className="main-container profile__product--filler mobile">
+      <div className="main-container profile__product--filler mobile l-0 m-0">
         <div className="profile__product--filler-wrap">
           <input
             type="text"

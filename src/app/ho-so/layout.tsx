@@ -26,7 +26,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           <div
-            className="profile__grid--label"
+            className="profile__grid--label l-0 m-0"
             onClick={() => setMenuToggle(true)}
           >
             <i className="fa-solid fa-bars"></i>

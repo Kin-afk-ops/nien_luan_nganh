@@ -4,6 +4,7 @@ export interface UserState {
     accessToken: string;
     phone: string;
     email: string;
+    firebase: boolean;
   } | null;
   isFetching: boolean;
   isError: boolean;

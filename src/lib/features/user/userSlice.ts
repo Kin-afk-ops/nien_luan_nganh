@@ -20,13 +20,14 @@ const userSlice = createSlice({
       action: PayloadAction<{
         accessToken: string;
         phone: string;
-        email: string;
+        email: string | null;
+        firebase: boolean;
       }>
     ) => {
       state.isError = false;
       state.isFetching = false;
       state.currentUser = action.payload;
-      if (state.currentUser) {
+      if (state.currentUser?.accessToken) {
         window.localStorage.setItem("token", state.currentUser.accessToken);
       }
     },

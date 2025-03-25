@@ -44,8 +44,12 @@ const Header = () => {
             </div>
             {/* <div className="l-2"></div> */}
             <div className="l-5 header__user">
-              <p>Đăng ký</p>
-              <p>Đăng nhập</p>
+              <Link className="link" href={"/tai-khoan/dang-ky"}>
+                Đăng ký
+              </Link>
+              <Link className="link" href={"/tai-khoan/dang-nhap"}>
+                Đăng nhập
+              </Link>
               <button className="main-btn">Đăng bán</button>
             </div>
           </div>

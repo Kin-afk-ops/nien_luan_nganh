@@ -1,0 +1,13 @@
+/* tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .phone__modal {
+    width: 70%;
+  }
+}
+
+/* mobile */
+@media (max-width: 767px) {
+  .phone__modal {
+    width: 100%;
+  }
+}

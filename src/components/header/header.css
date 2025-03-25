@@ -41,13 +41,13 @@
   align-items: center;
 }
 
-.header__user p {
+.header__user a {
   margin-right: 30px;
   cursor: pointer;
   font-size: 14px;
 }
 
-.header__user p:hover {
+.header__user a:hover {
   color: var(--success);
   text-decoration: underline;
 }

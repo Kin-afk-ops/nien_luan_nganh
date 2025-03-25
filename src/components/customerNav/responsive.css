@@ -8,8 +8,9 @@
   }
 
   .customer__nav--close-mobile {
+    display: block;
     position: absolute;
-    right: 0;
+    right: 10px;
 
     font-size: 30px;
     top: 15px;

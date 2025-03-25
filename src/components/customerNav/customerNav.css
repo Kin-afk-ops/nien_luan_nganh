@@ -3,6 +3,10 @@
   flex-direction: column;
 }
 
+.customer__nav--close-mobile {
+  display: none;
+}
+
 .customer__nav h3 {
   padding-top: 20px;
   margin-top: 20px;

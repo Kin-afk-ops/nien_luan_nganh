@@ -1,9 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import "../layout.css";
 import "./login.css";
 import Link from "next/link";
+import { auth, facebookProvider, googleProvider } from "../../../../firebase";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  signInWithPopup,
+} from "firebase/auth";
 import { EmailTestInterface } from "@/interfaces/emailTest";
 import validationEmail from "@/helpers/validation/email";
 import { PhoneInterface } from "@/interfaces/phoneTest";
@@ -14,13 +21,22 @@ import { newUserPhone } from "@/interfaces/user";
 import axiosInstance from "@/helpers/api/config";
 
 import { login } from "@/lib/apiCall";
-import { LoginUser } from "@/interfaces/loginUser";
+import { LoginUser, LoginUserGoogle } from "@/interfaces/loginUser";
 import { useAppDispatch } from "@/lib/store";
 import googleLogo from "../../../../public/assets/google_logo.png";
+import {
+  loginFailure,
+  loginStart,
+  loginSuccess,
+} from "@/lib/features/user/userSlice";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const [noAccount, setNoAccount] = useState<boolean>(false);
+  const [recaptchaVerifier, setRecaptchaVerifier] =
+    useState<RecaptchaVerifier | null>(null);
+  const [confirmationResult, setConfirmationResult] =
+    useState<ConfirmationResult | null>(null);
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
   const [phoneValue, setPhoneValue] = useState<string>("");
   const [emailValue, setEmailValue] = useState<string>("");
@@ -37,6 +53,55 @@ const LoginPage = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>("");
 
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
+
+  useEffect(() => {
+    const recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+      }
+    );
+
+    setRecaptchaVerifier(recaptchaVerifier);
+    return () => {
+      recaptchaVerifier.clear();
+    };
+  }, [auth]);
+
+  const handleGoogleLogin = async (): Promise<void> => {
+    dispatch(loginStart());
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("User Info:", user);
+
+      // Lấy Access Token từ Firebase
+      // const idToken = await user.getIdToken();
+
+      // console.log("Access Token:", idToken);
+
+      // const res = await axiosInstance.post("/auth/firebase-login", {
+      //   token: idToken,
+      // });
+
+      // console.log("Server Response:", res.data);
+
+      const userLogin: LoginUser = {
+        accessToken: await user.getIdToken(),
+        email: user?.email,
+        phone: "none",
+        firebase: true,
+      };
+
+      dispatch(loginSuccess(userLogin));
+      alert("Đăng nhập Google thành công!");
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      dispatch(loginFailure());
+    }
+  };
 
   const handleValidationEmail = (value: string): void => {
     const vEmail: EmailTestInterface = validationEmail(value);
@@ -63,6 +128,7 @@ const LoginPage = () => {
         phone: phoneValue,
         password: passwordValue,
         email: emailValue,
+        firebase: false,
       };
       login(dispatch, loginUser, setNoAccount, phoneMode);
     }
@@ -72,14 +138,13 @@ const LoginPage = () => {
         phone: phoneValue,
         password: passwordValue,
         email: emailValue,
+        firebase: false,
       };
       login(dispatch, loginUser, setNoAccount, phoneMode);
     }
   };
 
-  const handleGoogleLogin = async (): Promise<void> => {};
-
-  const handleFaceBookLogin = async (): Promise<void> => {};
+  // const handleFaceBookLogin = async (): Promise<void> => {};
 
   return (
     <div className="register">
@@ -269,13 +334,13 @@ const LoginPage = () => {
               <span>Đăng nhập với Google</span>
             </button>
 
-            <button
+            {/* <button
               className="transparent-btn account__change--btn"
               onClick={() => handleFaceBookLogin(false)}
             >
               <i className="account__change--facebook fa-brands fa-facebook"></i>
               <span>Đăng nhập với Facebook</span>
-            </button>
+            </button> */}
 
             <div className="register__login">
               Bạn chưa có tài khoản?{" "}
@@ -289,6 +354,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+      <div id="recaptcha-container"></div>
     </div>
   );
 };
