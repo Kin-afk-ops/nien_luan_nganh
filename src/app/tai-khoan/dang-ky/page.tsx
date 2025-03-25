@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "../layout.css";
 import "./register.css";
+import "./responsive.css";
 import Link from "next/link";
 import validationEmail from "@/helpers/validation/email";
 import validationPhone from "@/helpers/validation/phone";
@@ -480,7 +481,7 @@ const RegisterPage: React.FC = () => {
       {loading && <Loading />}
       <div className="grid wide">
         <div className="row no-gutters">
-          <div className="c-8 register__image">
+          <div className="l-8 m-0 s-0 register__image">
             <Image
               src="/assets/account/banner_login.png"
               width={587}
@@ -488,7 +489,7 @@ const RegisterPage: React.FC = () => {
               alt="Picture of the author"
             />
           </div>
-          <div className="c-4 account__container">
+          <div className="l-4 m-8 s-12 account__container">
             <form className="account__form">
               {passwordMode ? (
                 <>

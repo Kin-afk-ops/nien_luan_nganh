@@ -28,9 +28,19 @@
   justify-content: flex-end;
 }
 
-.pay__product-name {
+.pay__product--name {
   padding-left: 20px;
   white-space: nowrap; /* Không xuống dòng */
   overflow: hidden; /* Ẩn phần bị tràn */
   text-overflow: ellipsis;
+}
+
+.pay__product--item-image.tablet {
+  display: none;
+}
+
+.pay__product--image {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }

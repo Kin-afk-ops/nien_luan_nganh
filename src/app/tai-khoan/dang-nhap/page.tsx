@@ -85,7 +85,7 @@ const LoginPage = () => {
     <div className="register">
       <div className="grid wide">
         <div className="row no-gutters">
-          <div className="c-8 register__image">
+          <div className="l-8 m-0 s-0 register__image">
             <Image
               src="/assets/account/banner_login.png"
               width={587}
@@ -93,7 +93,7 @@ const LoginPage = () => {
               alt="Picture of the author"
             />
           </div>
-          <div className="c-4 account__container">
+          <div className="l-4 m-8 s-12 account__container">
             <form className="account__form">
               <div className="account__head">Đăng nhập</div>
 
