@@ -7,13 +7,13 @@ const PayProduct = () => {
   return (
     <div className="pay__product">
       <div className="row no-gutters pay__product--head">
-        <h2 className="l-6 m-12">Sản phẩm</h2>
-        <div className="l-2 m-0">Đơn giá</div>
-        <div className="l-2 m-0">Số lượng</div>
-        <div className="l-2 m-0">Thành tiền</div>
+        <h2 className="l-6 m-12 s-12">Sản phẩm</h2>
+        <div className="l-2 m-0 s-0">Đơn giá</div>
+        <div className="l-2 m-0 s-0">Số lượng</div>
+        <div className="l-2 m-0 s-0">Thành tiền</div>
       </div>
       <div className="row no-gutters pay__product--body">
-        <div className="l-1 m-2 pay__product--item pay__product--image">
+        <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
           <Image
             className="pay__product--item-image pc"
             src={"/assets/account/avatar_default.png"}
@@ -29,20 +29,34 @@ const PayProduct = () => {
             width={80}
             height={80}
           />
+
+          <Image
+            className="pay__product--item-image mobile"
+            src={"/assets/account/avatar_default.png"}
+            alt="anh san pham"
+            width={100}
+            height={100}
+          />
         </div>
-        <div className="l-5 m-10 pay__product--name">
-          <span>Chun Cột Tóc Đen Và Nhiều Màu Siêu Dai</span>
-          <div className=" pay__product--name-item">
+        <div className="l-5 m-10 s-8 pay__product--name">
+          <p>Chun Cột Tóc Đen Và Nhiều Màu</p>
+          <div className="l-0 pay__product--name-item">
             {"Đơn giá: " + formatPrice(8000)}
           </div>
-          <div className=" pay__product--name-item">{"Số lượng: " + "1"}</div>
-          <div className=" pay__product--name-item">
+          <div className="l-0 pay__product--name-item">
+            {"Số lượng: " + "1"}
+          </div>
+          <div className="l-0 pay__product--name-item">
             {"Thành tiền: " + formatPrice(8000)}
           </div>
         </div>
-        <div className="l-2 m-0 pay__product--item">{formatPrice(8000)}</div>
-        <div className="l-2 m-0 pay__product--item">1</div>
-        <div className="l-2 m-0 pay__product--item">{formatPrice(8000)}</div>
+        <div className="l-2 m-0 s-0 pay__product--item">
+          {formatPrice(8000)}
+        </div>
+        <div className="l-2 m-0 s-0 pay__product--item">1</div>
+        <div className="l-2 m-0 s-0 pay__product--item">
+          {formatPrice(8000)}
+        </div>
       </div>
     </div>
   );

@@ -1,81 +1,95 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f8f8f8;
-}
-
 .header__container {
   background-color: #fff;
+  border-bottom: 1px solid #ccc;
 }
 
-header {
-  display: flex;
+.header__main {
   align-items: center;
-  justify-content: space-between;
-  background-color: #fff;
-  padding: 10px 20px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  flex-wrap: wrap;
+
+  padding: 15px 0;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-header img {
-  height: 50px;
-}
-
-.search-bar {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-header input[type="text"] {
+.header__input {
   width: 100%;
-  max-width: 400px;
-  padding: 8px;
+  padding: 10px 15px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-header a {
-  text-decoration: none;
-  color: #333;
-  padding: 8px 10px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-header a:hover {
+  border-radius: 5px;
   background-color: #eee;
 }
 
-.dropdown-row {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  margin-top: 10px;
+.header__input.focus {
+  border: 1px solid var(--primary-color);
 }
 
-.dropdown-row select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
+.header__input input {
+  width: 95%;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  background-color: #eee;
+}
+
+.header__input i {
+  color: #616161;
   cursor: pointer;
 }
 
-dropdown-row select:focus {
-  outline: none;
-  border-color: #007bff;
+.header__user {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header__user p {
+  margin-right: 30px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.header__user p:hover {
+  color: var(--success);
+  text-decoration: underline;
+}
+
+.header__user button {
+  width: 25%;
+  border-radius: 5px;
+}
+
+.header__categories {
+  align-items: center;
+  justify-content: space-between;
+}
+.header__categories i,
+.header__categories div {
+  padding: 20px 5px;
+  color: #616161;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.header__categories div:hover {
+  color: var(--success);
+}
+
+.header__categories div::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 4px;
+  top: 93%;
+  left: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 121, 114, 1) 21%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  transition: 0.2s;
+}
+
+.header__categories div:hover::after {
+  width: 100%;
 }

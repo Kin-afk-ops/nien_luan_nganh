@@ -30,12 +30,19 @@
 
 .pay__product--name {
   padding-left: 20px;
+}
+
+.pay__product--name p {
   white-space: nowrap; /* Không xuống dòng */
   overflow: hidden; /* Ẩn phần bị tràn */
   text-overflow: ellipsis;
 }
 
 .pay__product--item-image.tablet {
+  display: none;
+}
+
+.pay__product--item-image.mobile {
   display: none;
 }
 

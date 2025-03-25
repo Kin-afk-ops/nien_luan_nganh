@@ -1,0 +1,53 @@
+/* tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .order__foot--note input {
+    width: 90%;
+  }
+}
+
+/* mobile */
+@media (max-width: 767px) {
+  .order__address--container {
+    position: relative;
+    flex-direction: column;
+  }
+  .order__address--container div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .order__address--container div span {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Giới hạn tối đa 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .order__address--default {
+    position: absolute;
+    top: -20px;
+    right: 0;
+  }
+
+  .order__foot--note {
+    border-right: none;
+    border-bottom: 1px dashed #ccc;
+  }
+
+  .order__foot--ship-content div {
+    justify-content: flex-start;
+  }
+
+  .order__total div:first-child {
+    justify-content: flex-start;
+  }
+
+  .order__pay--content div:first-child {
+    justify-content: flex-start;
+  }
+
+  .footer__btn button {
+    width: 100%;
+  }
+}
