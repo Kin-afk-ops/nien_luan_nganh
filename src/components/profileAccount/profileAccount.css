@@ -58,6 +58,10 @@
   cursor: pointer;
 }
 
+.profile__account--change.active {
+  color: var(--success);
+}
+
 .profile__account--change:hover {
   text-decoration: underline;
 }

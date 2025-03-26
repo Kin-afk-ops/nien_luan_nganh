@@ -41,4 +41,8 @@
   #profile__info--form-introduce {
     display: none;
   }
+
+  .profile__info--form-introduce-mobile {
+    display: block;
+  }
 }

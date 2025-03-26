@@ -64,6 +64,8 @@ const AddressModal: React.FC<ChildProps> = ({
   const [wardError, setWardError] = useState<boolean>(false);
 
   const [defaultAddress, setDefaultAddress] = useState<boolean>(false);
+  const [defaultAddressError, setDefaultAddressError] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const setData = (): void => {
@@ -77,6 +79,7 @@ const AddressModal: React.FC<ChildProps> = ({
         setAddress(addresses[indexAddress].address);
         setNameAddress(addresses[indexAddress].nameAddress);
         setPhoneAddress(addresses[indexAddress].phoneAddress);
+        setDefaultAddress(addresses[indexAddress].default);
       }
     };
 
@@ -230,7 +233,10 @@ const AddressModal: React.FC<ChildProps> = ({
 
       try {
         if (editAddressMode) {
-          await axiosInstance.put(`/addressInfoUser/${addressId}`, newAddress);
+          await axiosInstance.put(
+            `/addressInfoUser/${addressId}?userId=${userId}`,
+            newAddress
+          );
         } else {
           await axiosInstance.post(`/addressInfoUser/${userId}`, newAddress);
         }
@@ -323,7 +329,7 @@ const AddressModal: React.FC<ChildProps> = ({
               onChange={(e) => {
                 handleChangDistrict(e.target.value);
               }}
-              value={editAddressMode ? province + "_" + provinceId : ""}
+              value={province + "_" + provinceId}
               onFocus={() => setProvinceError(false)}
               className={provinceError ? "error" : "success"}
             >
@@ -350,7 +356,7 @@ const AddressModal: React.FC<ChildProps> = ({
 
                 setDistrict(e.target.value);
               }}
-              value={editAddressMode ? district + "_" + districtId : ""}
+              value={district + "_" + districtId}
               onFocus={() => setDistrictError(false)}
               className={districtError ? "error" : "success"}
             >
@@ -378,7 +384,7 @@ const AddressModal: React.FC<ChildProps> = ({
                 setWardId(e.target.value.split("_")[1]);
               }}
               onFocus={() => setWardError(false)}
-              value={editAddressMode ? ward + "_" + wardId : ""}
+              value={ward + "_" + wardId}
               className={wardError ? "error" : "success"}
             >
               <option>Chọn phường / xã</option>
@@ -414,7 +420,15 @@ const AddressModal: React.FC<ChildProps> = ({
               name=""
               id="address__modal--check"
               onChange={() => {
-                setDefaultAddress(!defaultAddress);
+                if (editAddressMode) {
+                  if (defaultAddress) {
+                    setDefaultAddressError(true);
+                  } else {
+                    setDefaultAddress(!defaultAddress);
+                  }
+                } else {
+                  setDefaultAddress(!defaultAddress);
+                }
               }}
             />
 
@@ -427,6 +441,12 @@ const AddressModal: React.FC<ChildProps> = ({
               Đặt làm địa chỉ mặc định
             </label>
           </div>
+
+          {defaultAddressError && (
+            <p className="address__modal--default-error">
+              Địa chỉ này đang là mặc đinh
+            </p>
+          )}
 
           <div className="address__modal--btn">
             <button

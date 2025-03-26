@@ -6,6 +6,7 @@ import OtpInput from "../otpInput/OtpInput";
 import axiosInstance from "@/helpers/api/config";
 import validationEmail from "@/helpers/validation/email";
 import validationPhone from "@/helpers/validation/phone";
+import isMongoId from "@/helpers/validation/isMongoId";
 
 interface ChildProps {
   phone: string;
@@ -156,17 +157,23 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
             </button>
           )}
 
-          {email !== "" && (
-            <button
-              className=" profile__account--change"
-              onClick={() => {
-                setChangeModel(true);
-                setEmailMode(true);
-                setTitle("Thay đổi");
-              }}
-            >
-              Thay đổi Email
-            </button>
+          {isMongoId(userId) ? (
+            <>
+              {email !== "" && (
+                <button
+                  className=" profile__account--change"
+                  onClick={() => {
+                    setChangeModel(true);
+                    setEmailMode(true);
+                    setTitle("Thay đổi");
+                  }}
+                >
+                  Thay đổi Email
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="profile__account--change active">Đã xác minh</div>
           )}
         </div>
         <div className="profile__account--block">

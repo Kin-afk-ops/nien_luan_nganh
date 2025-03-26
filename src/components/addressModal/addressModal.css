@@ -186,3 +186,11 @@
 .address__modal--phone.error input {
   color: var(--error);
 }
+
+.address__modal--default-error {
+  display: flex;
+  justify-content: center;
+
+  font-size: 14px;
+  color: var(--error);
+}

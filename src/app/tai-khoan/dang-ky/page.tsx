@@ -394,7 +394,8 @@ const RegisterPage: React.FC = () => {
       // console.log("Server Response:", res.data);
 
       await axiosInstance
-        .post("/auth/register/find/email", {
+        .post(`/auth/register/find/email`, {
+          firebaseMode: true,
           email: user?.email,
         })
         .then((res) => {
