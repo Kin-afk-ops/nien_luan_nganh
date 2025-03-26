@@ -28,14 +28,18 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
     }
 
     const getInfoUser = async (): Promise<void> => {
-      await axiosInstance
-        .get(`/infoUser/${user?._id}`)
-        .then((res) => {
-          setName(res.data.name);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (user?.firebase) {
+        console.log(user);
+      } else {
+        await axiosInstance
+          .get(`/infoUser/${user?._id}`)
+          .then((res) => {
+            setName(res.data.name);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     };
 
     getInfoUser();

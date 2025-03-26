@@ -20,8 +20,8 @@ const userSlice = createSlice({
       action: PayloadAction<{
         accessToken: string;
         phone: string;
-        email: string | null;
-        firebase: boolean;
+        email: string;
+        _id: string;
       }>
     ) => {
       state.isError = false;

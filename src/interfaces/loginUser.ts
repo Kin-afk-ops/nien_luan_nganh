@@ -1,6 +1,5 @@
 export interface LoginUser {
-  phone: string;
+  phone: string | null;
   email: string | null;
   password: string;
-  firebase: boolean;
 }

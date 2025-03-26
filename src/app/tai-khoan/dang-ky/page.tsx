@@ -207,6 +207,7 @@ const RegisterPage: React.FC = () => {
           const res = await axiosInstance.post("/auth/register/find/email", {
             email: emailValue,
           });
+
           setEmailError(true);
           setEmailErrorMessage(res.data.message);
           setLoading(false);
@@ -392,14 +393,33 @@ const RegisterPage: React.FC = () => {
 
       // console.log("Server Response:", res.data);
 
-      const userLogin: LoginUserGoogle = {
-        accessToken: await user.getIdToken(),
-        email: user.email,
-        phone: "none",
-      };
+      await axiosInstance
+        .post("/auth/register/find/email", {
+          email: user?.email,
+        })
+        .then((res) => {
+          alert(res.data.message);
+          // setCheckGoogleUser(res.data.check);
+        })
+        .catch(async (error) => {
+          console.log(error);
 
-      dispatch(loginSuccess(userLogin));
-      alert("Đăng nhập Google thành công!");
+          const userLogin: {
+            _id: string;
+            accessToken: string;
+            email: string;
+            phone: string;
+          } = {
+            _id: user.uid,
+            accessToken: await user.getIdToken(),
+            email: user?.email ? user?.email : "Lỗi dữ liệu",
+            phone: "none",
+          };
+
+          dispatch(loginSuccess(userLogin));
+
+          alert("Đăng nhập Google thành công!");
+        });
     } catch (error) {
       console.error("Google Login Error:", error);
       dispatch(loginFailure());

@@ -29,6 +29,7 @@ import {
   loginStart,
   loginSuccess,
 } from "@/lib/features/user/userSlice";
+import { UserState } from "@/interfaces/userState";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
@@ -53,6 +54,7 @@ const LoginPage = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>("");
 
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
+  const [checkGoogleUser, setCheckGoogleUser] = useState<boolean>(false);
 
   useEffect(() => {
     const recaptchaVerifier = new RecaptchaVerifier(
@@ -88,15 +90,33 @@ const LoginPage = () => {
 
       // console.log("Server Response:", res.data);
 
-      const userLogin: LoginUser = {
-        accessToken: await user.getIdToken(),
-        email: user?.email,
-        phone: "none",
-        firebase: true,
-      };
+      await axiosInstance
+        .post("/auth/register/find/email", {
+          email: user?.email,
+        })
+        .then((res) => {
+          alert(res.data.message);
+          setCheckGoogleUser(res.data.check);
+        })
+        .catch(async (error) => {
+          console.log(error);
 
-      dispatch(loginSuccess(userLogin));
-      alert("Đăng nhập Google thành công!");
+          const userLogin: {
+            _id: string;
+            accessToken: string;
+            email: string;
+            phone: string;
+          } = {
+            _id: user.uid,
+            accessToken: await user.getIdToken(),
+            email: user?.email ? user?.email : "Lỗi dữ liệu",
+            phone: "none",
+          };
+
+          dispatch(loginSuccess(userLogin));
+
+          alert("Đăng nhập Google thành công!");
+        });
     } catch (error) {
       console.error("Google Login Error:", error);
       dispatch(loginFailure());
@@ -128,7 +148,6 @@ const LoginPage = () => {
         phone: phoneValue,
         password: passwordValue,
         email: emailValue,
-        firebase: false,
       };
       login(dispatch, loginUser, setNoAccount, phoneMode);
     }
@@ -138,7 +157,6 @@ const LoginPage = () => {
         phone: phoneValue,
         password: passwordValue,
         email: emailValue,
-        firebase: false,
       };
       login(dispatch, loginUser, setNoAccount, phoneMode);
     }
