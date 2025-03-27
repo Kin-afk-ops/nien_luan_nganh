@@ -55,6 +55,7 @@ const LoginPage = () => {
 
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
   const [checkGoogleUser, setCheckGoogleUser] = useState<boolean>(false);
+  const [phoneGoogleValue, setPhoneGoogleValue] = useState<string>("");
 
   useEffect(() => {
     const recaptchaVerifier = new RecaptchaVerifier(
@@ -91,26 +92,34 @@ const LoginPage = () => {
       // console.log("Server Response:", res.data);
 
       await axiosInstance
-        .post("/auth/register/find/email", {
+        .post(`/auth/register/find/email`, {
+          firebaseMode: true,
           email: user?.email,
         })
         .then((res) => {
           alert(res.data.message);
-          setCheckGoogleUser(res.data.check);
+          // setCheckGoogleUser(res.data.check);
         })
         .catch(async (error) => {
           console.log(error);
+
+          await axiosInstance
+            .get(`/auth/firebase/phone/${user.uid}`)
+            .then((res) => setPhoneGoogleValue(res.data.phone))
+            .catch((error) => console.log(error));
 
           const userLogin: {
             _id: string;
             accessToken: string;
             email: string;
             phone: string;
+            firebase: boolean;
           } = {
             _id: user.uid,
             accessToken: await user.getIdToken(),
             email: user?.email ? user?.email : "Lỗi dữ liệu",
-            phone: "none",
+            phone: phoneGoogleValue,
+            firebase: true,
           };
 
           dispatch(loginSuccess(userLogin));

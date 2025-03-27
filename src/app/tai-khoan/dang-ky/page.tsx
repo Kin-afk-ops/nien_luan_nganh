@@ -405,16 +405,28 @@ const RegisterPage: React.FC = () => {
         .catch(async (error) => {
           console.log(error);
 
+          let googlePhoneValue: string = "";
+
+          await axiosInstance
+            .get(`/auth/firebase/phone/${user.uid}`)
+            .then((res) => {
+              googlePhoneValue = res.data.phone;
+              console.log(googlePhoneValue);
+            })
+            .catch((error) => console.log(error));
+
           const userLogin: {
             _id: string;
             accessToken: string;
             email: string;
             phone: string;
+            firebase: boolean;
           } = {
             _id: user.uid,
             accessToken: await user.getIdToken(),
             email: user?.email ? user?.email : "Lỗi dữ liệu",
-            phone: "none",
+            phone: googlePhoneValue,
+            firebase: true,
           };
 
           dispatch(loginSuccess(userLogin));

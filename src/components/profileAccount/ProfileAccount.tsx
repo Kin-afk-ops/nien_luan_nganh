@@ -12,9 +12,15 @@ interface ChildProps {
   phone: string;
   email: string;
   userId: string | null;
+  firebaseIsAccount: boolean;
 }
 
-const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
+const ProfileAccount: React.FC<ChildProps> = ({
+  email,
+  phone,
+  userId,
+  firebaseIsAccount,
+}) => {
   const [changeModel, setChangeModel] = useState<boolean>(false);
   const [emailMode, setEmailMode] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
@@ -121,16 +127,17 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
   const handlePhoneSubmit = async (): Promise<void> => {
     validationPhoneValue();
     if (userId && validationPhoneValue()) {
-      // await axiosInstance
-      //   .post(`/auth/update/email/${userId}`, {
-      //     email: emailValue,
-      //   })
-      //   .then((res) => {
-      //     console.log(res.data);
-      //     setOtpMode(true);
-      //   })
-      //   .catch((error) => console.log(error));
-      setOtpMode(true);
+      try {
+        const res = await axiosInstance.post(`/auth/update/phone/${userId}`, {
+          phone: phoneValue,
+          firebaseIsAccount: firebaseIsAccount,
+        });
+        setOtpMode(true);
+
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -157,7 +164,9 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
             </button>
           )}
 
-          {isMongoId(userId) ? (
+          {firebaseIsAccount ? (
+            <div className="profile__account--change active">Đã xác minh</div>
+          ) : (
             <>
               {email !== "" && (
                 <button
@@ -172,8 +181,6 @@ const ProfileAccount: React.FC<ChildProps> = ({ email, phone, userId }) => {
                 </button>
               )}
             </>
-          ) : (
-            <div className="profile__account--change active">Đã xác minh</div>
           )}
         </div>
         <div className="profile__account--block">

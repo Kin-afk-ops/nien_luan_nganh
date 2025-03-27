@@ -22,6 +22,7 @@ const userSlice = createSlice({
         phone: string;
         email: string;
         _id: string;
+        firebase: boolean;
       }>
     ) => {
       state.isError = false;

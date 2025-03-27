@@ -60,6 +60,7 @@ const ProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [notificationModal, setNotificationModal] = useState<boolean>(false);
+  const [firebaseIsAccount, setFirebaseIsAccount] = useState<boolean>(false);
 
   // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
   //   console.log(croppedArea, croppedAreaPixels);
@@ -71,6 +72,7 @@ const ProfilePage = () => {
       if (user.email !== "none") setEmail(user.email);
 
       if (user.phone !== "none") setPhone(user.phone);
+      setFirebaseIsAccount(user?.firebase);
     }
     const getInfoUser = async (): Promise<void> => {
       setLoading(true);
@@ -441,7 +443,12 @@ const ProfilePage = () => {
         />
       )}
 
-      <ProfileAccount phone={phone} email={email} userId={userId} />
+      <ProfileAccount
+        phone={phone}
+        email={email}
+        userId={userId}
+        firebaseIsAccount={firebaseIsAccount}
+      />
     </>
   );
 };
