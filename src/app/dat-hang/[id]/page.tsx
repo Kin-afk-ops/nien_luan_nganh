@@ -1,9 +1,62 @@
+"use client";
+import { useParams } from "next/navigation";
 import PayProduct from "@/components/payProduct/PayProduct";
 import "./page.css";
 import formatPrice from "@/helpers/format/formatPrice";
 import "./responsive.css";
+import { useEffect, useState } from "react";
+import { AddressInterface } from "@/interfaces/addressUser";
+import { useSelector } from "react-redux";
+import { RootState } from "@/hooks/useAppDispatch";
+import axiosInstance from "@/helpers/api/config";
+import { CartInterface } from "@/interfaces/cart";
 
 const OrderPage = () => {
+  const params = useParams<{ id: string }>();
+
+  const [userId, setUserId] = useState<string | null>(null);
+  const [addresses, setAddresses] = useState<AddressInterface[] | null>(null);
+  const [cartCheck, setCartCheck] = useState<CartInterface[] | null>(null);
+
+  useEffect(() => {
+    if (params) {
+      setUserId(params.id);
+    }
+
+    const getAddressUser = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get(`/addressInfoUser/${userId}`);
+        setAddresses(res?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getCartCheck = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get(`/cart/checked/${userId}`);
+        setCartCheck(res?.data);
+
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAddressUser();
+    getCartCheck();
+  }, [userId, params]);
+
+  const getTotalPrice = (): number => {
+    let totalPrice: number = 0;
+
+    cartCheck?.forEach((c) => {
+      totalPrice += c.quantity * c.productId.price;
+    });
+
+    return totalPrice;
+  };
+
   return (
     <div className=" order">
       <div className="grid wide">
@@ -14,13 +67,24 @@ const OrderPage = () => {
             <h2>Địa chỉ nhận hàng</h2>
           </div>
           <div className="order__address--container">
-            <div>
-              <b> Nguyễn Vũ Linh (+84) 589443320 </b>
-              <span>
-                | Số 9, Hẻm 4 Mậu Thân (đối diện Hủ tiếu dì Tư), Phường Xuân
-                Khánh, Quận Ninh Kiều, Cần Thơ
-              </span>
-            </div>
+            {addresses !== null &&
+              addresses
+                .filter((address) => address.default === true)
+                .map((a, index) => (
+                  <div key={index}>
+                    <b> {a.nameAddress + " " + a.phoneAddress}</b>
+                    <span>
+                      {" | " +
+                        a.address +
+                        ", " +
+                        a.district +
+                        ", " +
+                        a.province +
+                        "."}
+                    </span>
+                  </div>
+                ))}
+
             <div className="order__address--default">Mặc định</div>
             <button>Thay đổi</button>
           </div>
@@ -28,7 +92,7 @@ const OrderPage = () => {
 
         <div className="main-container">
           {" "}
-          <PayProduct />
+          <PayProduct cartCheck={cartCheck} />
           <div className=" row no-gutters order__foot">
             <div className="l-5 m-6 s-12 order__foot--note">
               <label htmlFor="">Lời nhắn:</label>
@@ -42,8 +106,10 @@ const OrderPage = () => {
             </div>
           </div>
           <div className=" row no-gutters order__total">
-            <div className="l-10 m-10 s-7">Tổng số tiền (1 sản phẩm):</div>
-            <div className="l-2 m-2 s-5">{formatPrice(27000)}</div>
+            <div className="l-10 m-10 s-7">
+              Tổng số tiền ({cartCheck?.length} sản phẩm):
+            </div>
+            <div className="l-2 m-2 s-5">{formatPrice(getTotalPrice())}</div>
           </div>
         </div>
 
