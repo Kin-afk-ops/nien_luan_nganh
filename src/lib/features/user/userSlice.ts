@@ -30,6 +30,12 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       if (state.currentUser?.accessToken) {
         window.localStorage.setItem("token", state.currentUser.accessToken);
+        window.localStorage.setItem(
+          "firebaseIsAccount",
+          state.currentUser.firebase
+            ? "firebaseIsAccount"
+            : "firebaseIsNotAccount"
+        );
       }
     },
     loginFailure: (state) => {

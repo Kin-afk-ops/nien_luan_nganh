@@ -51,6 +51,7 @@
 .profile__info--name p:first-child {
   font-weight: 700;
   font-size: 24px;
+  color: var(--primary-color);
 }
 
 .profile__info--form {

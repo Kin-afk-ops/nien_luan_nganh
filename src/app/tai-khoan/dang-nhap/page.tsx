@@ -103,9 +103,14 @@ const LoginPage = () => {
         .catch(async (error) => {
           console.log(error);
 
+          let googlePhoneValue: string = "";
+
           await axiosInstance
             .get(`/auth/firebase/phone/${user.uid}`)
-            .then((res) => setPhoneGoogleValue(res.data.phone))
+            .then((res) => {
+              googlePhoneValue = res.data.phone;
+              console.log(googlePhoneValue);
+            })
             .catch((error) => console.log(error));
 
           const userLogin: {
@@ -118,7 +123,7 @@ const LoginPage = () => {
             _id: user.uid,
             accessToken: await user.getIdToken(),
             email: user?.email ? user?.email : "Lỗi dữ liệu",
-            phone: phoneGoogleValue,
+            phone: googlePhoneValue,
             firebase: true,
           };
 

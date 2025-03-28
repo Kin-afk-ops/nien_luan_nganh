@@ -158,3 +158,8 @@
   color: var(--error);
   margin-bottom: 10px;
 }
+
+.profile__error--message {
+  font-size: 14px;
+  color: var(--error);
+}

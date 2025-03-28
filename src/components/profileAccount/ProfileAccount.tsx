@@ -7,6 +7,9 @@ import axiosInstance from "@/helpers/api/config";
 import validationEmail from "@/helpers/validation/email";
 import validationPhone from "@/helpers/validation/phone";
 import isMongoId from "@/helpers/validation/isMongoId";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { logout } from "@/lib/features/user/userSlice";
 
 interface ChildProps {
   phone: string;
@@ -21,6 +24,8 @@ const ProfileAccount: React.FC<ChildProps> = ({
   userId,
   firebaseIsAccount,
 }) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [changeModel, setChangeModel] = useState<boolean>(false);
   const [emailMode, setEmailMode] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
@@ -29,7 +34,9 @@ const ProfileAccount: React.FC<ChildProps> = ({
   const [otpValue, setOtpValue] = useState<string[]>(new Array(6).fill(""));
   const [emailValue, setEmailValue] = useState<string>("");
   const [emailError, setEmailError] = useState<boolean>(false);
+  const [emailErrorValue, setEmailErrorValue] = useState<string>("");
   const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [phoneErrorValue, setPhoneErrorValue] = useState<string>("");
   const [otpError, setOtpError] = useState<boolean>(false);
   const [otpErrorMessage, setOtpErrorMessage] = useState<string>("");
 
@@ -51,6 +58,7 @@ const ProfileAccount: React.FC<ChildProps> = ({
     if (validationEmail(emailValue).pass) {
       if (emailValue === email) {
         setEmailError(true);
+        setEmailErrorValue("Không được nhập lại email cũ");
         return false;
       }
 
@@ -59,6 +67,8 @@ const ProfileAccount: React.FC<ChildProps> = ({
       return true;
     } else {
       setEmailError(true);
+      setEmailErrorValue("Hãy nhập một email hợp lệ");
+
       return false;
     }
   };
@@ -67,6 +77,7 @@ const ProfileAccount: React.FC<ChildProps> = ({
     if (validationPhone(phoneValue).pass) {
       if (phoneValue === phone) {
         setPhoneError(true);
+        setPhoneErrorValue("Không được nhập lại sô điện thoại cũ");
         return false;
       }
 
@@ -75,6 +86,8 @@ const ProfileAccount: React.FC<ChildProps> = ({
       return true;
     } else {
       setPhoneError(true);
+      setPhoneErrorValue("Hãy nhập một số điện thoại hợp lệ");
+
       return false;
     }
   };
@@ -83,15 +96,27 @@ const ProfileAccount: React.FC<ChildProps> = ({
     validationEmailValue();
     if (userId && validationEmailValue()) {
       await axiosInstance
-        .post(`/auth/update/email/${userId}`, {
+        .post("/auth/register/find/email", {
           email: emailValue,
+          firebaseMode: false,
         })
         .then((res) => {
-          console.log(res.data);
-          setOtpMode(true);
+          setEmailError(true);
+          setEmailErrorValue(res.data.message);
         })
-        .catch((error) => console.log(error));
-      setOtpMode(true);
+        .catch(async (error) => {
+          console.log(error);
+          await axiosInstance
+            .put(`/auth/update/email/${userId}`, {
+              email: emailValue,
+            })
+            .then((res) => {
+              console.log(res.data);
+              setOtpMode(true);
+            })
+            .catch((error) => console.log(error));
+          setOtpMode(true);
+        });
     }
   };
 
@@ -114,7 +139,12 @@ const ProfileAccount: React.FC<ChildProps> = ({
         })
         .then((res) => {
           console.log(res.data);
-          alert("da chinh sua");
+          alert("Thay đổi thành công! Vui lòng đăng nhập lại");
+          console.log(res.data);
+
+          dispatch(logout());
+          router.push("/tai-khoan/dang-nhap");
+          setOtpMode(false);
         })
         .catch((error) => {
           console.log(error);
@@ -127,17 +157,66 @@ const ProfileAccount: React.FC<ChildProps> = ({
   const handlePhoneSubmit = async (): Promise<void> => {
     validationPhoneValue();
     if (userId && validationPhoneValue()) {
-      try {
-        const res = await axiosInstance.post(`/auth/update/phone/${userId}`, {
+      await axiosInstance
+        .post("/auth/register/find/phone", {
           phone: phoneValue,
-          firebaseIsAccount: firebaseIsAccount,
-        });
-        setOtpMode(true);
+        })
+        .then((res) => {
+          setPhoneError(true);
+          setPhoneErrorValue(res.data.message);
+        })
+        .catch(async (error) => {
+          console.log(error);
+          if (firebaseIsAccount) {
+            let res;
+            try {
+              if (phone === "") {
+                res = await axiosInstance.put(`/auth/update/phone/${userId}`, {
+                  phone: phoneValue,
+                  firebaseIsAccount: firebaseIsAccount,
+                  createMode: true,
+                });
+                alert("Thay đổi thành công! Vui lòng đăng nhập lại");
+                dispatch(logout());
+                router.push("/tai-khoan/dang-nhap");
+              } else {
+                res = await axiosInstance.put(`/auth/update/phone/${userId}`, {
+                  phone: phoneValue,
+                  firebaseIsAccount: firebaseIsAccount,
+                  createMode: false,
+                });
+                alert("Thay đổi thành công! Vui lòng đăng nhập lại");
+                dispatch(logout());
+                router.push("/tai-khoan/dang-nhap");
+              }
 
-        console.log(res.data);
-      } catch (error) {
-        console.log(error);
-      }
+              setOtpMode(true);
+
+              console.log(res.data);
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            try {
+              const res = await axiosInstance.put(
+                `/auth/update/phone/${userId}`,
+                {
+                  phone: phoneValue,
+                  firebaseIsAccount: firebaseIsAccount,
+                }
+              );
+
+              setOtpMode(true);
+
+              alert("Thay đổi thành công! Vui lòng đăng nhập lại");
+              console.log(res.data);
+              dispatch(logout());
+              router.push("/tai-khoan/dang-nhap");
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        });
     }
   };
 
@@ -331,9 +410,17 @@ const ProfileAccount: React.FC<ChildProps> = ({
                         placeholder="Nhập email của bạn"
                         value={emailValue}
                         onChange={(e) => setEmailValue(e.target.value)}
+                        onFocus={() => {
+                          setEmailError(false);
+                        }}
                         className={emailError ? "error" : ""}
                       />
                     </div>
+                    {emailError && (
+                      <p className="profile__error--message">
+                        {emailErrorValue}
+                      </p>
+                    )}
 
                     <button type="submit" className="secondary-btn">
                       Gửi mã đến email
@@ -375,9 +462,18 @@ const ProfileAccount: React.FC<ChildProps> = ({
                         placeholder="Nhập số điện thoại của bạn"
                         value={phoneValue}
                         onChange={(e) => setPhoneValue(e.target.value)}
+                        onFocus={() => {
+                          setPhoneError(false);
+                        }}
                         className={phoneError ? "error" : ""}
                       />
                     </div>
+
+                    {phoneError && (
+                      <p className="profile__error--message">
+                        {phoneErrorValue}
+                      </p>
+                    )}
 
                     <button type="submit" className="secondary-btn">
                       Gửi mã đến số điện thoại

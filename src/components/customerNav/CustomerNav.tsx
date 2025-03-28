@@ -24,22 +24,20 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
 
   useEffect(() => {
     if (user) {
-      setUserEmail(user.email ?? "Đang tải...");
+      setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
+      console.log(user);
     }
 
     const getInfoUser = async (): Promise<void> => {
-      if (user?.firebase) {
-        console.log(user);
-      } else {
-        await axiosInstance
-          .get(`/infoUser/${user?._id}`)
-          .then((res) => {
-            setName(res.data.name);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+      await axiosInstance
+        .get(`/infoUser/${user?._id}`)
+        .then((res) => {
+          setName(res.data.name);
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
 
     getInfoUser();

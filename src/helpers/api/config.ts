@@ -4,8 +4,9 @@ let token: string | undefined;
 
 if (typeof window !== "undefined") {
   const storedToken = window.localStorage.getItem("token");
+  const firebaseIsAccount = window.localStorage.getItem("firebaseIsAccount");
   if (storedToken) {
-    token = `Bearer ${storedToken}`;
+    token = `Bearer ${storedToken} ${firebaseIsAccount}`;
   }
 }
 
