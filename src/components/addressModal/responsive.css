@@ -12,12 +12,6 @@
   }
   .address__modal--wrapper {
     width: 100%;
-    position: absolute;
-    top: 230px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0 15px;
-    z-index: 1001;
   }
 
   .address__modal {

@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import PayProduct from "@/components/payProduct/PayProduct";
 import "./page.css";
 import formatPrice from "@/helpers/format/formatPrice";
@@ -15,6 +15,7 @@ import AddressModal from "@/components/addressModal/AddressModal";
 
 const OrderPage = () => {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
 
   const [userId, setUserId] = useState<string | null>(null);
   const [addresses, setAddresses] = useState<AddressInterface[]>([]);
@@ -28,6 +29,11 @@ const OrderPage = () => {
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
   const [choiceAddress, setChoiceAddress] = useState<AddressInterface | null>(
     null
+  );
+  const [noteValue, setNoteValue] = useState<string>("");
+
+  const [payMethod, setPayMethod] = useState<string>(
+    "Thanh toán khi nhận hàng"
   );
 
   useEffect(() => {
@@ -71,6 +77,34 @@ const OrderPage = () => {
     return totalPrice;
   };
 
+  const handleOrder = async (): Promise<void> => {
+    await axiosInstance
+      .post(`/order/${userId}`, {
+        addressId: choiceAddress?._id,
+        note: noteValue,
+        shippingFee: shippingFee,
+        totalAmount: getTotalPrice(),
+        products: cartCheck?.map(({ productId, quantity }) => ({
+          productId,
+          quantity,
+        })),
+        paymentMethod: payMethod,
+      })
+      .then(async (res) => {
+        console.log(res.data);
+        await axiosInstance
+          .delete(`/cart/deleteCheck/${userId}`)
+          .then((res) => console.log(res.data))
+          .catch((error) => console.log(error));
+        alert("Đặt hàng thành công");
+        router.push(`/ho-so/don-mua`);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Đặt hàng không thành công");
+      });
+  };
+
   return (
     <>
       <div className=" order">
@@ -104,7 +138,10 @@ const OrderPage = () => {
                 </div>
               )}
 
-              <div className="order__address--default">Mặc định</div>
+              {choiceAddress?.default === true && (
+                <div className="order__address--default">Mặc định</div>
+              )}
+
               <button onClick={() => setChoiceAddressModal(true)}>
                 Thay đổi
               </button>
@@ -117,7 +154,12 @@ const OrderPage = () => {
             <div className=" row no-gutters order__foot">
               <div className="l-5 m-6 s-12 order__foot--note">
                 <label htmlFor="">Lời nhắn:</label>
-                <input type="text" placeholder="Lưu ý cho người bán" />
+                <input
+                  type="text"
+                  placeholder="Lưu ý cho người bán"
+                  onChange={(e) => setNoteValue(e.target.value)}
+                  value={noteValue}
+                />
               </div>
               <div className="l-7 m-6 s-12 gird order__foot--ship">
                 <div className="row no-gutters order__foot--ship-content">
@@ -141,10 +183,22 @@ const OrderPage = () => {
               <div className="grid order__pay--method">
                 <div className="row no-gutters">
                   <div className="l-9 m-6 s-12">Phương thức thanh toán</div>
-                  <select className="l-3 m-6 s-12" name="" id="">
-                    <option value="">Thanh toán khi nhận hàng</option>
-                    <option value="">Thanh toán bằng MOMO</option>
-                    <option value="">Thanh toán bằng VN PAY</option>
+                  <select
+                    className="l-3 m-6 s-12"
+                    name=""
+                    id=""
+                    value={payMethod}
+                    onChange={(e) => setPayMethod(e.target.value)}
+                  >
+                    <option value="Thanh toán khi nhận hàng">
+                      Thanh toán khi nhận hàng
+                    </option>
+                    <option value="Thanh toán bằng MOMO">
+                      Thanh toán bằng MOMO
+                    </option>
+                    <option value="Thanh toán bằng VN PAY">
+                      Thanh toán bằng VN PAY
+                    </option>
                   </select>
                 </div>
               </div>
@@ -175,7 +229,9 @@ const OrderPage = () => {
                 </div>
               </div>
               <div className="footer__btn">
-                <button className="main-btn">Đặt hàng</button>
+                <button className="main-btn" onClick={handleOrder}>
+                  Đặt hàng
+                </button>
               </div>
             </div>
           </div>
@@ -198,6 +254,7 @@ const OrderPage = () => {
               addresses={addresses}
               setAddresses={setAddresses}
               setChoiceAddress={setChoiceAddress}
+              setChoiceAddressModal={setChoiceAddressModal}
             />
             <i
               className="fa-solid fa-xmark choice__address--close"

@@ -45,4 +45,12 @@
   .profile__info--form-introduce-mobile {
     display: block;
   }
+
+  .profile__info--address {
+    flex-direction: column;
+  }
+
+  .profile__info--address p {
+    margin-bottom: 20px;
+  }
 }

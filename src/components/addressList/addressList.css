@@ -19,6 +19,10 @@
   cursor: pointer;
 }
 
+.address__list--info span {
+  width: 90%;
+}
+
 .address__list--info:hover {
   color: var(--success);
 }
@@ -29,7 +33,7 @@
 
 .address__list--info.default::before {
   right: 0%;
-  top: 6%;
+  top: -40%;
   content: "Mặc định";
   position: absolute;
   width: 53px;

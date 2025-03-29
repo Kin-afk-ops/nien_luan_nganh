@@ -17,6 +17,7 @@ interface ChildProps {
   setChoiceAddress: React.Dispatch<
     React.SetStateAction<AddressInterface | null>
   >;
+  setChoiceAddressModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddressList: React.FC<ChildProps> = ({
@@ -28,6 +29,7 @@ const AddressList: React.FC<ChildProps> = ({
   addresses,
   setAddresses,
   setChoiceAddress,
+  setChoiceAddressModal,
 }) => {
   const pathname = usePathname();
 
@@ -55,8 +57,10 @@ const AddressList: React.FC<ChildProps> = ({
   };
 
   const handleChoiceAddress = (address: AddressInterface) => {
-    setChoiceAddress(address);
-    console.log(address);
+    if (typeComponent === "dat-hang") {
+      setChoiceAddress(address);
+      setChoiceAddressModal(false);
+    }
   };
 
   return (
@@ -67,14 +71,17 @@ const AddressList: React.FC<ChildProps> = ({
             className={
               a.default ? "address__list--info default" : "address__list--info"
             }
-            onClick={(e) => {
-              e.stopPropagation();
-              handleChoiceAddress(a);
-            }}
             key={a._id}
           >
-            <span>
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                handleChoiceAddress(a);
+              }}
+            >
               {a.nameAddress +
+                " " +
+                a.phoneAddress +
                 " | " +
                 a.address +
                 ", " +

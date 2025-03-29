@@ -1,12 +1,12 @@
 .address__modal--wrapper {
   width: 45%;
   position: absolute;
-  top: 230px;
+  top: 35%;
   left: 50%;
   transform: translateX(-50%);
 
   padding: 0 15px;
-  z-index: 1002; /* Đặt trên overlay */
+  z-index: 1500; /* Đặt trên overlay */
 }
 
 .address__modal {
