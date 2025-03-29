@@ -1,0 +1,87 @@
+.address__list--container {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  position: relative;
+}
+
+.address__list {
+  display: flex;
+  margin-bottom: 30px;
+  color: rgb(51, 51, 51);
+}
+
+.address__list--info {
+  display: flex;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e2e2;
+  cursor: pointer;
+}
+
+.address__list--info:hover {
+  color: var(--success);
+}
+
+.address__list--info.default {
+  position: relative;
+}
+
+.address__list--info.default::before {
+  right: 0%;
+  top: 6%;
+  content: "Mặc định";
+  position: absolute;
+  width: 53px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  height: 12px;
+  color: var(--success);
+  border: 1px solid var(--success);
+  background-color: transparent;
+}
+
+.address__list--info:first-child {
+  padding-top: 0;
+}
+
+.address__list p {
+  padding: 10px 0;
+  height: 100%;
+}
+
+.address__list span {
+  font-size: 14px;
+  width: 85%;
+}
+
+.address__list--icon {
+  display: flex;
+}
+
+.address__list--icon i {
+  font-size: 16px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.address__list--btn {
+  padding: 10px 0;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: #616161;
+  background-color: #fff;
+  font-size: 14px;
+  width: 90px;
+}
+
+.address__list--btn:hover {
+  text-decoration: underline;
+}
+
+.address__list--btn i {
+  margin-right: 10px;
+}

@@ -123,21 +123,28 @@
 .order__pay--content-wrap {
   padding-top: 20px;
   border-bottom: 1px dashed #ccc;
+  display: flex;
+  flex-direction: column;
 }
 
 .order__pay--content {
-  align-items: center;
-  padding: 10px 0;
-}
-
-.order__pay--content div {
   display: flex;
+  padding: 10px 0;
+  width: 100%;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .order__pay--content div:first-child {
   font-size: 14px;
+  text-align: right;
   color: #616161;
+  margin-right: 30px;
+}
+
+.order__pay--content div:last-child {
+  text-align: left;
+  width: 13%;
 }
 
 .order__pay--content-total {
@@ -155,4 +162,26 @@
 .footer__btn button {
   width: 20%;
   padding: 10px 20px;
+}
+
+.choice__address {
+  position: absolute;
+  z-index: 1002;
+  background-color: #fff;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 30px;
+}
+
+.choice__address--close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.choice__address--close:hover {
+  color: #616161;
 }

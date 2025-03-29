@@ -6,7 +6,7 @@
   transform: translateX(-50%);
 
   padding: 0 15px;
-  z-index: 1001; /* Đặt trên overlay */
+  z-index: 1002; /* Đặt trên overlay */
 }
 
 .address__modal {

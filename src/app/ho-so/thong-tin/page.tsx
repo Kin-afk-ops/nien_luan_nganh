@@ -24,6 +24,7 @@ import updateImage from "@/helpers/image/updateImage";
 import Loading from "@/components/loading/Loading";
 import NotificationModal from "@/components/notificationModal/NotificationModal";
 import ProfileAccount from "@/components/profileAccount/ProfileAccount";
+import AddressList from "@/components/addressList/addressList";
 
 const ProfilePage = () => {
   const user =
@@ -188,16 +189,6 @@ const ProfilePage = () => {
     }
   };
 
-  const handleDeleteAddress = async (id: string): Promise<void> => {
-    try {
-      await axiosInstance.delete(`/addressInfoUser/${id}`);
-      const res = await axiosInstance.get(`/addressInfoUser/${userId}`);
-      setAddresses(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
       {loading && <Loading />}
@@ -350,50 +341,15 @@ const ProfilePage = () => {
 
           <div className="profile__info--address">
             <p>Địa chỉ</p>
-            <div className="profile__info--address-container">
-              {addresses?.length !== 0 &&
-                addresses?.map((a, index) => (
-                  <div className="profile__info--address-info" key={a._id}>
-                    <span>
-                      {a.nameAddress +
-                        " | " +
-                        a.address +
-                        ", " +
-                        a.ward +
-                        ", " +
-                        a.district +
-                        ", " +
-                        a.province}
-                    </span>
-                    <div className="profile__info--address-icon">
-                      <i
-                        className="fa-regular fa-pen-to-square"
-                        onClick={() => {
-                          setEditAddressMode(true);
-                          setAddressId(a._id);
-                          setIndexAddress(index);
-                          setAddressModal(true);
-                        }}
-                      ></i>
-                      <i
-                        className="fa-regular fa-trash-can"
-                        onClick={() => handleDeleteAddress(a._id)}
-                      ></i>
-                    </div>
-                  </div>
-                ))}
-              <button
-                className="profile__info--form-address-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setAddressModal(true);
-                  setEditAddressMode(false);
-                }}
-              >
-                <i className="fa-solid fa-plus"></i>
-                Thêm mới
-              </button>
-            </div>
+            <AddressList
+              userId={userId}
+              setAddressModal={setAddressModal}
+              setEditAddressMode={setEditAddressMode}
+              setAddressId={setAddressId}
+              setIndexAddress={setIndexAddress}
+              addresses={addresses}
+              setAddresses={setAddresses}
+            />
           </div>
 
           <div className="profile__info--form-block profile__info--form-introduce">

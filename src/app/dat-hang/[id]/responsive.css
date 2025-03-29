@@ -3,6 +3,9 @@
   .order__foot--note input {
     width: 90%;
   }
+  .order__pay--content div:last-child {
+    width: 25%;
+  }
 }
 
 /* mobile */
@@ -39,12 +42,8 @@
     justify-content: flex-start;
   }
 
-  .order__total div:first-child {
-    justify-content: flex-start;
-  }
-
-  .order__pay--content div:first-child {
-    justify-content: flex-start;
+  .order__pay--content div:last-child {
+    width: 40%;
   }
 
   .footer__btn button {
