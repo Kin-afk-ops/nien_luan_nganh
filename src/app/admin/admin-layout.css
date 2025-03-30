@@ -1,0 +1,34 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #f5f6fa;
+  }
+  
+  .admin-layout {
+    display: flex;
+    min-height: 100vh;
+    isolation: isolate;
+  }
+  
+  .admin-main {
+    flex: 1;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .admin-main.with-sidebar {
+    margin-left: 50px;
+  }
+  
+  .admin-main.full-width {
+    margin-left: 50px;
+  }
+  
+  .admin-content {
+    padding: 1.5rem;
+  }
+  
+  :global(header:not(.admin-header)),
+  :global(footer) {
+    display: none !important;
+  } 

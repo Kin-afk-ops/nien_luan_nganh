@@ -1,0 +1,148 @@
+:root {
+  --background-color: #f3f3f3;
+  --primary-color: #eb6e34;
+  --success: #184b9c;
+  --error: #ff3333;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--background-color) !important;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* Custom */
+
+.container {
+  padding: 50px 0;
+}
+
+.main-container {
+  margin: 20px 0;
+  background-color: #fff;
+  border-radius: 5px;
+  -webkit-box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
+}
+
+.main-btn {
+  padding: 10px 0;
+  background-color: var(--primary-color);
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  width: 100%;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 121, 114, 1) 21%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  padding: 10px 0;
+  border-radius: 30px;
+  transition: 1s;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+.secondary-btn:hover {
+  background: #097972;
+}
+
+.transparent-btn {
+  padding: 10px 0;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 700;
+  color: #616161;
+  width: 100%;
+  outline: none;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.display-none {
+  display: none;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* nprocess */
+
+/* Màu và kích thước thanh loading */
+#nprogress .bar {
+  background: #ff3333; /* Màu thanh */
+  height: 4px; /* Độ dày */
+}
+
+/* Hiệu ứng load */
+#nprogress .peg {
+  box-shadow: 0 0 10px #ff3333, 0 0 5px #ff3333;
+}
+
+/* Tùy chỉnh vòng loading */
+#nprogress .spinner-icon {
+  border-top-color: #ff3333;
+  border-left-color: #ff3333;
+}
+
+/* React date picker */
+.react-datepicker-wrapper {
+  width: 300px;
+}

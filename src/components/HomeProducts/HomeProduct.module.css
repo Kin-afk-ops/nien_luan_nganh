@@ -1,0 +1,154 @@
+.container {
+    width: 100%;
+    padding: 30px 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header a {
+    color: #2332fa;
+    text-decoration: none;
+}
+
+.header a:hover {
+    text-decoration: underline;
+    transition: all 0.3s ease;
+}
+
+.productContainer {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.card{
+    max-width: 220px;
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+}
+
+.image {
+    max-width: 220px;
+    width: 100%;
+    height: 200px;
+    border-radius: 10px 10px 0 0;
+}
+
+.image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px 10px 0 0;
+    object-fit: cover;
+}
+
+.info {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+}
+
+.nameField {
+    height: 50px;
+    overflow: hidden;
+}
+
+.price{
+    font-weight: bold;
+}
+
+.location {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.location p{
+    font-size: 12px;
+    color: #9d9999e5;
+}
+
+.swiperContainer{
+    position: relative;
+    height: 380px;
+    display: block;
+}
+
+
+.swiperButtonPrev, .swiperButtonNext {
+    color: #131313;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    z-index: 10;
+    background-color: rgba(249, 249, 249, 0.838);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-family: 'swiper-icons';
+  }
+
+  .swiperButtonPrev, .swiperButtonNext {
+    width: 40px; /* Tăng kích thước */
+    height: 40px; /* Tăng kích thước */
+  }
+  
+  .swiperButtonNext {
+    right: -10px;
+  }
+  .swiperButtonPrev {
+    left: -10px;
+  }
+  
+  .swiperButtonNext:after, .swiperButtonPrev:after {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .swiper-wrapper {
+    position: relative;
+    padding: 30px 0;
+  }
+  
+  .swiperWrapper{
+    position: relative;
+    height: 100%;
+  }
+
+  .row_item {
+    padding:  2px 8px;
+    background-color: rgb(8, 240, 159);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 15px;
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 0;
+}

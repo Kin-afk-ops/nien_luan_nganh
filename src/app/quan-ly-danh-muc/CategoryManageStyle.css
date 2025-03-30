@@ -1,0 +1,14 @@
+.page_container{
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.title {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+
+}
