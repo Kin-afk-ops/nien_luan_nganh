@@ -1,17 +1,19 @@
-"use client"
-import React from 'react'
-import styles from './HomeProduct.module.css'
-import { ProductCardModel, ProductModel } from '@/models/ProductModel'
+"use client";
+import React from "react";
+import styles from "./HomeProduct.module.css";
+import { ProductCardModel, ProductModel } from "@/models/ProductModel";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaTruck, FaCoins } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
-interface Props{
+interface Props {
   product?: ProductModel;
 }
 
 const ProductCard = (props: Props) => {
   const { product } = props;
+  console.log(product);
 
   const handleReload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -40,8 +42,7 @@ const ProductCard = (props: Props) => {
           <p style={{fontSize: 15}}>Freeship</p>
         </div> }
     </Link>
-    
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;
