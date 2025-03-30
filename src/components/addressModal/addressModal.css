@@ -186,7 +186,6 @@
 .address__modal--phone.error input {
   color: var(--error);
 }
-<<<<<<< HEAD
 
 .address__modal--default-error {
   display: flex;
@@ -195,5 +194,3 @@
   font-size: 14px;
   color: var(--error);
 }
-=======
->>>>>>> 4a89a60f685f646234fe5bbdb761e62f3e822539
