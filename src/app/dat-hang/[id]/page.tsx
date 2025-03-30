@@ -150,7 +150,7 @@ const OrderPage = () => {
 
           <div className="main-container">
             {" "}
-            <PayProduct cartCheck={cartCheck} />
+            <PayProduct cartProduct={cartCheck} />
             <div className=" row no-gutters order__foot">
               <div className="l-5 m-6 s-12 order__foot--note">
                 <label htmlFor="">Lời nhắn:</label>

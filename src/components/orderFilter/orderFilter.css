@@ -26,6 +26,11 @@
   border-bottom: 1px solid var(--primary-color);
 }
 
+.order__filter--active {
+  color: var(--primary-color) !important;
+  border-bottom: 1px solid var(--primary-color) !important;
+}
+
 .order__filter--search input {
   padding: 10px 15px;
   border: 1px solid #ccc;

@@ -18,13 +18,23 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
   const pathname = usePathname();
   const user =
     useSelector((state: RootState) => state.user.currentUser) || null;
-  const slug = pathname.split("/")[2];
+
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
 
+  const [slug, setSlug] = useState<string | null>(null);
+  const [firebaseIsAccount, setFIrebaseIsAccount] = useState<boolean>(false);
+
   useEffect(() => {
+    setSlug(pathname.split("/")[2]);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!user || !user._id) return; // Chỉ gọi API nếu user tồn tại
     if (user) {
       setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
+
+      setFIrebaseIsAccount(user?.firebase);
       console.log(user);
     }
 
@@ -105,19 +115,21 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
           </Link>
         </li>
 
-        <li onClick={() => setMenuToggle(false)}>
-          <Link
-            href={"/ho-so/thay-doi-mat-khau"}
-            className={
-              slug === "thay-doi-mat-khau"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-regular fa-edit"></i>
-            <p>Thay đổi mật khẩu</p>
-          </Link>
-        </li>
+        {firebaseIsAccount && (
+          <li onClick={() => setMenuToggle(false)}>
+            <Link
+              href={"/ho-so/thay-doi-mat-khau"}
+              className={
+                slug === "thay-doi-mat-khau"
+                  ? "customer__nav--link active"
+                  : "customer__nav--link"
+              }
+            >
+              <i className="customer__nav--icon fa-regular fa-edit"></i>
+              <p>Thay đổi mật khẩu</p>
+            </Link>
+          </li>
+        )}
       </ul>
 
       <h3>Bán hàng</h3>

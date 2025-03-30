@@ -3,24 +3,42 @@ import "./payProduct.css";
 import "./responsive.css";
 import formatPrice from "@/helpers/format/formatPrice";
 import { CartInterface } from "@/interfaces/cart";
+import Link from "next/link";
 
 interface ChildProps {
-  cartCheck: CartInterface[] | null;
+  cartProduct: any;
+  orderProductCheck: boolean | null;
 }
 
-const PayProduct: React.FC<ChildProps> = ({ cartCheck }) => {
+const PayProduct: React.FC<ChildProps> = ({
+  cartProduct,
+  orderProductCheck,
+}) => {
+  console.log(cartProduct);
+
   return (
     <div className="pay__product">
-      <div className="row no-gutters pay__product--head">
-        <h2 className="l-6 m-12 s-12">Sản phẩm</h2>
-        <div className="l-2 m-0 s-0">Đơn giá</div>
-        <div className="l-2 m-0 s-0">Số lượng</div>
-        <div className="l-2 m-0 s-0">Thành tiền</div>
-      </div>
+      {!orderProductCheck && (
+        <div className="row no-gutters pay__product--head">
+          <h2 className="l-6 m-12 s-12">Sản phẩm</h2>
+          <div className="l-2 m-0 s-0">Đơn giá</div>
+          <div className="l-2 m-0 s-0">Số lượng</div>
+          <div className="l-2 m-0 s-0">Thành tiền</div>
+        </div>
+      )}
 
-      {cartCheck !== null &&
-        cartCheck?.map((c, index) => (
+      {cartProduct !== null &&
+        cartProduct?.map((c, index) => (
           <div className="row no-gutters pay__product--body" key={index}>
+            <div className="l-12 pay__product--buyer">
+              {" "}
+              <i className="fa-solid fa-shop"></i>
+              <p>nguyen vu linh</p>
+              <button className="pay__product--buyer-chat">Chat</button>
+              <Link href={"/"} className="link pay__product--buyer-view">
+                Xem shop
+              </Link>
+            </div>
             <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
               <Image
                 className="pay__product--item-image pc"
