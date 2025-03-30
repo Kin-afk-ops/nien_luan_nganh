@@ -22,3 +22,13 @@ export const createCategoryAttr = (newCateAttr: CategoryAttribute) => {
     const response = axiosInstance.post("/category/addAttr",newCateAttr);
     return response.then(res => res.data);
 }
+
+export const updateCategory = (updatedCategory: categoryModel) => {
+    const response = axiosInstance.put(`/category/updateCate/${updatedCategory.id}`, updatedCategory);
+    return response.then(res => res.data);
+}
+
+export const updateCategoryAttr = (updatedCategoryAttr: CategoryAttribute) => {
+    const response = axiosInstance.put(`/category/updateAttr/${updatedCategoryAttr.attributeId}`, updatedCategoryAttr);
+    return response.then(res => res.data);
+}

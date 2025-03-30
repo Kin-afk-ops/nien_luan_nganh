@@ -7,6 +7,8 @@ import { createCategory, getAllCateAttr, getAllCategories } from '@/utils/addCat
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import Modal from "react-modal";
 import AddCateAttributeComponent from './AddCateAttributeComponent';
+import { FaEdit } from "react-icons/fa";
+
 
 Modal.setAppElement("body");
 
@@ -17,6 +19,7 @@ const AddCategoryComponent = () => {
     const [newCategory, setNewCategory] = useState<Partial<categoryModel>>({});
     const [selectedAttribute, setSelectedAttribute] = useState<CategoryAttribute | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
         getAllCategories()
@@ -54,6 +57,11 @@ const AddCategoryComponent = () => {
             setNewCategory({});
             setSelectedAttribute(null);
         }
+    };
+
+    const handleEditMode = () => {
+        setEditMode(true);
+        setModalIsOpen(true);
     }
 
     return (
@@ -109,10 +117,13 @@ const AddCategoryComponent = () => {
             </form>
 
             <div className="attribute_detail">
-                <h3>Thuộc tính chi tiết</h3>
+                <div className='flex'>
+                    <h3>Thuộc tính chi tiết</h3>
+                    <FaEdit size={20} onClick={() => handleEditMode()} className='edit_icon'/>
+                </div>
                 {selectedAttribute !== null ? (
                     <ul>
-                        {selectedAttribute.listDataType.map(detail => (
+                        {selectedAttribute.listDataTypes.map(detail => (
                             <li key={detail.id} className='item'>{detail.label}</li>
                         ))}
                     </ul>
@@ -139,7 +150,12 @@ const AddCategoryComponent = () => {
                 >
                     
                 <h2>Thêm chi tiết</h2>
-               <AddCateAttributeComponent onClick={() => setModalIsOpen(false)}></AddCateAttributeComponent>
+               <AddCateAttributeComponent onClick={() => {
+                    setEditMode(false);
+                    setModalIsOpen(false); //
+               }} attributeData={selectedAttribute} 
+                    isEditAttribute={editMode}
+                ></AddCateAttributeComponent>
                 <button onClick={() => setModalIsOpen(false)}>Đóng</button>
             </Modal>
         </div>

@@ -31,7 +31,7 @@ const HomePage = () => {
         />
       )}
 
-      {/* <ProductListContainer
+      <ProductListContainer
         header={`Sản phẩm nổi bật: Sách`}
         productList={productList}
         uniqueId="2"
@@ -45,7 +45,7 @@ const HomePage = () => {
         header="Sản phẩm đã xem"
         productList={productList}
         uniqueId="4"
-      /> */}
+      />
     </div>
   );
 };

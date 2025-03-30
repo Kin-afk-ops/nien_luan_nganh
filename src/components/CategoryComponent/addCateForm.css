@@ -184,6 +184,13 @@
     margin-top: 20px;
   }
 
+  .flex {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+  }
+
   .icon_group{
     display: flex;
     gap: 10px;
