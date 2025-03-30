@@ -13,6 +13,6 @@ interface Option {
   export interface CategoryAttribute {
     attributeId: number;
     label: string;
-    listDataType: Attribute[];
+    listDataTypes: Attribute[];
   }
 

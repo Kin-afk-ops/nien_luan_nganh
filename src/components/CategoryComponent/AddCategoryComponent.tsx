@@ -5,12 +5,18 @@ import React, { useEffect, useState } from 'react';
 import "./addCateForm.css";
 import { createCategory, getAllCateAttr, getAllCategories } from '@/utils/addCategory';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
+import Modal from "react-modal";
+import AddCateAttributeComponent from './AddCateAttributeComponent';
+
+Modal.setAppElement("body");
+
 
 const AddCategoryComponent = () => {
     const [attribute, setAttribute] = useState<CategoryAttribute[]>([]);
     const [categories, setCategories] = useState<categoryModel[]>([]);
     const [newCategory, setNewCategory] = useState<Partial<categoryModel>>({});
     const [selectedAttribute, setSelectedAttribute] = useState<CategoryAttribute | null>(null);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     useEffect(() => {
         getAllCategories()
@@ -79,21 +85,26 @@ const AddCategoryComponent = () => {
                     </select>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group attribute-group">
                     <label className='form-label'>Thuộc tính (nếu có):</label>
-                    <select
-                        name="attributeId"
-                        value={newCategory.attributeId || ''}
-                        onChange={handleChange}
-                        className='form-select'
-                    >
-                        <option value={0}>Không có</option>
-                        {attribute.map(attr => (
-                            <option key={attr.attributeId} value={attr.attributeId}>
-                                {attr.label}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="select-group">
+                        <select
+                            name="attributeId"
+                            value={newCategory.attributeId || ''}
+                            onChange={handleChange}
+                            className='form-select'
+                        >
+                            <option value={0}>Không có</option>
+                            {attribute.map(attr => (
+                                <option key={attr.attributeId} value={attr.attributeId}>
+                                    {attr.label}
+                                </option>
+                            ))}
+                        </select>
+                        <ButtonComponent label='Tạo tuộc tính mới' onClick={() => setModalIsOpen(true)}
+                            style={{backgroundColor: 'coral', width: 180, height: 40, fontSize: 13, color: 'white'}}    
+                        ></ButtonComponent>
+                    </div>
                 </div>
             </form>
 
@@ -112,6 +123,25 @@ const AddCategoryComponent = () => {
             <ButtonComponent label='Tạo danh mục' onClick={handleSubmit}
                 style={{backgroundColor: 'blue', width: 200, color: 'white'}}
             ></ButtonComponent>
+            <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}
+                style={{
+                    overlay: {
+                      backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ
+                    },
+                    content: {
+                      width: "500px",
+                      margin: "auto",
+                      padding: "20px",
+                      borderRadius: "10px",
+                      
+                    },
+                  }}
+                >
+                    
+                <h2>Thêm chi tiết</h2>
+               <AddCateAttributeComponent onClick={() => setModalIsOpen(false)}></AddCateAttributeComponent>
+                <button onClick={() => setModalIsOpen(false)}>Đóng</button>
+            </Modal>
         </div>
     );
 };

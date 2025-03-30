@@ -31,9 +31,9 @@ import axiosInstance from "@/helpers/api/config";
 import { detailLabels } from "@/data/detailLabels";
 import CommentComponent from "@/components/commentComponent/CommentComponent";
 import { Cart } from "@/interfaces/cart";
-import Swal from "sweetalert2";
 import { useAppSelector } from "@/lib/store"; 
 import { addToCart } from "@/utils/addToCart";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const { categorySlug, productSlug, id } = useParams();
@@ -149,19 +149,11 @@ const ProductDetail = () => {
     };
 
     if(!currentUser) {
-      Swal.fire({
-        title: "Vui lòng đăng nhập để mua hàng",
-        icon: "warning",
-        confirmButtonText: "OK",
-      })
+      toast.error("Vui lòng đăng nhập !")
       return;
     } else {
         addToCart(currentUser._id, cart);
-        Swal.fire({
-          title: "Đã thêm sản phẩm vào giỏ hàng",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
+        toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
     }
   }
   // Di chuyển ảnh

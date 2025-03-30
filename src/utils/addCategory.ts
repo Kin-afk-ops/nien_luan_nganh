@@ -1,4 +1,5 @@
 import axiosInstance from "@/helpers/api/config";
+import { CategoryAttribute } from "@/models/attributesModel";
 import { categoryModel } from "@/models/CategoryModel";
 
 export const getAllCategories = () => {
@@ -14,5 +15,10 @@ export const getAllCateAttr = () => {
 
 export const createCategory = (newCategory: Partial<categoryModel>) => {
     const response =  axiosInstance.post("/category/addCate",newCategory);
+    return response.then(res => res.data);
+}
+
+export const createCategoryAttr = (newCateAttr: CategoryAttribute) => {
+    const response = axiosInstance.post("/category/addAttr",newCateAttr);
     return response.then(res => res.data);
 }

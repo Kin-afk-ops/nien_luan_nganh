@@ -2,10 +2,10 @@ import React, { useState, useRef } from 'react'
 import { useAppSelector } from "@/lib/store"; 
 import "./commentStyle.css"
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
-import Swal from "sweetalert2";
 import { comments, postComment } from '@/interfaces/comment';
 import { createComment, deleteComment, updateComment } from '@/utils/createComment';
 import ListCommentComponent from './ListCommentComponent';
+import { toast } from 'react-hot-toast';
 
 interface Props {
     productId: string;
@@ -20,17 +20,15 @@ const CommentComponent = (props: Props) => {
     const [editedComment, setEditedComment] = useState<comments>()
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const [forceUpdate, setForceUpdate] = useState(false);
+    
+    
 
 
     const handleSubmitComment = async () => {
-        if(!currentUser) {
+        if(!currentUser?._id) {
             alert("Bạn cần phải đăng nhập để đánh giá");
         }else if(content === '') {
-            Swal.fire({
-                title: "Thông báo",
-                text: "Vui lòng nhập nội dung bình luận",
-                icon: "info",
-            });
+            toast.error("Bạn cần nhập bình luận để đánh giá");
         }else {
            try{
                 const comment: postComment = {
@@ -40,19 +38,10 @@ const CommentComponent = (props: Props) => {
                 setContent('');
                 
                 await createComment(productId, currentUser._id, comment);
-                Swal.fire({
-                    title: "Thông báo",
-                    text: "Bạn đã gửi đánh giá thành công",
-                    icon: "success",
-                });
+                toast.success("Bạn đã gửi đánh giá thành công");
                 setForceUpdate(!forceUpdate); // Tự đông refresh lại danh sách bình luận khi gửi bình luận thành công
            }catch(error) {
-             Swal.fire({
-                 title: "Thông báo",
-                 text: "Có l��i xảy ra. Vui lòng thử lại",
-                 icon: "error",
-                 confirmButtonText: "Ok",
-             });
+             
              console.error(error);
              return;
            }
@@ -70,6 +59,7 @@ const CommentComponent = (props: Props) => {
     }
 
     const saveEditComment = async() => {
+        toast.success("Đây là test");
         if (!editedComment || !content) {
             
             return;
@@ -79,19 +69,10 @@ const CommentComponent = (props: Props) => {
             await updateComment(editedComment._id, editedComment.userId, content);
             setIsEditable(false);
             setContent("");
-            Swal.fire({
-                title: "Thông báo",
-                text: "Bạn đã sửa bình luận thành công",
-                icon: "success",
-            });
+            toast.success("Bạn đã sửa bình luận thành công");
             setForceUpdate(!forceUpdate); // Tự đông refresh lại danh sách bình luận khi sửa bình luận thành công
         } catch(error) {
-            Swal.fire({
-                title: "Thông báo",
-                text: "Có l��i xảy ra. Vui lòng thử lại",
-                icon: "error",
-                confirmButtonText: "Ok",
-            });
+            toast.error("Có lỗi xải ra, vui lòng thử lại!")
             console.error(error);
             return;
         }
@@ -102,26 +83,12 @@ const CommentComponent = (props: Props) => {
             if (currentUser?._id) {
                 await deleteComment(commentId, currentUser._id);
             } else {
-                Swal.fire({
-                    title: "Thông báo",
-                    text: "Người dùng không hợp lệ. Vui lòng đăng nhập lại.",
-                    icon: "error",
-                    confirmButtonText: "Ok",
-                });
+                toast.error("Người dùng không hợp lệ, vui lòng đăng nhập lại")
             }
-            Swal.fire({
-                title: "Thông báo",
-                text: "Bạn đã xóa bình luận thành công",
-                icon: "success",
-            });
+            toast.success("Bạn đã xóa bình luận thành công");
             setForceUpdate(!forceUpdate); // Tự đông refresh lại danh sách bình luận khi xóa bình luận thành công
         } catch(error) {
-            Swal.fire({
-                title: "Thông báo",
-                text: "Có l��i xảy ra. Vui lòng thử lại",
-                icon: "error",
-                confirmButtonText: "Ok",
-            });
+           toast.error("Có lỗi xảy ra, vui lòng thử lại");
             console.error(error);
             return;
         }
