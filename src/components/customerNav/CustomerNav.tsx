@@ -5,26 +5,60 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./customerNav.css";
+import "./responsive.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import axiosInstance from "@/helpers/api/config";
 
-const CustomerNav = () => {
+interface ChildProps {
+  setMenuToggle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
   const pathname = usePathname();
   const user =
     useSelector((state: RootState) => state.user.currentUser) || null;
-  const slug = pathname.split("/")[2];
+
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
+
+  const [slug, setSlug] = useState<string | null>(null);
+  const [firebaseIsAccount, setFIrebaseIsAccount] = useState<boolean>(false);
 
   useEffect(() => {
+    setSlug(pathname.split("/")[2]);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!user || !user._id) return; // Chỉ gọi API nếu user tồn tại
     if (user) {
-      setUserEmail(user.email ?? "Đang tải...");
+      setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
+
+      setFIrebaseIsAccount(user?.firebase);
+      console.log(user);
     }
 
-    // Lấy slug từ URL khi client tải xong
+    const getInfoUser = async (): Promise<void> => {
+      await axiosInstance
+        .get(`/infoUser/${user?._id}`)
+        .then((res) => {
+          setName(res.data.name);
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    getInfoUser();
   }, [user]);
 
   return (
     <div className="customer__nav">
+      <i
+        className="fa-solid fa-xmark customer__nav--close-mobile"
+        onClick={() => setMenuToggle(false)}
+      ></i>
       <div className="customer__nav--info">
         <Image
           className="customer__nav--image"
@@ -34,12 +68,12 @@ const CustomerNav = () => {
           height={60}
         />
         {userEmail && (
-          <p className="customer__nav--name">{userEmail ?? "Đang tải..."}</p>
+          <p className="customer__nav--name">{name ? name : userEmail}</p>
         )}
       </div>
 
       <ul className="customer__nav--list">
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/thong-tin"}
             className={
@@ -53,7 +87,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/tin-nhan"}
             className={
@@ -67,7 +101,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/thong-bao"}
             className={
@@ -80,12 +114,28 @@ const CustomerNav = () => {
             <p>Thông báo</p>
           </Link>
         </li>
+
+        {firebaseIsAccount && (
+          <li onClick={() => setMenuToggle(false)}>
+            <Link
+              href={"/ho-so/thay-doi-mat-khau"}
+              className={
+                slug === "thay-doi-mat-khau"
+                  ? "customer__nav--link active"
+                  : "customer__nav--link"
+              }
+            >
+              <i className="customer__nav--icon fa-regular fa-edit"></i>
+              <p>Thay đổi mật khẩu</p>
+            </Link>
+          </li>
+        )}
       </ul>
 
       <h3>Bán hàng</h3>
 
       <ul className="customer__nav--list">
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/them-san-pham"}
             className={
@@ -100,7 +150,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/tat-ca-san-pham"}
             className={
@@ -114,7 +164,7 @@ const CustomerNav = () => {
           </Link>
         </li>
 
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/don-ban"}
             className={
@@ -127,53 +177,11 @@ const CustomerNav = () => {
             <p>Đơn bán</p>
           </Link>
         </li>
-
-        <li>
-          <Link
-            href={"/ho-so/ho-so-shop"}
-            className={
-              slug === "ho-so-shop"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-solid fa-shop"></i>
-            <p>Hồ sơ shop</p>
-          </Link>
-        </li>
-
-        <li>
-          <Link
-            href={"/ho-so/xac-minh-danh-tinh"}
-            className={
-              slug === "xac-minh-danh-tinh"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-solid fa-user-tag"></i>
-            <p>Xác minh danh tính</p>
-          </Link>
-        </li>
       </ul>
 
       <h3>Mua hàng</h3>
       <ul className="customer__nav--list">
-        <li>
-          <Link
-            href={"/ho-so/yeu-thich"}
-            className={
-              slug === "yeu-thich"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
-            }
-          >
-            <i className="customer__nav--icon fa-regular fa-heart"></i>
-            <p>Yêu thích</p>
-          </Link>
-        </li>
-
-        <li>
+        <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/don-mua"}
             className={

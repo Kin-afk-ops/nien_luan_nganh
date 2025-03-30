@@ -23,7 +23,15 @@ export const login = async (
   if (phoneMode) {
     try {
       const res = await axiosInstance.post("/auth/login/phone", user);
-      dispatch(loginSuccess(res.data));
+      dispatch(
+        loginSuccess({
+          accessToken: res.data.accessToken,
+          phone: res.data.phone,
+          email: res.data.email,
+          _id: res.data._id,
+          firebase: false,
+        })
+      );
       setNoAccount(false);
       alert("!đăng nhập thành công");
     } catch (err) {
@@ -35,8 +43,15 @@ export const login = async (
   } else {
     try {
       const res = await axiosInstance.post("/auth/login/email", user);
-      console.log(res.data);
-      dispatch(loginSuccess(res.data));
+      dispatch(
+        loginSuccess({
+          accessToken: res.data.accessToken,
+          phone: res.data.phone,
+          email: res.data.email,
+          _id: res.data._id,
+          firebase: false,
+        })
+      );
       setNoAccount(false);
       alert("!đăng nhập thành công");
     } catch (err) {

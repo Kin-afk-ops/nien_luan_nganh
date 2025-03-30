@@ -1,12 +1,12 @@
 .address__modal--wrapper {
   width: 45%;
   position: absolute;
-  top: 230px;
+  top: 35%;
   left: 50%;
   transform: translateX(-50%);
 
   padding: 0 15px;
-  z-index: 1001; /* Đặt trên overlay */
+  z-index: 1500; /* Đặt trên overlay */
 }
 
 .address__modal {
@@ -184,5 +184,13 @@
 }
 
 .address__modal--phone.error input {
+  color: var(--error);
+}
+
+.address__modal--default-error {
+  display: flex;
+  justify-content: center;
+
+  font-size: 14px;
   color: var(--error);
 }

@@ -15,7 +15,7 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* overflow-y: hidden; */
   background-color: var(--background-color) !important;
 }
 
@@ -105,9 +105,19 @@ a {
   display: none;
 }
 
+.display-flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .link {
   color: inherit;
   text-decoration: none;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
 
 .modal-overlay {
@@ -121,6 +131,17 @@ a {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+}
+
+.overlay-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+
+  z-index: 10;
 }
 
 /* nprocess */

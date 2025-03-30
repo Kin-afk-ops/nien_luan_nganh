@@ -20,6 +20,7 @@ const AddCategoryComponent = () => {
     const [selectedAttribute, setSelectedAttribute] = useState<CategoryAttribute | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [isChange, setisChange] = useState(false);
 
     useEffect(() => {
         getAllCategories()
@@ -29,7 +30,7 @@ const AddCategoryComponent = () => {
         getAllCateAttr()
             .then(setAttribute)
             .catch(error => console.error("Failed to fetch attribute:", error));
-    }, []);
+    }, [isChange]);
 
     useEffect(() => {
         console.log("Selected Attributes: ", selectedAttribute);
@@ -153,6 +154,7 @@ const AddCategoryComponent = () => {
                <AddCateAttributeComponent onClick={() => {
                     setEditMode(false);
                     setModalIsOpen(false); //
+                    setisChange(!isChange);
                }} attributeData={selectedAttribute} 
                     isEditAttribute={editMode}
                 ></AddCateAttributeComponent>

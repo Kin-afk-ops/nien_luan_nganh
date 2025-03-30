@@ -23,8 +23,11 @@ export interface AddressForm {
   nameAddress: string;
   phoneAddress: string;
   province: string;
+  provinceId: string;
   district: string;
+  districtId: string;
   ward: string;
+  wardId: string;
   address: string;
   default: boolean;
 }

@@ -6,6 +6,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaTruck, FaCoins } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
+import formatPrice from "@/helpers/format/formatPrice";
 
 interface Props {
   product?: ProductModel;
@@ -29,7 +30,10 @@ const ProductCard = (props: Props) => {
         <div className={styles.nameField}>
           <p>{product?.name}</p>
         </div>
-        <p className={styles.price}>{`${product?.price}đ`}</p>
+        {
+          product && <p className={styles.price}>{`${formatPrice(product?.price)}`}</p>
+        }
+        
         <div className={styles.location}>
           <FaLocationDot/>
           {product?.address ? <p>{product.address.province}</p> : <p>Không có Tỉnh</p> 

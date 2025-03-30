@@ -1,0 +1,93 @@
+.pay__product {
+  padding: 0 30px;
+  margin-bottom: 20px;
+}
+
+.pay__product--head {
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.pay__product--head h2 {
+  font-weight: 400;
+}
+.pay__product--head div {
+  display: flex;
+  justify-content: flex-end;
+  color: #616161;
+}
+
+.pay__product--body {
+  padding: 30px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.pay__product--item {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pay__product--name {
+  padding-left: 20px;
+}
+
+.pay__product--name p {
+  white-space: nowrap; /* Không xuống dòng */
+  overflow: hidden; /* Ẩn phần bị tràn */
+  text-overflow: ellipsis;
+}
+
+.pay__product--item-image.tablet {
+  display: none;
+}
+
+.pay__product--item-image.mobile {
+  display: none;
+}
+
+.pay__product--image {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pay__product--buyer {
+  margin-bottom: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.pay__product--buyer i {
+  margin-right: 10px;
+}
+.pay__product--buyer p {
+  max-width: 70%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  margin-right: 10px;
+}
+
+.pay__product--buyer-chat {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  margin-right: 10px;
+}
+
+.pay__product--buyer-view {
+  font-weight: 400;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.pay__product--buyer-view:hover {
+  text-decoration: underline;
+  color: var(--success);
+}

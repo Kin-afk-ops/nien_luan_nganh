@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "../layout.css";
 import "./register.css";
+import "./responsive.css";
 import Link from "next/link";
 import validationEmail from "@/helpers/validation/email";
 import validationPhone from "@/helpers/validation/phone";
@@ -34,6 +35,7 @@ import {
 } from "@/lib/features/user/userSlice";
 
 import Loading from "@/components/loading/Loading";
+import PhoneModal from "@/components/phoneModal/PhoneModal";
 
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -84,6 +86,7 @@ const RegisterPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(300);
 
   const [isRunning, setIsRunning] = useState(false);
+  const [phoneModal, setPhoneModal] = useState<boolean>(false);
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -229,38 +232,8 @@ const RegisterPage: React.FC = () => {
 
     if (phoneMode) {
       if (!phoneError && !passwordError && !confirmPasswordError) {
-        const newUser: newUserPhone = {
-          phone: phoneValue,
-          password: passwordValue,
-        };
-
-        if (!recaptchaVerifier) {
-          return setOtpErrorMessage("RecaptchaVerifier is not initialized");
-        }
-        try {
-          const confirmationResult = await signInWithPhoneNumber(
-            auth,
-            "+84589443320",
-            recaptchaVerifier
-          );
-          setConfirmationResult(confirmationResult);
-          console.log("ok phone");
-        } catch (error) {
-          console.log(error);
-        }
-
-        // try {
-        //   const res = await axiosInstance.post("/auth/register/phone", newUser);
-        //   console.log(res.data);
-
-        //   // alert("đăng ký thành công");
-        //   // setTimeout(() => {
-        //   //   router.push("/tai-khoan/dang-nhap");
-        //   // }, 3000);
-        //   setOptMode(true);
-        // } catch (error) {
-        //   console.log(error);
-        // }
+        setPhoneModal(true);
+        setLoading(false);
       }
     } else {
       if (!emailError && !passwordError && !confirmPasswordError) {
@@ -419,30 +392,62 @@ const RegisterPage: React.FC = () => {
 
       // console.log("Server Response:", res.data);
 
-      const userLogin: LoginUserGoogle = {
-        accessToken: await user.getIdToken(),
-        email: user.email,
-        phone: "none",
-      };
+      await axiosInstance
+        .post(`/auth/register/find/email`, {
+          firebaseMode: true,
+          email: user?.email,
+        })
+        .then((res) => {
+          alert(res.data.message);
+          // setCheckGoogleUser(res.data.check);
+        })
+        .catch(async (error) => {
+          console.log(error);
 
-      dispatch(loginSuccess(userLogin));
-      alert("Đăng nhập Google thành công!");
+          let googlePhoneValue: string = "";
+
+          await axiosInstance
+            .get(`/auth/firebase/phone/${user.uid}`)
+            .then((res) => {
+              googlePhoneValue = res.data.phone;
+              console.log(googlePhoneValue);
+            })
+            .catch((error) => console.log(error));
+
+          const userLogin: {
+            _id: string;
+            accessToken: string;
+            email: string;
+            phone: string;
+            firebase: boolean;
+          } = {
+            _id: user.uid,
+            accessToken: await user.getIdToken(),
+            email: user?.email ? user?.email : "Lỗi dữ liệu",
+            phone: googlePhoneValue,
+            firebase: true,
+          };
+
+          dispatch(loginSuccess(userLogin));
+
+          alert("Đăng nhập Google thành công!");
+        });
     } catch (error) {
       console.error("Google Login Error:", error);
       dispatch(loginFailure());
     }
   };
 
-  const handleFacebookLogin = async (): Promise<void> => {
-    try {
-      const result = await signInWithPopup(auth, facebookProvider);
-      const user = result.user;
-      console.log("User Info:", user);
-      alert("Đăng nhập Facebook thành công!");
-    } catch (error) {
-      console.error("Facebook Login Error:", error);
-    }
-  };
+  // const handleFacebookLogin = async (): Promise<void> => {
+  //   try {
+  //     const result = await signInWithPopup(auth, facebookProvider);
+  //     const user = result.user;
+  //     console.log("User Info:", user);
+  //     alert("Đăng nhập Facebook thành công!");
+  //   } catch (error) {
+  //     console.error("Facebook Login Error:", error);
+  //   }
+  // };
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -480,7 +485,7 @@ const RegisterPage: React.FC = () => {
       {loading && <Loading />}
       <div className="grid wide">
         <div className="row no-gutters">
-          <div className="c-8 register__image">
+          <div className="l-8 m-0 s-0 register__image">
             <Image
               src="/assets/account/banner_login.png"
               width={587}
@@ -488,7 +493,7 @@ const RegisterPage: React.FC = () => {
               alt="Picture of the author"
             />
           </div>
-          <div className="c-4 account__container">
+          <div className="l-4 m-8 s-12 account__container">
             <form className="account__form">
               {passwordMode ? (
                 <>
@@ -838,14 +843,14 @@ const RegisterPage: React.FC = () => {
                   </div>
                   <span>Đăng ký với Google</span>
                 </button>
-
+                {/* 
                 <button
                   className="transparent-btn account__change--btn"
                   onClick={() => handleFacebookLogin()}
                 >
                   <i className="account__change--facebook fa-brands fa-facebook"></i>
                   <span>Đăng ký với Facebook</span>
-                </button>
+                </button> */}
               </>
             )}
 
@@ -864,6 +869,14 @@ const RegisterPage: React.FC = () => {
         </div>
       </div>
       <div id="recaptcha-container"></div>
+      {phoneModal && (
+        <PhoneModal
+          setPhoneModal={setPhoneModal}
+          phoneValue={phoneValue}
+          passwordValue={passwordValue}
+          setLoading={setLoading}
+        />
+      )}
     </div>
   );
 };

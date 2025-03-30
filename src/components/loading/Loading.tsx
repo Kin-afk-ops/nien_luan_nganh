@@ -7,7 +7,7 @@ const Loading = () => {
     <div className="overlay">
       <div className="sweet-loading">
         <ClipLoader
-          color="#ff3333"
+          color="var(--primary-color)"
           loading={true}
           cssOverride={{
             display: "block",

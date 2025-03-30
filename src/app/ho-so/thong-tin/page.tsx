@@ -1,45 +1,200 @@
 "use client";
 import Image from "next/image";
-import Cropper, { Area } from "react-easy-crop";
+// import Cropper, { Area } from "react-easy-crop";
 import "../layout.css";
 import "./page.css";
-import { useState } from "react";
+import "./responsive.css";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import formatDate from "@/helpers/format/formattedDate";
+// import formatDate from "@/helpers/format/formattedDate";
 import AddressModal from "@/components/addressModal/AddressModal";
 import { AddressInterface } from "@/interfaces/addressUser";
 
 import { AvatarInterface } from "@/interfaces/avatar";
+import { validationEmpty } from "@/helpers/validation/address";
+import axiosInstance from "@/helpers/api/config";
+import { useSelector } from "react-redux";
+import { RootState } from "@/hooks/useAppDispatch";
+import uploadImage from "@/helpers/image/uploadImage";
+import { InfoUserInterface } from "@/interfaces/infoUser";
+import formatDate from "@/helpers/format/formattedDate";
+import formatDateToInput from "@/helpers/format/formatDateToInput";
+import { ImageUploadInterface } from "@/interfaces/imageUpload";
+import updateImage from "@/helpers/image/updateImage";
+import Loading from "@/components/loading/Loading";
+import NotificationModal from "@/components/notificationModal/NotificationModal";
+import ProfileAccount from "@/components/profileAccount/ProfileAccount";
+import AddressList from "@/components/addressList/addressList";
 
 const ProfilePage = () => {
-  const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState<number>(1.1);
+  const user =
+    useSelector((state: RootState) => state.user.currentUser) || null;
+  const [userId, setUserId] = useState<string | null>(null);
+  // const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  // const [zoom, setZoom] = useState<number>(1.1);
   const [checkFile, setCheckFile] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
-  const [avatar, setAvatar] = useState<AvatarInterface | null>(null);
+
+  const [avatar, setAvatar] = useState<ImageUploadInterface>({
+    path: "/assets/account/avatar_default.png",
+    publicId: "",
+  });
+
+  const [avatarError, setAvatarError] = useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [nameError, setNameError] = useState<boolean>(false);
   const [gender, setGender] = useState<string>("");
-  const [genderError, setGenderError] = useState<boolean>(true);
-  const [birthday, setBirthday] = useState<string>("Chọn ngày");
-  const [birthdayError, setBirthdayError] = useState<boolean>(true);
+  const [genderError, setGenderError] = useState<boolean>(false);
+  const [birthday, setBirthday] = useState<string>("");
+  const [birthdayError, setBirthdayError] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<AddressInterface[]>([]);
-  const [indexAddress, setIndexAddress] = useState<number | null>(null);
   const [editAddressMode, setEditAddressMode] = useState<boolean>(false);
+  const [indexAddress, setIndexAddress] = useState<number>(9999);
 
   const [introduce, setIntroduce] = useState<string>("");
+  const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
+  const [addressId, setAddressId] = useState<string>("");
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [notificationModal, setNotificationModal] = useState<boolean>(false);
+  const [firebaseIsAccount, setFirebaseIsAccount] = useState<boolean>(false);
 
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    console.log(croppedArea, croppedAreaPixels);
+  // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+  //   console.log(croppedArea, croppedAreaPixels);
+  // };
+
+  useEffect(() => {
+    if (user) {
+      setUserId(user._id);
+      if (user.email !== "none") setEmail(user.email);
+
+      if (user.phone !== "none") setPhone(user.phone);
+      setFirebaseIsAccount(user?.firebase);
+    }
+    const getInfoUser = async (): Promise<void> => {
+      setLoading(true);
+      await axiosInstance
+        .get(`/infoUser/${user?._id}`)
+        .then((res) => {
+          setEditMode(true);
+          if (res.data.avatar) {
+            setAvatar(res.data.avatar);
+          }
+
+          setName(res.data.name);
+          setGender(res.data.gender);
+          setBirthday(formatDateToInput(res.data.birthday));
+          setIntroduce(res.data.introduce);
+        })
+        .catch((error) => {
+          console.log(error);
+
+          if (error.status === 404) {
+            setEditMode(false);
+          }
+        });
+      setLoading(false);
+    };
+
+    const getAddressInfoUser = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get(`/addressInfoUser/${user?._id}`);
+        setAddresses(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAddressInfoUser();
+    getInfoUser();
+  }, [user, userId, loadingAddress]);
+
+  const validationName = (): boolean => {
+    if (validationEmpty(name)) {
+      setNameError(false);
+      return true;
+    } else {
+      setNameError(true);
+      return false;
+    }
   };
+
+  const validationBirthday = (): boolean => {
+    if (validationEmpty(birthday)) {
+      setBirthdayError(false);
+      return true;
+    } else {
+      setBirthdayError(true);
+      return false;
+    }
+  };
+
+  const validationGender = (): boolean => {
+    if (validationEmpty(gender)) {
+      setGenderError(false);
+      return true;
+    } else {
+      setGenderError(true);
+      return false;
+    }
+  };
+
+  const handleSubmit = async (): Promise<void> => {
+    setLoading(true);
+    validationName();
+    validationBirthday();
+    validationGender();
+    if (
+      validationName() &&
+      validationBirthday() &&
+      validationGender() &&
+      !avatarError
+    ) {
+      if (!editMode) {
+        const image = await uploadImage(file);
+        const infoUserForm: InfoUserInterface = {
+          avatar: image,
+          name: name,
+          gender: gender,
+          birthday: formatDate(birthday),
+          introduce: introduce,
+        };
+        await axiosInstance
+          .post(`/infoUser/${userId}`, infoUserForm)
+          .then((res) => console.log(res))
+          .catch((error) => console.log(error));
+
+        setLoading(false);
+      } else {
+        console.log("editMode");
+
+        const infoUserForm: InfoUserInterface = {
+          avatar: checkFile
+            ? await updateImage(file, avatar?.publicId)
+            : avatar,
+          name: name,
+          gender: gender,
+          birthday: formatDate(birthday),
+          introduce: introduce,
+        };
+        await axiosInstance
+          .put(`/infoUser/${userId}`, infoUserForm)
+          .then((res) => console.log(res))
+          .catch((error) => console.log(error));
+      }
+      setLoading(false);
+    }
+  };
+
   return (
     <>
+      {loading && <Loading />}
       <h3 className="profile__header">Thông tin của tôi</h3>
       <div className="main-container profile__info">
-        <Cropper
+        {/* <Cropper
           image="/assets/account/avatar_default.png"
           crop={crop}
           zoom={zoom}
@@ -47,35 +202,25 @@ const ProfilePage = () => {
           onCropChange={setCrop}
           onCropComplete={onCropComplete}
           onZoomChange={setZoom}
-        />
+        /> */}
         <div className="profile__info--top">
           <label htmlFor="profile__info--avatar">
-            {checkFile ? (
-              <Image
-                className="profile__info--top-image"
-                src={file ? URL.createObjectURL(file) : ""}
-                alt="avatar "
-                width={108}
-                height={108}
-              />
-            ) : (
-              <Image
-                className="profile__info--top-image"
-                src="/assets/account/avatar_default.png"
-                alt="avatar default"
-                width={108}
-                height={108}
-              />
-            )}
+            <Image
+              className="profile__info--top-image"
+              src={file ? URL.createObjectURL(file) : avatar?.path}
+              alt="avatar "
+              width={108}
+              height={108}
+            />
 
             <div className="profile__info--top-input">
               <i className="fa-solid fa-camera"></i>
             </div>
           </label>
           <div className="profile__info--name">
-            <p>Nguyen Vu Linh</p>
-            <p>email</p>
-            <p>sdt</p>
+            {name !== "none" && <p>{name}</p>}
+            {email !== "none" && <p>{email}</p>}
+            {phone !== "none" && <p>{phone}</p>}
           </div>
           <input
             type="file"
@@ -84,12 +229,28 @@ const ProfilePage = () => {
             onChange={(e) => {
               setFile(e.target.files[0]);
 
+              if (e.target.files[0].type.startsWith("image/")) {
+                setAvatarError(false);
+              } else {
+                setAvatarError(true);
+              }
+
               setCheckFile(true);
             }}
           />
+
+          {avatarError && (
+            <p className="profile__avatar--error">Hãy chọn một hình ảnh</p>
+          )}
         </div>
 
-        <form className="profile__info--form" action="">
+        <form
+          className="profile__info--form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
           <div className="profile__info--form-block">
             <label htmlFor="profile__info--form-name">Tên đầy đủ</label>
 
@@ -103,6 +264,7 @@ const ProfilePage = () => {
               type="text"
               id="profile__info--form-name"
               placeholder="Nhập họ và tên"
+              onFocus={() => setNameError(false)}
               onChange={(e) => {
                 if (e.target.value === "") setNameError(true);
                 else setNameError(false);
@@ -125,6 +287,7 @@ const ProfilePage = () => {
                 id="gender__nam"
                 checked={gender === "Nam"}
                 onChange={() => setGender("Nam")}
+                onFocus={() => setGenderError(false)}
               />
               <label htmlFor="gender__nam">Nam</label>
               <input
@@ -133,6 +296,7 @@ const ProfilePage = () => {
                 id="gender__nu"
                 checked={gender === "Nữ"}
                 onChange={() => setGender("Nữ")}
+                onFocus={() => setGenderError(false)}
               />
               <label htmlFor="gender__nu">Nữ</label>
               <input
@@ -140,6 +304,7 @@ const ProfilePage = () => {
                 name="gender"
                 id="gender__khac"
                 checked={gender === "Khác"}
+                onFocus={() => setGenderError(false)}
                 onChange={() => setGender("Khác")}
               />
               <label htmlFor="gender__khac">Khác</label>
@@ -164,7 +329,8 @@ const ProfilePage = () => {
               name=""
               id="profile__info--form-date"
               value={birthday}
-              onChange={(e) => setBirthday(formatDate(e.target.value))}
+              onFocus={() => setBirthdayError(false)}
+              onChange={(e) => setBirthday(e.target.value)}
             />
             {birthdayError && (
               <span className="profile__info--message error">
@@ -173,18 +339,17 @@ const ProfilePage = () => {
             )}
           </div>
 
-          <div className="profile__info--form-block">
-            <p className="profile__info--form-address">Địa chỉ</p>
-            <button
-              className="profile__info--form-address-btn"
-              onClick={(e) => {
-                e.preventDefault();
-                setAddressModal(true);
-              }}
-            >
-              <i className="fa-solid fa-plus"></i>
-              Thêm mới
-            </button>
+          <div className="profile__info--address">
+            <p>Địa chỉ</p>
+            <AddressList
+              userId={userId}
+              setAddressModal={setAddressModal}
+              setEditAddressMode={setEditAddressMode}
+              setAddressId={setAddressId}
+              setIndexAddress={setIndexAddress}
+              addresses={addresses}
+              setAddresses={setAddresses}
+            />
           </div>
 
           <div className="profile__info--form-block profile__info--form-introduce">
@@ -195,10 +360,26 @@ const ProfilePage = () => {
               id="profile__info--form-introduce"
               cols="50"
               rows="8"
+              value={introduce}
+              onChange={(e) => setIntroduce(e.target.value)}
+            />
+
+            <textarea
+              placeholder="Nhập giới thiệu"
+              name=""
+              id="profile__info--form-introduce-mobile"
+              className="profile__info--form-introduce-mobile"
+              cols="43"
+              rows="8"
+              value={introduce}
+              onChange={(e) => setIntroduce(e.target.value)}
             />
           </div>
 
-          <button className="secondary-btn profile__info--form-save">
+          <button
+            className="secondary-btn profile__info--form-save"
+            type="submit"
+          >
             Lưu thay đổi
           </button>
         </form>
@@ -208,11 +389,21 @@ const ProfilePage = () => {
           addressModal={addressModal}
           setAddressModal={setAddressModal}
           addresses={addresses}
-          setAddresses={setAddresses}
-          indexAddress={indexAddress}
           editAddressMode={editAddressMode}
+          indexAddress={indexAddress}
+          userId={userId}
+          loadingAddress={loadingAddress}
+          setLoadingAddress={setLoadingAddress}
+          addressId={addressId}
         />
       )}
+
+      <ProfileAccount
+        phone={phone}
+        email={email}
+        userId={userId}
+        firebaseIsAccount={firebaseIsAccount}
+      />
     </>
   );
 };

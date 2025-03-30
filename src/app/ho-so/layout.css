@@ -9,3 +9,14 @@
   -moz-box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
   box-shadow: 2px 3px 5px -3px rgba(0, 0, 0, 0.75);
 }
+
+.customer__nav--mobile {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  transform: translateX(-100%);
+  transition: 0.5s;
+  z-index: 15;
+}

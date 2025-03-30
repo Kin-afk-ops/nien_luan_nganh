@@ -1,9 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import "../layout.css";
 import "./login.css";
 import Link from "next/link";
+import { auth, facebookProvider, googleProvider } from "../../../../firebase";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  signInWithPopup,
+} from "firebase/auth";
 import { EmailTestInterface } from "@/interfaces/emailTest";
 import validationEmail from "@/helpers/validation/email";
 import { PhoneInterface } from "@/interfaces/phoneTest";
@@ -14,13 +21,23 @@ import { newUserPhone } from "@/interfaces/user";
 import axiosInstance from "@/helpers/api/config";
 
 import { login } from "@/lib/apiCall";
-import { LoginUser } from "@/interfaces/loginUser";
+import { LoginUser, LoginUserGoogle } from "@/interfaces/loginUser";
 import { useAppDispatch } from "@/lib/store";
 import googleLogo from "../../../../public/assets/google_logo.png";
+import {
+  loginFailure,
+  loginStart,
+  loginSuccess,
+} from "@/lib/features/user/userSlice";
+import { UserState } from "@/interfaces/userState";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const [noAccount, setNoAccount] = useState<boolean>(false);
+  const [recaptchaVerifier, setRecaptchaVerifier] =
+    useState<RecaptchaVerifier | null>(null);
+  const [confirmationResult, setConfirmationResult] =
+    useState<ConfirmationResult | null>(null);
   const [phoneMode, setPhoneMode] = useState<boolean>(false);
   const [phoneValue, setPhoneValue] = useState<string>("");
   const [emailValue, setEmailValue] = useState<string>("");
@@ -37,6 +54,88 @@ const LoginPage = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>("");
 
   const [displayPassword, setDisplayPassword] = useState<boolean>(false);
+  const [checkGoogleUser, setCheckGoogleUser] = useState<boolean>(false);
+  const [phoneGoogleValue, setPhoneGoogleValue] = useState<string>("");
+
+  useEffect(() => {
+    const recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+      }
+    );
+
+    setRecaptchaVerifier(recaptchaVerifier);
+    return () => {
+      recaptchaVerifier.clear();
+    };
+  }, [auth]);
+
+  const handleGoogleLogin = async (): Promise<void> => {
+    dispatch(loginStart());
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("User Info:", user);
+
+      // Lấy Access Token từ Firebase
+      // const idToken = await user.getIdToken();
+
+      // console.log("Access Token:", idToken);
+
+      // const res = await axiosInstance.post("/auth/firebase-login", {
+      //   token: idToken,
+      // });
+
+      // console.log("Server Response:", res.data);
+
+      await axiosInstance
+        .post(`/auth/register/find/email`, {
+          firebaseMode: true,
+          email: user?.email,
+        })
+        .then((res) => {
+          alert(res.data.message);
+          // setCheckGoogleUser(res.data.check);
+        })
+        .catch(async (error) => {
+          console.log(error);
+
+          let googlePhoneValue: string = "";
+
+          await axiosInstance
+            .get(`/auth/firebase/phone/${user.uid}`)
+            .then((res) => {
+              googlePhoneValue = res.data.phone;
+              console.log(googlePhoneValue);
+            })
+            .catch((error) => console.log(error));
+
+          const userLogin: {
+            _id: string;
+            accessToken: string;
+            email: string;
+            phone: string;
+            firebase: boolean;
+          } = {
+            _id: user.uid,
+            accessToken: await user.getIdToken(),
+            email: user?.email ? user?.email : "Lỗi dữ liệu",
+            phone: googlePhoneValue,
+            firebase: true,
+          };
+
+          dispatch(loginSuccess(userLogin));
+
+          alert("Đăng nhập Google thành công!");
+        });
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      dispatch(loginFailure());
+    }
+  };
 
   const handleValidationEmail = (value: string): void => {
     const vEmail: EmailTestInterface = validationEmail(value);
@@ -77,15 +176,13 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleLogin = async (): Promise<void> => {};
-
-  const handleFaceBookLogin = async (): Promise<void> => {};
+  // const handleFaceBookLogin = async (): Promise<void> => {};
 
   return (
     <div className="register">
       <div className="grid wide">
         <div className="row no-gutters">
-          <div className="c-8 register__image">
+          <div className="l-8 m-0 s-0 register__image">
             <Image
               src="/assets/account/banner_login.png"
               width={587}
@@ -93,7 +190,7 @@ const LoginPage = () => {
               alt="Picture of the author"
             />
           </div>
-          <div className="c-4 account__container">
+          <div className="l-4 m-8 s-12 account__container">
             <form className="account__form">
               <div className="account__head">Đăng nhập</div>
 
@@ -269,13 +366,13 @@ const LoginPage = () => {
               <span>Đăng nhập với Google</span>
             </button>
 
-            <button
+            {/* <button
               className="transparent-btn account__change--btn"
               onClick={() => handleFaceBookLogin(false)}
             >
               <i className="account__change--facebook fa-brands fa-facebook"></i>
               <span>Đăng nhập với Facebook</span>
-            </button>
+            </button> */}
 
             <div className="register__login">
               Bạn chưa có tài khoản?{" "}
@@ -289,6 +386,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+      <div id="recaptcha-container"></div>
     </div>
   );
 };

@@ -10,6 +10,19 @@
   align-self: center;
   position: relative;
   margin-bottom: 30px;
+  position: relative;
+}
+
+.profile__avatar--error {
+  position: absolute;
+  top: 110%;
+  color: var(--error);
+}
+
+.profile__info--address {
+  display: flex;
+  margin-bottom: 30px;
+  color: rgb(51, 51, 51);
 }
 
 .profile__info--top-image {
@@ -44,6 +57,7 @@
 .profile__info--name p:first-child {
   font-weight: 700;
   font-size: 24px;
+  color: var(--primary-color);
 }
 
 .profile__info--form {
@@ -59,7 +73,7 @@
   position: relative;
 }
 
-.profile__info--form-address,
+.profile__info--address p,
 .profile__info--form-block label {
   display: block;
   font-weight: 500;
@@ -76,8 +90,15 @@
   height: 35px;
   border-radius: 30px;
   outline: none;
-  width: 50%;
   border: 1px solid #ccc;
+}
+
+.profile__info--form-name {
+  width: 50%;
+}
+
+.profile__info--form-date {
+  width: 25%;
 }
 
 /* .profile__info--form-date {
@@ -108,7 +129,7 @@
   font-size: 14px;
   position: absolute;
   top: 100%;
-  right: 47%;
+  right: 55%;
 }
 
 .profile__info--form-gender {
@@ -124,24 +145,6 @@
   width: 35px;
   text-align: left;
   cursor: pointer;
-}
-
-.profile__info--form-address-btn {
-  padding: 10px 0;
-  outline: none;
-  border: none;
-  cursor: pointer;
-  color: #616161;
-  background-color: #fff;
-  font-size: 14px;
-}
-
-.profile__info--form-address-btn:hover {
-  text-decoration: underline;
-}
-
-.profile__info--form-address-btn i {
-  margin-right: 10px;
 }
 
 .profile__info--form-block textarea {
@@ -161,4 +164,18 @@
 .profile__info--form-save {
   width: 300px;
   align-self: center;
+}
+
+.profile__user {
+  padding: 50px;
+}
+
+.profile__user h4 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #616161;
+}
+
+.profile__info--form-introduce-mobile {
+  display: none;
 }

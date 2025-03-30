@@ -1,11 +1,5 @@
 export interface LoginUser {
-  phone: string;
-  email: string;
-  password: string;
-}
-
-export interface LoginUserGoogle {
-  accessToken: string;
+  phone: string | null;
   email: string | null;
-  phone: string;
+  password: string;
 }

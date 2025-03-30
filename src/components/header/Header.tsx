@@ -1,68 +1,77 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../assets/logo/logo.png";
 import "./header.css";
+import Link from "next/link";
 
 const Header = () => {
+  const [headerInputFocus, setHeaderInputFocus] = useState<boolean>(false);
+
   return (
-    <div className="header__container">
-      <header className="grid wide">
-        <Image src={logo} alt="Mô tả hình ảnh" />
-        <input type="text" placeholder="Nhập nội dung tìm kiếm..." />
-        <a href="">Đăng ký</a>
-        <a href="">Đăng nhập</a>
-        <a href="">Đăng bán</a>
-        <div className="dropdown-row">
-          <select>
-            <option value="" hidden>
-              Tất cả danh mục
-            </option>
-            <option value="option1">Lựa chọn 1</option>
-            <option value="option2">Lựa chọn 2</option>
-          </select>
-
-          <select>
-            <option value="" hidden>
-              Sách
-            </option>
-            <option value="option1">Lựa chọn 1</option>
-            <option value="option2">Lựa chọn 2</option>
-          </select>
-
-          <select>
-            <option value="" hidden>
-              Quần áo
-            </option>
-            <option value="option1">Lựa chọn 1</option>
-            <option value="option2">Lựa chọn 2</option>
-          </select>
-
-          <select>
-            <option value="" hidden>
-              Mỹ phẩm
-            </option>
-            <option value="option1">Lựa chọn 1</option>
-            <option value="option2">Lựa chọn 2</option>
-          </select>
-
-          <select>
-            <option value="" hidden>
-              Đồ chơi
-            </option>
-            <option value="option1">Lựa chọn 1</option>
-            <option value="option2">Lựa chọn 2</option>
-          </select>
-
-          <select>
-            <option value="" hidden>
-              Thiết bị điện tử
-            </option>
-            <option value="option1">Lựa chọn 1</option>
-            <option value="option2">Lựa chọn 2</option>
-          </select>
+    <header>
+      <div className="header__container">
+        <div className="grid wide ">
+          <div className="row header__main">
+            <div className="l-2">
+              <Link href={"/"} className="link">
+                <Image
+                  src={"/assets/oreka_logo.png"}
+                  alt="logo"
+                  width={84}
+                  height={25}
+                />
+              </Link>
+            </div>
+            <div className="l-5">
+              <div
+                className={
+                  headerInputFocus ? "header__input focus" : "header__input"
+                }
+              >
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  onFocus={() => {
+                    setHeaderInputFocus(true);
+                  }}
+                  onBlur={() => {
+                    setHeaderInputFocus(false);
+                  }}
+                />
+                <i className="fa-solid fa-magnifying-glass"></i>
+              </div>
+            </div>
+            {/* <div className="l-2"></div> */}
+            <div className="l-5 header__user">
+              <Link className="link" href={"/tai-khoan/dang-ky"}>
+                Đăng ký
+              </Link>
+              <Link className="link" href={"/tai-khoan/dang-nhap"}>
+                Đăng nhập
+              </Link>
+              <button className="main-btn">Đăng bán</button>
+            </div>
+          </div>
         </div>
-      </header>
-    </div>
+      </div>
+      <div className="header__container">
+        <div className="grid wide">
+          <div className="row no-gutters header__categories">
+            <i className="fa-solid fa-bars"></i>
+            <div>Sách</div>
+            <div>Đồ cho nam</div>
+            <div>Thời trang nữ</div>
+            <div>Đồ làm đẹp </div>
+            <div>Đồ cho mẹ và bé</div>
+            <div>Đồ chơi & trò chơi</div>
+            <div>Đồ dùng nhà cửa</div>
+            <div>Thiết bị điện tử</div>
+            <div>Đồ văn phòng</div>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 };
 

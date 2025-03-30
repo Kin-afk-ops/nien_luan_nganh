@@ -18,17 +18,24 @@ const userSlice = createSlice({
     loginSuccess: (
       state,
       action: PayloadAction<{
-        _id: string,
         accessToken: string;
         phone: string;
         email: string;
+        _id: string;
+        firebase: boolean;
       }>
     ) => {
       state.isError = false;
       state.isFetching = false;
       state.currentUser = action.payload;
-      if (state.currentUser) {
+      if (state.currentUser?.accessToken) {
         window.localStorage.setItem("token", state.currentUser.accessToken);
+        window.localStorage.setItem(
+          "firebaseIsAccount",
+          state.currentUser.firebase
+            ? "firebaseIsAccount"
+            : "firebaseIsNotAccount"
+        );
       }
     },
     loginFailure: (state) => {

@@ -1,0 +1,19 @@
+/* mobile */
+@media (max-width: 767px) {
+  .customer__nav {
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .customer__nav--close-mobile {
+    display: block;
+    position: absolute;
+    right: 10px;
+
+    font-size: 30px;
+    top: 15px;
+    z-index: 20;
+  }
+}
