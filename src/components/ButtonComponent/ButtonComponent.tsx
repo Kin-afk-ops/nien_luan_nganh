@@ -23,7 +23,7 @@ const ButtonComponent = (props: Props) => {
     }
 
   return (
-    <div style={localStyle}>{label}</div>
+    <div style={localStyle} onClick={onClick}>{label}</div>
   )
 }
 

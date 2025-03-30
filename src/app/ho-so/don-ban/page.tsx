@@ -18,7 +18,7 @@ const SaleOrderPage = () => {
   return (
     <div>
       <h3 className="profile__header">Đơn bán</h3>
-      <OrderFilter />
+      {/* <OrderFilter /> */}
       <OrderProductTable />
     </div>
   );

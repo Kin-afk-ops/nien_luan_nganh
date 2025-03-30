@@ -207,7 +207,6 @@ const RegisterPage: React.FC = () => {
           const res = await axiosInstance.post("/auth/register/find/email", {
             email: emailValue,
           });
-
           setEmailError(true);
           setEmailErrorMessage(res.data.message);
           setLoading(false);

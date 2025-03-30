@@ -28,6 +28,12 @@ import ProductListContainer from "@/components/HomeProducts/ProductListContainer
 import ProductListComponent from "@/components/ProductListComponent/ProductListComponent";
 import Link from "next/link";
 import axiosInstance from "@/helpers/api/config";
+import { detailLabels } from "@/data/detailLabels";
+import CommentComponent from "@/components/commentComponent/CommentComponent";
+import { Cart } from "@/interfaces/cart";
+import { useAppSelector } from "@/lib/store"; 
+import { addToCart } from "@/utils/addToCart";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const { categorySlug, productSlug, id } = useParams();
@@ -41,6 +47,10 @@ const ProductDetail = () => {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
   const [differentProduct, setDifferentProduct] = useState<ProductModel[]>([]);
   const [similarProduct, setSimilarProduct] = useState<ProductModel[]>([]);
+  const [showAll, setShowAll] = useState(false);
+  const currentUser = useAppSelector((state) => state.user.currentUser);
+
+  
 
   useEffect(() => {
     const getProductSeller = async (): Promise<void> => {
@@ -61,7 +71,7 @@ const ProductDetail = () => {
     const getProductCategories = (): void => {
       if (product) {
         axiosInstance
-          .get(`/products/similar/${product?.categoryId}`)
+          .get(`/products/similar/${product?.categories.id}`)
 
           .then((res) => setSimilarProduct(res.data))
           .catch((err) => console.error("Lỗi khi fetch dữ liệu:", err));
@@ -103,10 +113,10 @@ const ProductDetail = () => {
   };
 
   const handleNext = () => {
-    if (!product || !product.imageUris) {
+    if (!product || !product.images) {
       return <div>Không có hình ảnh</div>;
     }
-    if (selectedIndex < product.imageUris.length - 1) {
+    if (selectedIndex < product.images.url.length - 1) {
       const newIndex = selectedIndex + 1;
       setSelectedIndex(newIndex);
       setimgIndex(newIndex);
@@ -130,15 +140,33 @@ const ProductDetail = () => {
       }
     }
   };
+
+  //Thêm hàng vào giỏ hàng
+  const handleAddToCart = () => {
+    const cart: Cart = {
+      productId: product?._id || "", // Use the product ID if available
+      quantity: count, // Use the current count as the quantity
+    };
+
+    if(!currentUser) {
+      toast.error("Vui lòng đăng nhập !")
+      return;
+    } else {
+        addToCart(currentUser._id, cart);
+        toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
+    }
+  }
   // Di chuyển ảnh
 
   if (!product) return <div style={{ height: 1000 }}></div>;
+  const detailEntries = Object.entries(product.details);
+  const visibleDetails = showAll ? detailEntries : detailEntries.slice(0, 1);
 
   return (
     <div className="container">
       {product && (
         <BreadcrumbComponent
-          id={product.categoryId}
+          id={product.categories.id}
           productName={product.name}
         />
       )}
@@ -147,7 +175,7 @@ const ProductDetail = () => {
         <div className="main-info-container">
           <div className="product-image-container">
             <img
-              src={product.imageUris[imgIndex]}
+              src={product.images.url[imgIndex]}
               alt={product.name}
               className="product-image"
             />
@@ -155,14 +183,14 @@ const ProductDetail = () => {
           <div className="info">
             <h2>{product.name}</h2>
             <h2 style={{ color: "coral" }}>{`${product.price}đ`}</h2>
-            <p>{`Vận chuyển từ: ${product.location}`}</p>
+            <p>{`Vận chuyển từ: ${product.address.province}`}</p>
             <div className="row-container">
               <p>Số lượng:</p>
               <div className="minus-button" onClick={handleMinus}>
                 -
               </div>
               <p className="count">{count}</p>
-              {product.quantityStock <= count ? (
+              {product.quantity <= count ? (
                 <div className="plus-button disabled-button">+</div>
               ) : (
                 <div className="plus-button" onClick={handlePlus}>
@@ -171,12 +199,13 @@ const ProductDetail = () => {
               )}
               <p
                 style={{ color: "gray" }}
-              >{`Còn lại ${product.quantityStock} sản phẩm có sẵn trong kho`}</p>
+              >{`Còn lại ${product.quantity} sản phẩm có sẵn trong kho`}</p>
             </div>
             <div className="row-container">
               <ButtonComponent
                 label="Thêm vào giỏ hàng"
                 style={{ color: "coral", border: "2px solid coral" }}
+                onClick={handleAddToCart}
               ></ButtonComponent>
               <ButtonComponent
                 label="Mua ngay"
@@ -199,7 +228,7 @@ const ProductDetail = () => {
             &lt;
           </div>
           <div className="carousel-container" ref={containerRef}>
-            {product.imageUris.map((img, index) => (
+            {product.images.url.map((img, index) => (
               <div
                 className={`thumbnail ${
                   selectedIndex === index ? "active" : ""
@@ -312,7 +341,7 @@ const ProductDetail = () => {
                 <p className="column1">Danh mục</p>
                 <div className="column2">
                   <BreadcrumbComponent
-                    id={product.categoryId}
+                    id={product.categories.id}
                     isInOutStandings
                   ></BreadcrumbComponent>
                 </div>
@@ -320,7 +349,7 @@ const ProductDetail = () => {
               <div className="outstanding_item">
                 <p className="column1">Phí vận chuyển</p>
                 <div className="column2 ml">
-                  {product.shippingFee == "Free" ? (
+                  {product.isFreeShip == true ? (
                     <p>Free ship</p>
                   ) : (
                     <p>Người mua trả</p>
@@ -330,14 +359,22 @@ const ProductDetail = () => {
               <div className="outstanding_item">
                 <p className="column1">Tình trạng</p>
                 <div className="column2 ml">
-                  <p>{product.status}</p>
+                  <p>{product.condition}</p>
                 </div>
               </div>
-              <div className="outstanding_item">
-                <p className="column1">Thương hiệu</p>
-                <div className="column2 ml">
-                  <p>Đặt thương hiệu ở đây</p>
+              {visibleDetails.map(([key, value]) => (
+                <div className="outstanding_item" key={key}>
+                  <p className="column1">{detailLabels[key] || key}</p>
+                  <div className="column2 ml">
+                    <p>{value}</p>
+                  </div>
                 </div>
+              ))}
+              <div className="show_all_container">
+                <p
+                  className="show-all"
+                  onClick={() => setShowAll(!showAll)}
+                >{`${showAll ? "Thu gọn" : "Xem thêm"}`}</p>
               </div>
               {product.size && (
                 <div className="outstanding_item">
@@ -354,6 +391,9 @@ const ProductDetail = () => {
             <div className="description">
               <p>{product.description}</p>
             </div>
+          </ContainerComponent>
+          <ContainerComponent title="Đánh giá">
+              <CommentComponent productId={product._id}></CommentComponent>
           </ContainerComponent>
           <div ref={ref}>
             {differentProduct ? (

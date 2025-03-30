@@ -3,7 +3,9 @@ import React from "react";
 import styles from "./HomeProduct.module.css";
 import { ProductCardModel, ProductModel } from "@/models/ProductModel";
 import { FaLocationDot } from "react-icons/fa6";
+import { FaTruck, FaCoins } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   product?: ProductModel;
@@ -11,19 +13,17 @@ interface Props {
 
 const ProductCard = (props: Props) => {
   const { product } = props;
+  console.log(product);
 
   const handleReload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     window.location.href = (e.currentTarget as HTMLAnchorElement).href;
   };
   return (
-    <Link
-      className={styles.card}
-      href={`/san-pham/${product?.categorySlug}/${product?.slug}/${product?.id}`}
-      onClick={handleReload}
-    >
+    <Link className={styles.card} href={`/san-pham/${product?.categories.slug}/${product?.slug}/${product?._id}`} 
+      onClick={handleReload}>
       <div className={styles.image}>
-        {/* <img src={product?.imageUris[0]} alt="product"/> */}
+        <img src={product?.images.url[0]} alt="product"/>
       </div>
       <div className={styles.info}>
         <div className={styles.nameField}>
@@ -31,10 +31,16 @@ const ProductCard = (props: Props) => {
         </div>
         <p className={styles.price}>{`${product?.price}đ`}</p>
         <div className={styles.location}>
-          <FaLocationDot />
-          <p>{product?.location}</p>
+          <FaLocationDot/>
+          {product?.address ? <p>{product.address.province}</p> : <p>Không có Tỉnh</p> 
+        }
         </div>
       </div>
+       {product?.isFreeShip && 
+        <div className={styles.row_item}>
+          <FaTruck size={15} />
+          <p style={{fontSize: 15}}>Freeship</p>
+        </div> }
     </Link>
   );
 };

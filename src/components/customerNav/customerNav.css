@@ -3,10 +3,13 @@
   flex-direction: column;
 }
 
+<<<<<<< HEAD
 .customer__nav--close-mobile {
   display: none;
 }
 
+=======
+>>>>>>> 4a89a60f685f646234fe5bbdb761e62f3e822539
 .customer__nav h3 {
   padding-top: 20px;
   margin-top: 20px;

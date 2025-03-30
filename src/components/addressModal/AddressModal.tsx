@@ -459,7 +459,6 @@ const AddressModal: React.FC<ChildProps> = ({
               className="secondary-btn"
               onClick={(e) => {
                 e.preventDefault();
-
                 handleSubmit();
               }}
             >

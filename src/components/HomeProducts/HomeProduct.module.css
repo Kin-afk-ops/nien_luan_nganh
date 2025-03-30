@@ -30,6 +30,7 @@
 
 .card{
     max-width: 220px;
+    position: relative;
     flex: 1;
     display: flex;
     justify-content: space-between;
@@ -138,3 +139,16 @@
     position: relative;
     height: 100%;
   }
+
+  .row_item {
+    padding:  2px 8px;
+    background-color: rgb(8, 240, 159);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 15px;
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
