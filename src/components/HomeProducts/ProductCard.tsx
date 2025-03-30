@@ -30,7 +30,8 @@ const ProductCard = (props: Props) => {
         <p className={styles.price}>{`${product?.price}đ`}</p>
         <div className={styles.location}>
           <FaLocationDot/>
-          <p>{product?.address.province}</p>
+          {product?.address ? <p>{product.address.province}</p> : <p>Không có Tỉnh</p> 
+        }
         </div>
       </div>
        {product?.isFreeShip && 
