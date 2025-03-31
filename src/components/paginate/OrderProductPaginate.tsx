@@ -2,6 +2,7 @@
 
 import ReactPaginate from "react-paginate";
 import "./paginate.css";
+import "./responsive.css";
 
 interface ChildProps {
   currentPage: number;
@@ -22,7 +23,7 @@ const OrderProductPaginate: React.FC<ChildProps> = ({
       {totalPages && (
         <ReactPaginate
           onPageChange={handlePageClick}
-          className="paginationPage"
+          className="paginationPage "
           previousLabel="<"
           nextLabel=">"
           breakLabel={"..."}

@@ -43,7 +43,6 @@ export const login = async (
   } else {
     try {
       const res = await axiosInstance.post("/auth/login/email", user);
-<<<<<<< HEAD
       dispatch(
         loginSuccess({
           accessToken: res.data.accessToken,
@@ -53,10 +52,6 @@ export const login = async (
           firebase: false,
         })
       );
-=======
-      console.log(res.data);
-      dispatch(loginSuccess(res.data));
->>>>>>> 4a89a60f685f646234fe5bbdb761e62f3e822539
       setNoAccount(false);
       alert("!đăng nhập thành công");
     } catch (err) {

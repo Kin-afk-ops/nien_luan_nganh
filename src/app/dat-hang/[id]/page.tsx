@@ -12,6 +12,11 @@ import axiosInstance from "@/helpers/api/config";
 import { CartInterface } from "@/interfaces/cart";
 import AddressList from "@/components/addressList/addressList";
 import AddressModal from "@/components/addressModal/AddressModal";
+import {
+  OrderProductForm,
+  OrderProductInterface,
+} from "@/interfaces/orderProduct";
+import Loading from "@/components/loading/Loading";
 
 const OrderPage = () => {
   const params = useParams<{ id: string }>();
@@ -35,6 +40,7 @@ const OrderPage = () => {
   const [payMethod, setPayMethod] = useState<string>(
     "Thanh toán khi nhận hàng"
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (params) {
@@ -71,42 +77,60 @@ const OrderPage = () => {
     let totalPrice: number = 0;
 
     cartCheck?.forEach((c) => {
-      totalPrice += c.quantity * c.productId.price;
+      totalPrice += c.quantity * c.product.price;
     });
 
     return totalPrice;
   };
 
   const handleOrder = async (): Promise<void> => {
+    setLoading(true);
+    const newOrder: OrderProductForm[] =
+      cartCheck?.map((c) => {
+        return {
+          buyerId: c?.buyerId,
+          addressId: choiceAddress?._id,
+          note: noteValue,
+
+          shippingFee: shippingFee,
+          totalAmount: getTotalPrice(),
+
+          productId: c?.product._id,
+          quantity: c?.quantity,
+
+          paymentMethod: payMethod,
+        };
+      }) ?? [];
+
     await axiosInstance
-      .post(`/order/${userId}`, {
-        addressId: choiceAddress?._id,
-        note: noteValue,
-        shippingFee: shippingFee,
-        totalAmount: getTotalPrice(),
-        products: cartCheck?.map(({ productId, quantity }) => ({
-          productId,
-          quantity,
-        })),
-        paymentMethod: payMethod,
-      })
+      .post(`/order/${userId}`, newOrder)
       .then(async (res) => {
         console.log(res.data);
+
         await axiosInstance
           .delete(`/cart/deleteCheck/${userId}`)
-          .then((res) => console.log(res.data))
-          .catch((error) => console.log(error));
+          .then((res) => {
+            console.log(res.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            setLoading(false);
+          });
         alert("Đặt hàng thành công");
         router.push(`/ho-so/don-mua`);
       })
       .catch((error) => {
         console.log(error);
         alert("Đặt hàng không thành công");
+        setLoading(false);
       });
+    setLoading(false);
   };
 
   return (
     <>
+      {loading && <Loading />}
       <div className=" order">
         <div className="grid wide">
           <h1 className="main-container">Đặt hàng</h1>
@@ -149,8 +173,7 @@ const OrderPage = () => {
           </div>
 
           <div className="main-container">
-            {" "}
-            <PayProduct cartProduct={cartCheck} />
+            {cartCheck && <PayProduct cartProduct={cartCheck} />}
             <div className=" row no-gutters order__foot">
               <div className="l-5 m-6 s-12 order__foot--note">
                 <label htmlFor="">Lời nhắn:</label>

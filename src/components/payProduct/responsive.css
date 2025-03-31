@@ -19,6 +19,19 @@
     color: #616161;
     padding: 5px 0;
   }
+
+  .pay__product--buyer p {
+    max-width: 50%;
+
+    margin-right: 10px;
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: hidden; /* Ẩn phần bị tràn */
+    text-overflow: ellipsis;
+  }
+
+  .order__product--address {
+    margin-bottom: 10px;
+  }
 }
 
 /* mobile */
@@ -43,5 +56,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 700;
+  }
+
+  .pay__product--buyer p {
+    max-width: 80%;
+
+    margin-right: 10px;
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: hidden; /* Ẩn phần bị tràn */
+    text-overflow: ellipsis;
+  }
+
+  .order__product--status {
+    margin-bottom: 10px;
+  }
+
+  .order__product--address {
+    margin-bottom: 10px;
   }
 }

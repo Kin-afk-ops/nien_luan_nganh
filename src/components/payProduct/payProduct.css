@@ -91,3 +91,21 @@
   text-decoration: underline;
   color: var(--success);
 }
+
+/* order product */
+
+.order__product--status {
+  border: 1px solid var(--primary-color);
+  font-size: 12px;
+  color: var(--primary-color);
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order__product--address {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #616161;
+}

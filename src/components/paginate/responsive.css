@@ -1,0 +1,14 @@
+/* mobile */
+@media (max-width: 767px) {
+  .paginationPage li {
+    display: none;
+  }
+
+  .paginationPage .prev,
+  .paginationPage .next,
+  .paginationPage .active,
+  .paginationPage li:nth-child(2),
+  .paginationPage li:nth-last-child(2) {
+    display: inline-block; /* Chỉ giữ lại các nút cần thiết */
+  }
+}
