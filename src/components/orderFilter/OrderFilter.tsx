@@ -4,7 +4,10 @@ import { useState } from "react";
 import "./orderFilter.css";
 import "./responsive.css";
 import axiosInstance from "@/helpers/api/config";
-import { OrderProductInterface } from "@/interfaces/orderProduct";
+import {
+  OrderProductInterface,
+  SellerProductInterface,
+} from "@/interfaces/orderProduct";
 
 interface ChildProps {
   filterMode: string;
@@ -19,7 +22,7 @@ interface ChildProps {
   setTotalPages: React.Dispatch<React.SetStateAction<number | null>>;
   setTotalItems: React.Dispatch<React.SetStateAction<number>>;
   setOrderProduct: React.Dispatch<
-    React.SetStateAction<OrderProductInterface[] | null>
+    React.SetStateAction<SellerProductInterface[] | null>
   >;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }

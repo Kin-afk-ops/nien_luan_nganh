@@ -30,13 +30,35 @@ const OrderProductContainer: React.FC<ChildProps> = ({
         })
         .then((res) => {
           console.log(res.data);
-          console.log("Đơn hàng đã hủy");
+          alert("Đơn hàng đã hủy");
           setFilterModeLoading(!filterModeLoading);
           setLoading(false);
         })
         .catch((error) => {
           console.log(error);
-          console.log("Đơn hàng  hủy thất bại");
+          alert("Đơn hàng  hủy thất bại");
+          setLoading(false);
+        });
+      setLoading(false);
+    }
+  };
+
+  const handleReceive = async (id: string): Promise<void> => {
+    if (userId) {
+      setLoading(true);
+      await axiosInstance
+        .put(`/order/${id}/${userId}`, {
+          status: "Hoàn thành",
+        })
+        .then((res) => {
+          console.log(res.data);
+          alert("Đơn hàng đã hủy");
+          setFilterModeLoading(!filterModeLoading);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("Đơn hàng  hủy thất bại");
           setLoading(false);
         });
       setLoading(false);
@@ -112,6 +134,10 @@ const OrderProductContainer: React.FC<ChildProps> = ({
               {formatPrice(c.product.price * c.quantity)}
             </div>
 
+            <div className="l-9 m-12 s-12 order__product--address">
+              {c.note !== "" && "Lưu ý " + c.note}
+            </div>
+
             <div className="l-10 m-12 s-12 order__product--address">
               Đơn hàng được vận chuyển từ{" "}
               <b>
@@ -139,7 +165,7 @@ const OrderProductContainer: React.FC<ChildProps> = ({
                 </b>
               }
             </div>
-            <div className="l-2 m-2 s-3">
+            <div className="l-2 m-2 s-5">
               {c?.status === "Đang chuẩn bị hàng" && (
                 <button
                   className="main-btn"
@@ -155,6 +181,14 @@ const OrderProductContainer: React.FC<ChildProps> = ({
                   onClick={() => handleCancel(c._id)}
                 >
                   Hủy hàng
+                </button>
+              )}
+              {c?.status === "Đang giao hàng" && (
+                <button
+                  className="secondary-btn order__receive"
+                  onClick={() => handleReceive(c._id)}
+                >
+                  Đã nhận hàng
                 </button>
               )}
             </div>

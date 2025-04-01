@@ -3,11 +3,11 @@ import "./payProduct.css";
 import "./responsive.css";
 import formatPrice from "@/helpers/format/formatPrice";
 import Link from "next/link";
-import { OrderProductInterface } from "@/interfaces/orderProduct";
+import { SellerProductInterface } from "@/interfaces/orderProduct";
 import axiosInstance from "@/helpers/api/config";
 
 interface ChildProps {
-  orderProduct: OrderProductInterface[] | null;
+  orderProduct: SellerProductInterface[] | null;
   userId: string | null;
   setFilterModeLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,13 +30,13 @@ const SellerProductContainer: React.FC<ChildProps> = ({
         })
         .then((res) => {
           console.log(res.data);
-          console.log("Đơn hàng đã hủy");
+          alert("Đơn hàng đã hủy");
           setFilterModeLoading(!filterModeLoading);
           setLoading(false);
         })
         .catch((error) => {
           console.log(error);
-          console.log("Đơn hàng  hủy thất bại");
+          alert("Đơn hàng  hủy thất bại");
           setLoading(false);
         });
       setLoading(false);
@@ -65,6 +65,28 @@ const SellerProductContainer: React.FC<ChildProps> = ({
     }
   };
 
+  const handleReceive = async (id: string): Promise<void> => {
+    if (userId) {
+      setLoading(true);
+      await axiosInstance
+        .put(`/order/${id}/${userId}`, {
+          status: "Hoàn thành",
+        })
+        .then((res) => {
+          console.log(res.data);
+          alert("Đơn hàng đã nhận");
+          setFilterModeLoading(!filterModeLoading);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("Đơn hàng  nhận thất bại");
+          setLoading(false);
+        });
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="pay__product">
       <div className="row no-gutters pay__product--head">
@@ -77,7 +99,12 @@ const SellerProductContainer: React.FC<ChildProps> = ({
       {orderProduct !== null &&
         orderProduct?.map((c) => (
           <div className="row no-gutters pay__product--body" key={c._id}>
-            <div className="l-10 m-9 s-12"></div>
+            <div className="l-10 m-9 s-12 pay__product--buyer">
+              {" "}
+              <i className="fa-solid fa-user"></i>
+              <p>{c?.infoUser.name}</p>
+              <button className="pay__product--buyer-chat">Chat</button>
+            </div>
             <div className="l-2 m-3 s-12">
               <div className="order__product--status">{c.status}</div>{" "}
             </div>
@@ -127,6 +154,9 @@ const SellerProductContainer: React.FC<ChildProps> = ({
             </div>
 
             <div className="l-9 m-12 s-12 order__product--address">
+              {c.note !== "" && "Lưu ý " + c.note}
+            </div>
+            <div className="l-9 m-12 s-12 order__product--address">
               Đơn hàng được vận chuyển từ{" "}
               <b>
                 {c.product.addressInfo.address +
@@ -153,7 +183,7 @@ const SellerProductContainer: React.FC<ChildProps> = ({
                 </b>
               }
             </div>
-            <div className="l-3 m-3 s-4">
+            <div className="l-3 m-3 s-5">
               {c?.status === "Đang chuẩn bị hàng" && (
                 <button className="main-btn" onClick={() => handleShip(c._id)}>
                   Xác nhận giao hàng
@@ -166,6 +196,15 @@ const SellerProductContainer: React.FC<ChildProps> = ({
                   onClick={() => handleCancel(c._id)}
                 >
                   Hủy giao hàng
+                </button>
+              )}
+
+              {c?.status === "Đang giao hàng" && (
+                <button
+                  className="secondary-btn order__receive"
+                  onClick={() => handleReceive(c._id)}
+                >
+                  Đã giao hàng
                 </button>
               )}
             </div>

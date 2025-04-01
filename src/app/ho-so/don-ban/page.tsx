@@ -2,12 +2,11 @@
 import Loading from "@/components/loading/Loading";
 import OrderFilter from "@/components/orderFilter/OrderFilter";
 import OrderProductPaginate from "@/components/paginate/OrderProductPaginate";
-import OrderProductContainer from "@/components/payProduct/OrderProductContainer";
 import SellerProductContainer from "@/components/payProduct/SellerProductContainer";
 
 import axiosInstance from "@/helpers/api/config";
 import { RootState } from "@/hooks/useAppDispatch";
-import { OrderProductInterface } from "@/interfaces/orderProduct";
+import { SellerProductInterface } from "@/interfaces/orderProduct";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -15,7 +14,7 @@ const SellerOrderPage = () => {
   const user =
     useSelector((state: RootState) => state.user.currentUser) || null;
   const [orderProduct, setOrderProduct] = useState<
-    OrderProductInterface[] | null
+    SellerProductInterface[] | null
   >(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [filterMode, setFilterMode] = useState<string>("Tất cả");
