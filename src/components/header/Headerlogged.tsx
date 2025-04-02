@@ -27,9 +27,9 @@ export default function Header() {
   const getUserInfo = (user: any) => {
     try {
       if (user && user.name) {
-        setUserInfo({ 
-          name: user.name, 
-          avatar: user.avatar?.path || '' 
+        setUserInfo({
+          name: user.name,
+          avatar: user.avatar?.path || ''
         });
       } else {
         setUserInfo({ name: 'User', avatar: '' });
@@ -54,7 +54,7 @@ export default function Header() {
     }
   }
 
-  const handleSearch = (e:any) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     console.log('Searching for:', searchTerm);
   };
@@ -101,30 +101,30 @@ export default function Header() {
             <Link href="/gio-hang" className="btn text-primary">
               <FaShoppingCart size={18} className="me-1" />
             </Link>
-            
+
             {/* Thông tin người dùng */}
-            <div className="dropdown">
-              <button className="btn dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+            <div className="dropdown w-100 d-flex flex-column align-items-lg-center align-items-center text-center">
+              <button className="btn dropdown-toggle d-flex align-items-center justify-content-center w-100" type="button" data-bs-toggle="dropdown">
                 {!isLoading && userInfo.avatar && (
-                  <Image 
-                    src={userInfo.avatar} 
-                    alt="User Avatar" 
-                    width={32} 
-                    height={32} 
+                  <Image
+                    src={userInfo.avatar}
+                    alt="User Avatar"
+                    width={32}
+                    height={32}
                     className="rounded-circle me-2"
                   />
                 )}
                 {isLoading ? 'Loading...' : (userInfo.name || 'User')}
               </button>
-              <ul className="dropdown-menu">
+              <ul className="dropdown-menu w-100 text-center">
                 <li><Link className="dropdown-item" href="/tai-khoan">Trang cá nhân</Link></li>
                 <li><Link className="dropdown-item" href="/dang-xuat" onClick={handleLogout}>Đăng xuất</Link></li>
               </ul>
             </div>
-            
-            <Link 
-              href="/dangban" 
-              className="btn" 
+
+            <Link
+              href="/dangban"
+              className="btn"
               style={{ backgroundColor: '#FF8C00', color: 'white', transition: '0.3s' }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E07B00'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF8C00'}

@@ -90,11 +90,10 @@ const DangBan = () => {
     };
 
 
-    const [quantity, setQuantity] = React.useState<number>(1); // Example for managing quantity.
+    const [quantity, setQuantity] = React.useState<number>(1); 
 
-    // Handle quantity change
     const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newQuantity = Math.max(1, Number(e.target.value)); // Ensure quantity is at least 1
+        const newQuantity = Math.max(1, Number(e.target.value));
         setQuantity(newQuantity);
     };
 
@@ -108,19 +107,17 @@ const DangBan = () => {
 
     const handleSell = async () => {
         try {
-            // Validate required fields
+
             if (!productName || !category || !status || !address || !description || !detail) {
                 alert("Vui lòng điền đầy đủ thông tin!");
                 return;
             }
 
-            // Create FormData for file upload
             const formData = new FormData();
             files.forEach((file) => {
                 formData.append("images", file);
             });
 
-            // Add product data
             formData.append("name", productName);
             formData.append("category", category);
             formData.append("status", status);
@@ -130,32 +127,7 @@ const DangBan = () => {
             formData.append("description", description);
             formData.append("detail", detail);
             console.log(formData);
-            // // Send request to server
-            // const response = await axios.post("http://localhost:6969/api/product/create", formData, {
-            //     headers: {
-            //         "Content-Type": "multipart/form-data",
-            //     },
-            // });
 
-            // if (response.status === 200) {
-            //     alert("Đăng bán sản phẩm thành công!");
-            //     // Reset form
-            //     setProductName("");
-            //     setCategory("");
-            //     setStatus("");
-            //     setQuantity(1);
-            //     setPrice("");
-            //     setAddress("");
-            //     setDescription("");
-            //     setDetail("");
-            //     setFiles([]);
-            //     // Clear preview container
-            //     const previewContainer = document.getElementById("image-preview-container");
-            //     if (previewContainer) {
-            //         previewContainer.innerHTML = "";
-            //     }
-            // }
-            // console.log(response.data);
         } catch (error) {
             console.error("Error creating product:", error);
             alert("Có lỗi xảy ra khi đăng bán sản phẩm. Vui lòng thử lại!");
@@ -302,6 +274,7 @@ const DangBan = () => {
                     </div>
                     <div className="price relative w-full">
                         <h4>Giá bán:</h4>
+                        <div className="d-flex">
                         <input
                             type="number"
                             name="price"
@@ -322,6 +295,7 @@ const DangBan = () => {
                             checked={isFree}
                         />
                         <label htmlFor="free-checkbox">Hàng miễn phí</label>
+                        </div>
                     </div>
                     <div className="address">
                         <h4>Địa chỉ:</h4>

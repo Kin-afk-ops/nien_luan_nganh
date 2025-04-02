@@ -23,7 +23,7 @@ import axiosInstance from "@/helpers/api/config";
 import { newUserEmail, newUserPhone } from "@/interfaces/user";
 import OtpInput from "@/components/otpInput/OtpInput";
 
-import Countdown from "@/components/countdown/Countdown";
+// import Countdown from "@/components/countdown/Countdown";
 import googleLogo from "../../../../public/assets/google_logo.png";
 import { useAppDispatch } from "@/lib/store";
 import { LoginUserGoogle } from "@/interfaces/loginUser";
@@ -425,7 +425,7 @@ const RegisterPage: React.FC = () => {
         phone: "none",
       };
 
-      dispatch(loginSuccess(userLogin));
+      // dispatch(loginSuccess(userLogin));
       alert("Đăng nhập Google thành công!");
     } catch (error) {
       console.error("Google Login Error:", error);

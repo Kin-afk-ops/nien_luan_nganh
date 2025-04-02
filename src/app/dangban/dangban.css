@@ -256,10 +256,10 @@
       min-width: 90px;
   }
 
-  #free-checkbox {
+  /* #free-checkbox {
     margin-left: 40px;
     margin-right: 15px;
-  }
+  } */
 }
 
 @media (max-width: 480px) {
@@ -274,13 +274,15 @@
   }
 
   .option label {
-      width: auto; /* Để label tự động điều chỉnh */
+      width: 200px; /* Để label tự động điều chỉnh */
       padding: 8px 12px;
   }
 
   #free-checkbox {
-    margin-left: 40px;
-    margin-right: 15px;
+    display: block;
+    margin: 15px 0px 0px 0px;
   }
+
+  
 }
 
