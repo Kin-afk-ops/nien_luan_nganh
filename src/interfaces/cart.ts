@@ -2,7 +2,7 @@ import { ProductInterface } from "./product";
 
 export interface CartInterface {
   buyerId: string;
-  productId: ProductInterface;
+  productId: string;
   quantity: number;
   checked: boolean;
 }

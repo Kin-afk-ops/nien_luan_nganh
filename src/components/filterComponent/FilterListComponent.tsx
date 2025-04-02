@@ -17,7 +17,7 @@ const FilterListComponent = () => {
           {activeFilters.map(([key, value]) => (
             <div className="filter_item" key={key}>
               <p>
-                {value === 'freeship' ? 'Miễn phí vận chuyển' : value}
+                {value === 'freeship' ? 'Miễn phí vận chuyển': value === "freeCost" ? "Sản phẩm 0 đồng" : value}
               </p>
               <FaXmark onClick={() => removeFilter(key)} className="filter_icon" />
             </div>

@@ -14,7 +14,6 @@ interface Props {
 
 const ProductCard = (props: Props) => {
   const { product } = props;
-  console.log(product);
 
   const handleReload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -24,7 +23,11 @@ const ProductCard = (props: Props) => {
     <Link className={styles.card} href={`/san-pham/${product?.categories.slug}/${product?.slug}/${product?._id}`} 
       onClick={handleReload}>
       <div className={styles.image}>
-        <img src={product?.images.url[0]} alt="product"/>
+        {
+          product?.images && (
+            <img src={product?.images.url[0]} alt="product"/>
+          )
+        }
       </div>
       <div className={styles.info}>
         <div className={styles.nameField}>
@@ -45,6 +48,11 @@ const ProductCard = (props: Props) => {
           <FaTruck size={15} />
           <p style={{fontSize: 15}}>Freeship</p>
         </div> }
+        {product?.price === 0 && (
+          <div className={styles.circle_item}>
+            <p>Miễn phí</p>
+          </div>
+        )}
     </Link>
   );
 };

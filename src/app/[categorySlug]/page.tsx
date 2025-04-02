@@ -31,7 +31,9 @@ const FillerProductByCategory = () => {
   const limit = 8; // Số sản phẩm tối đa trong 1 lần tải trang
   const [sort, setSort] = useState(searchParams.get("sort") || "newest");
   const [isFreeShip, setFreeShip] = useState(searchParams.get("isFreeShip") || "");
-  const {filterList} = useGlobalState();
+  const [freeCost, setfreeCost] = useState(searchParams.get("freeCost") || "");
+  const {filterList, setFilter} = useGlobalState();
+  const [search, setsearch] = useState(searchParams.get("search") || "");
 
 
   
@@ -53,7 +55,7 @@ const FillerProductByCategory = () => {
       minPrice: minPrice.toString(),
       maxPrice: maxPrice.toString(),
       conditions: status,
-  
+      search: filterList['search'] || "",
   });
     // Thêm các bộ lọc từ filterList (ngoại trừ minPrice, maxPrice, conditions)
     Object.entries(filterList).forEach(([key, value]) => {
@@ -61,6 +63,8 @@ const FillerProductByCategory = () => {
           queryParams.set(key, value.toString());
         }
     });
+
+    console.log("Đây là seach",filterList['search']);
 
     const fetchData = async () => {
         try {

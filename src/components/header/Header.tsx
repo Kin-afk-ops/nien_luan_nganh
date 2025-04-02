@@ -1,12 +1,36 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo/logo.png";
 import "./header.css";
 import Link from "next/link";
+import { useGlobalState } from "@/data/stateStore";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [headerInputFocus, setHeaderInputFocus] = useState<boolean>(false);
+  const [searchValue, setsearchValue] = useState('');
+  const {setFilter, filterList} = useGlobalState();
+  const router = useRouter();
+
+  const handleSearch = () => {
+    if (searchValue.trim()) {
+      setFilter('search',searchValue);
+      const query = new URLSearchParams(window.location.search);
+      query.set("search", searchValue);
+      router.push(`/mua-ban-do-cu?id=1&${query.toString()}`);
+      setsearchValue('');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  // if(!router.isReady) return null;
+  
 
   return (
     <header>
@@ -32,6 +56,9 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder="Tìm kiếm"
+                  onChange={(e) => setsearchValue(e.target.value)}
+                  value={searchValue}
+                  onKeyDown={handleKeyDown}
                   onFocus={() => {
                     setHeaderInputFocus(true);
                   }}
@@ -39,7 +66,7 @@ const Header = () => {
                     setHeaderInputFocus(false);
                   }}
                 />
-                <i className="fa-solid fa-magnifying-glass"></i>
+                <i className="fa-solid fa-magnifying-glass" onClick={handleSearch}></i>
               </div>
             </div>
             {/* <div className="l-2"></div> */}

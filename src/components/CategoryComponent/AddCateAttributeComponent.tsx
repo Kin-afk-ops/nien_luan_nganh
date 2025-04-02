@@ -212,21 +212,21 @@ const AddCateAttributeComponent = (props: Props) => {
               {isAdding && <div className="add_option" onClick={() => addOption(attr.id)}>
                 <p>+ Thêm giá trị</p>
               </div>}
-              {!isAdding ? (
-                <div className="add_data_button" onClick={addAttribute}>
-                  <p>+ Thêm thuộc tính</p>
-                </div>
-              ):(
-                <div className="add_data_button isAdding">
-                  <div className="cancle">
-                    <p>Hủy</p>
+
+              {isAdding && (
+                (
+                  <div className="add_data_button isAdding">
+                    <div className="cancle">
+                      <p>Hủy</p>
+                    </div>
+                    <div className="add" onClick={() => handleSaveAttribute(attrIndex)}>
+                      <p>Thêm</p>
+                    </div>
+                    
                   </div>
-                  <div className="add" onClick={() => handleSaveAttribute(attrIndex)}>
-                    <p>Thêm</p>
-                  </div>
-                  
-                </div>
+                )
               )}
+             
             </div>
           </div>
             ) : (
@@ -247,6 +247,11 @@ const AddCateAttributeComponent = (props: Props) => {
               </div>
             )
           ))}
+           {!isAdding && (
+                <div className="add_data_button" onClick={addAttribute}>
+                  <p>+ Thêm thuộc tính</p>
+                </div>
+              ) }
         
       </div>
     </form>

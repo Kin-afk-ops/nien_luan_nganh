@@ -30,13 +30,20 @@ import Link from "next/link";
 import axiosInstance from "@/helpers/api/config";
 import { detailLabels } from "@/data/detailLabels";
 import CommentComponent from "@/components/commentComponent/CommentComponent";
-import { Cart } from "@/interfaces/cart";
+import { CartInterface } from "@/interfaces/cart";
 import { useAppSelector } from "@/lib/store"; 
 import { addToCart } from "@/utils/addToCart";
 import toast from "react-hot-toast";
+import formatPrice from "@/helpers/format/formatPrice";
+import { getLabelNamePairsByCateId } from "@/utils/addCategory";
+interface LabelNamePair {
+  label: string;
+  name: string;
+}
 
 const ProductDetail = () => {
   const { categorySlug, productSlug, id } = useParams();
+  const [labelNamePairs, setLabelNamePairs] = useState<LabelNamePair[]>([]);
   const [count, setCount] = useState(1);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [sellerInfo, setSellerInfo] = useState<SellerModel>();
@@ -98,6 +105,17 @@ const ProductDetail = () => {
       .catch((error) => console.error(error));
   }, [product?.sellerId]);
 
+  useEffect(() => {
+    const fetchLabelNamePairs = async () => {
+      if (product?.categories.id !== undefined) {
+        const pairs = await getLabelNamePairsByCateId(product.categories.id);
+        setLabelNamePairs(pairs);
+      }      
+    };
+    fetchLabelNamePairs();
+  }, [product?.categories.id]);
+
+
   const handlePlus = () => {
     setCount(count + 1);
   };
@@ -143,9 +161,11 @@ const ProductDetail = () => {
 
   //Thêm hàng vào giỏ hàng
   const handleAddToCart = () => {
-    const cart: Cart = {
+    const cart: CartInterface = {
       productId: product?._id || "", // Use the product ID if available
       quantity: count, // Use the current count as the quantity
+      buyerId: currentUser?._id || "", // Use the current user's ID
+      checked: false, // Default value for the 'checked' property
     };
 
     if(!currentUser) {
@@ -182,7 +202,7 @@ const ProductDetail = () => {
           </div>
           <div className="info">
             <h2>{product.name}</h2>
-            <h2 style={{ color: "coral" }}>{`${product.price}đ`}</h2>
+            <h2 style={{ color: "coral" }}>{`${formatPrice(product.price)}`}</h2>
             <p>{`Vận chuyển từ: ${product.address.province}`}</p>
             <div className="row-container">
               <p>Số lượng:</p>
@@ -362,14 +382,18 @@ const ProductDetail = () => {
                   <p>{product.condition}</p>
                 </div>
               </div>
-              {visibleDetails.map(([key, value]) => (
-                <div className="outstanding_item" key={key}>
-                  <p className="column1">{detailLabels[key] || key}</p>
+              {visibleDetails.map(([key, value]) => {
+                const labelPair = labelNamePairs.find(pair => pair.name === key );
+                const label = labelPair ? labelPair.label : key;
+                return (
+                  <div className="outstanding_item" key={key}>
+                  <p className="column1">{label}</p>
                   <div className="column2 ml">
                     <p>{value}</p>
                   </div>
                 </div>
-              ))}
+                );
+              })}
               <div className="show_all_container">
                 <p
                   className="show-all"

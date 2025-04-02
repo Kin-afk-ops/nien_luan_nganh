@@ -4,6 +4,7 @@ import '../../styles/globalStyle.css';
 import styles from './homeCategory.module.css';
 import categories from './categories';
 import { FaBars } from 'react-icons/fa';
+import Link from 'next/link';
 const HomeCategory = () => {
 
     const [showCategories, setShowCategories] = useState(false);
@@ -20,10 +21,10 @@ const HomeCategory = () => {
         </div>
         <div className={`${styles.category_container} ${showCategories ? styles.show : ''}`}>
             {categories.map((category) => (
-                <a key={category.id} className={styles.category}>
+                <Link key={category.id} className={styles.category} href={`/${category.slug}?id=${category.id}`}>
                     <img src={category.image} alt={category.name} className={styles.category_img}/>
                     <p>{category.name}</p>
-                </a>
+                </Link>
             ))}
         </div>
     </div>

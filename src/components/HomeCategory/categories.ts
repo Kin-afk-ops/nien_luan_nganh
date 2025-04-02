@@ -2,11 +2,12 @@ interface Category {
   id: number;
   name: string;
   image: string;
+  slug?: string;
 }
 
 const categories: Category[] = [
-  { id: 1, name: "Sách", image: "/category_img/1.jpg" },
-  { id: 2, name: "Thời trang nữ", image: "/category_img/2.jpg" },
+  { id: 2, name: "Sách", image: "/category_img/1.jpg", slug: "sach" },
+  { id: 1, name: "Thời trang nữ", image: "/category_img/2.jpg" },
   { id: 3, name: "Thời trang nam", image: "/category_img/3.jpg" },
   { id: 4, name: "Đồ cho mẹ và bé", image: "/category_img/4.jpg" },
   { id: 5, name: "Đồ cho mẹ và bé", image: "/category_img/5.jpg" },

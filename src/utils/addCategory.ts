@@ -32,3 +32,21 @@ export const updateCategoryAttr = (updatedCategoryAttr: CategoryAttribute) => {
     const response = axiosInstance.put(`/category/updateAttr/${updatedCategoryAttr.attributeId}`, updatedCategoryAttr);
     return response.then(res => res.data);
 }
+
+export const getAttributeByCateId = (cateId: number) => {
+    const response = axiosInstance.get(`/category/getAttrByCateId/${cateId}`);
+    return response.then(res => res.data);
+}
+
+export const getLabelNamePairsByCateId = async (cateId: number): Promise<{ label: string; name: string }[]> => {
+    try {
+        const data: CategoryAttribute = await getAttributeByCateId(cateId);
+        return data.listDataTypes.reduce((acc, { label, name }) => {
+            acc.push({ label, name });
+            return acc;
+        }, [] as { label: string; name: string }[]);
+    } catch (error) {
+        console.error("Error fetching category attributes:", error);
+        return [];
+    }
+};
