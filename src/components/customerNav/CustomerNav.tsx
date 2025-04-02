@@ -30,7 +30,6 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!user || !user._id) return; // Chỉ gọi API nếu user tồn tại
     if (user) {
       setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
 
@@ -115,7 +114,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
           </Link>
         </li>
 
-        {firebaseIsAccount && (
+        {!firebaseIsAccount && (
           <li onClick={() => setMenuToggle(false)}>
             <Link
               href={"/ho-so/thay-doi-mat-khau"}
