@@ -13,10 +13,9 @@ import axios from "axios";
 import axiosInstance from "@/helpers/api/config";
 import SortBarComponent from "@/components/DropDownComponent/SortBarComponent";
 import FilterListComponent from "@/components/filterComponent/FilterListComponent";
-import {useGlobalState} from '../../data/stateStore';
-import { priceData, statusData, clothSize } from '../../data/sortData';
+import { useGlobalState } from "../../data/stateStore";
+import { priceData, statusData, clothSize } from "../../data/sortData";
 import PaginationComponent from "@/components/PaginationComponent/PaginationComponent";
-
 
 const FillerProductByCategory = () => {
   const router = useRouter();
@@ -26,15 +25,17 @@ const FillerProductByCategory = () => {
   const [data, setData] = useState<FillerProductModel>();
   const [page, setPage] = useState(1);
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || 0);
-  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || 1000000000);
+  const [maxPrice, setMaxPrice] = useState(
+    searchParams.get("maxPrice") || 1000000000
+  );
   const [status, setStatus] = useState(searchParams.get("status") || "all");
   const limit = 8; // Số sản phẩm tối đa trong 1 lần tải trang
   const [sort, setSort] = useState(searchParams.get("sort") || "newest");
-  const [isFreeShip, setFreeShip] = useState(searchParams.get("isFreeShip") || "");
-  const {filterList} = useGlobalState();
+  const [isFreeShip, setFreeShip] = useState(
+    searchParams.get("isFreeShip") || ""
+  );
+  const { filterList } = useGlobalState();
 
-
-  
   useEffect(() => {
     const fetchCategory = async () => {
       const res = await axiosInstance(`/categories/${categorySlug}`);
@@ -42,8 +43,6 @@ const FillerProductByCategory = () => {
     };
     fetchCategory();
   }, [categorySlug]);
-
-  
 
   useEffect(() => {
     const queryParams = new URLSearchParams({
@@ -53,103 +52,95 @@ const FillerProductByCategory = () => {
       minPrice: minPrice.toString(),
       maxPrice: maxPrice.toString(),
       conditions: status,
-  
-  });
+    });
     // Thêm các bộ lọc từ filterList (ngoại trừ minPrice, maxPrice, conditions)
     Object.entries(filterList).forEach(([key, value]) => {
-        if (value && !["price", "status"].includes(key)) {
-          queryParams.set(key, value.toString());
-        }
+      if (value && !["price", "status"].includes(key)) {
+        queryParams.set(key, value.toString());
+      }
     });
 
     const fetchData = async () => {
-        try {
-            const res = await axiosInstance.get(
-                `/categories/products/${category?.id}?${queryParams.toString()}`
-            );
-            setData(res.data);
-        } catch (err) {
-            console.log(err);
-        }
+      try {
+        const res = await axiosInstance.get(
+          `/categories/products/${category?.id}?${queryParams.toString()}`
+        );
+        setData(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     fetchData();
-}, [category?.id, page, sort, minPrice, maxPrice, status, filterList]);
-
+  }, [category?.id, page, sort, minPrice, maxPrice, status, filterList]);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    const priceRange = priceData.find(p => p.label === filterList.price);
+    const priceRange = priceData.find((p) => p.label === filterList.price);
 
     if (priceRange) {
-        const min = priceRange.minValue || 0;
-        const max = priceRange.maxValue || 1000000000;
-        
-        setMinPrice(min);
-        setMaxPrice(max);
+      const min = priceRange.minValue || 0;
+      const max = priceRange.maxValue || 1000000000;
 
-        // Cập nhật URL với minPrice và maxPrice nếu tồn tại
-        if (priceRange.minValue) {
-            query.set("minPrice", String(min));
-        } else {
-            query.delete("minPrice");
-        }
+      setMinPrice(min);
+      setMaxPrice(max);
 
-        if (priceRange.maxValue) {
-            query.set("maxPrice", String(max));
-        } else {
-            query.delete("maxPrice");
-        }
-
-    } else {
-        // Nếu filterList.price bị reset, xóa cả minPrice và maxPrice khỏi URL
-        setMinPrice(0);
-        setMaxPrice(1000000000);
+      // Cập nhật URL với minPrice và maxPrice nếu tồn tại
+      if (priceRange.minValue) {
+        query.set("minPrice", String(min));
+      } else {
         query.delete("minPrice");
+      }
+
+      if (priceRange.maxValue) {
+        query.set("maxPrice", String(max));
+      } else {
         query.delete("maxPrice");
+      }
+    } else {
+      // Nếu filterList.price bị reset, xóa cả minPrice và maxPrice khỏi URL
+      setMinPrice(0);
+      setMaxPrice(1000000000);
+      query.delete("minPrice");
+      query.delete("maxPrice");
     }
 
     router.push(`?${query.toString()}`);
-}, [filterList.price]);
+  }, [filterList.price]);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    const statusValue = statusData.find(s => s.label === filterList.status);
+    const statusValue = statusData.find((s) => s.label === filterList.status);
 
     if (statusValue) {
-        setStatus(statusValue.value);
-        query.set("conditions", statusValue.value);
+      setStatus(statusValue.value);
+      query.set("conditions", statusValue.value);
     } else {
-        setStatus("all");
-        query.delete("conditions");
+      setStatus("all");
+      query.delete("conditions");
     }
 
     router.push(`?${query.toString()}`);
-    }, [filterList.status]);
+  }, [filterList.status]);
 
-    useEffect(() => {
-      const query = new URLSearchParams(window.location.search);
-      if(filterList.isFreeShip) {
-        setFreeShip(filterList.isFreeShip);
-        query.set("isFreeShip", filterList.isFreeShip);
-      }else {
-        setFreeShip("");
-        query.delete("isFreeShip");
-      }
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    if (filterList.isFreeShip) {
+      setFreeShip(filterList.isFreeShip);
+      query.set("isFreeShip", filterList.isFreeShip);
+    } else {
+      setFreeShip("");
+      query.delete("isFreeShip");
+    }
 
-      router.push(`?${query.toString()}`);
-    },[filterList.isFreeShip])
-
-
-
+    router.push(`?${query.toString()}`);
+  }, [filterList.isFreeShip]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSort = e.target.value;
     setSort(selectedSort);
     router.push(`?sort=${selectedSort}`);
   };
-
-  
 
   return (
     <div style={{ backgroundColor: "white" }}>
@@ -193,8 +184,11 @@ const FillerProductByCategory = () => {
               )}
             </div>
             <div className="pagination">
-              <PaginationComponent currentPage={page} totalPages={data?.totalPages ?? 0} onPageChange={setPage}></PaginationComponent>
-              
+              <PaginationComponent
+                currentPage={page}
+                totalPages={data?.totalPages ?? 0}
+                onPageChange={setPage}
+              ></PaginationComponent>
             </div>
           </main>
         </div>

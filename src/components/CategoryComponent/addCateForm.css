@@ -1,225 +1,225 @@
-.add_attribute_container{
+.add_attribute_container {
   width: 100%;
   position: relative;
 }
-.attribute_form_container{
+.attribute_form_container {
   width: 100%;
   position: relative;
 }
 .form-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .form-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .message {
-    margin-bottom: 10px;
-    color: green;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    display: grid;
-    width: 500px;
-    grid-template-columns: repeat(2, 1fr) ;
-  }
-  
-  .form-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .form-input,
-  .form-select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    height: 40px;
-    width: 200px;
-  }
-  
-  .form-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .form-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
 
-  .attribute_detail > h3{
-    margin-bottom: 10px;
-  }
+.form-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 
-  .item{
-    margin-left: 20px;
-    list-style: none;
-    color: gray;
-    margin-bottom: 10px;
-  }
+.message {
+  margin-bottom: 10px;
+  color: green;
+}
 
-  .select-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
+.form-group {
+  margin-bottom: 15px;
+  display: grid;
+  width: 500px;
+  grid-template-columns: repeat(2, 1fr);
+}
 
-  .attribute-group{
-    grid-template-columns: 1fr 2fr;
-    width: 750px;
-    justify-content: center;
-    display: grid;
-  }
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
 
-  .attribute_value_group {
-    margin-bottom: 20px;
-    width: 100%;
-  }
+.form-input,
+.form-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  height: 40px;
+  width: 200px;
+}
 
-  .input_group {
-    outline: none;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid gray;
-  }
+.form-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  .add_data_button {
-    text-align: center;
-    color: blue;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;
-  }
+.form-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 
-  .add{
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 90px;
-    justify-content: center;
-  }
-  .cancle{
-    background-color: #f00;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 90px;
-    justify-content: center;
-    margin-top: 20px;
-  }
+.attribute_detail > h3 {
+  margin-bottom: 10px;
+}
 
-  .isAdding{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: flex-end;
-  }
+.item {
+  margin-left: 20px;
+  list-style: none;
+  color: gray;
+  margin-bottom: 10px;
+}
 
-  .list_data_type{
-    margin-top: 20px;
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    align-items: center;
-  }
+.select-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
-  .option_list{
-    margin-top: 20px;
-  }
+.attribute-group {
+  grid-template-columns: 1fr 2fr;
+  width: 750px;
+  justify-content: center;
+  display: grid;
+}
 
-  .option_item{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+.attribute_value_group {
+  margin-bottom: 20px;
+  width: 100%;
+}
 
-  .remove_option{
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 10px;
-  }
+.input_group {
+  outline: none;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
 
-  .add_option{
-    color: blue;
-    cursor: pointer;
-  }
+.add_data_button {
+  text-align: center;
+  color: blue;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+}
 
-  .remove_attribute{
-    cursor: pointer;
-    font-size: 30px;
-  }
+.add {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 90px;
+  justify-content: center;
+}
+.cancle {
+  background-color: #f00;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 90px;
+  justify-content: center;
+  margin-top: 20px;
+}
 
-  .attribute_info{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 20%;
-    padding: 0 20px;
-    color: gray;
-    margin-top: 20px;
-  }
+.isAdding {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-end;
+}
 
-  .icon_group{
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
+.list_data_type {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  align-items: center;
+}
 
-  .edit_icon{
-    cursor: pointer;
-  }
+.option_list {
+  margin-top: 20px;
+}
 
-  .attribute_group{
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 20px;
-  }
+.option_item {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-  .save_attribute_button{
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    position: sticky;
-    bottom: 0;
-  }
+.remove_option {
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+}
 
-  .button{
-    display: flex;
-    gap: 10px;
-    font-weight: bold;
-    background-color: coral;
-    padding: 10px 20px;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-  }
+.add_option {
+  color: blue;
+  cursor: pointer;
+}
 
-  .button:hover {
-    opacity: 0.8;
-  }
+.remove_attribute {
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.attribute_info {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20%;
+  padding: 0 20px;
+  color: gray;
+  margin-top: 20px;
+}
+
+.icon_group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit_icon {
+  cursor: pointer;
+}
+
+.attribute_group {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.save_attribute_button {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: sticky;
+  bottom: 0;
+}
+
+.button {
+  display: flex;
+  gap: 10px;
+  font-weight: bold;
+  background-color: coral;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: 0.8;
+}

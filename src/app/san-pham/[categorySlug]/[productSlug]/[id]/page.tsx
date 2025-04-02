@@ -31,7 +31,7 @@ import axiosInstance from "@/helpers/api/config";
 import { detailLabels } from "@/data/detailLabels";
 import CommentComponent from "@/components/commentComponent/CommentComponent";
 import { Cart } from "@/interfaces/cart";
-import { useAppSelector } from "@/lib/store"; 
+import { useAppSelector } from "@/lib/store";
 import { addToCart } from "@/utils/addToCart";
 import toast from "react-hot-toast";
 
@@ -49,8 +49,6 @@ const ProductDetail = () => {
   const [similarProduct, setSimilarProduct] = useState<ProductModel[]>([]);
   const [showAll, setShowAll] = useState(false);
   const currentUser = useAppSelector((state) => state.user.currentUser);
-
-  
 
   useEffect(() => {
     const getProductSeller = async (): Promise<void> => {
@@ -148,14 +146,14 @@ const ProductDetail = () => {
       quantity: count, // Use the current count as the quantity
     };
 
-    if(!currentUser) {
-      toast.error("Vui lòng đăng nhập !")
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập !");
       return;
     } else {
-        addToCart(currentUser._id, cart);
-        toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
+      addToCart(currentUser._id, cart);
+      toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
     }
-  }
+  };
   // Di chuyển ảnh
 
   if (!product) return <div style={{ height: 1000 }}></div>;
@@ -393,7 +391,7 @@ const ProductDetail = () => {
             </div>
           </ContainerComponent>
           <ContainerComponent title="Đánh giá">
-              <CommentComponent productId={product._id}></CommentComponent>
+            <CommentComponent productId={product._id}></CommentComponent>
           </ContainerComponent>
           <div ref={ref}>
             {differentProduct ? (

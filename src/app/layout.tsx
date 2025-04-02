@@ -8,7 +8,8 @@ import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { Toaster } from "react-hot-toast";
 import Modal from "react-modal";
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import HeaderWrapper from "@/components/header/wrapHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,17 +31,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-
-        <Header />
-        <Toaster position="top-center" reverseOrder={false} toastOptions={{
-          duration: 2000,
-        }}/>
-        <Providers> {children}</Providers>
-        <Footer />
+        <Providers>
+          <HeaderWrapper />
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              duration: 2000,
+            }}
+          />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

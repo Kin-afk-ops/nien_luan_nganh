@@ -1,78 +1,98 @@
 "use client";
-import Image from "next/image";
-import React, { useState } from "react";
-import logo from "../../assets/logo/logo.png";
-import "./header.css";
 import Link from "next/link";
+import Image from "next/image";
+import logo from "../../assets/logo/logo.png";
+import { useState, FormEvent, useEffect } from "react";
 
-const Header = () => {
-  const [headerInputFocus, setHeaderInputFocus] = useState<boolean>(false);
+import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
+
+export default function Header() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+  };
 
   return (
-    <header>
-      <div className="header__container">
-        <div className="grid wide ">
-          <div className="row header__main">
-            <div className="l-2">
-              <Link href={"/"} className="link">
-                <Image
-                  src={"/assets/oreka_logo.png"}
-                  alt="logo"
-                  width={84}
-                  height={25}
-                />
-              </Link>
-            </div>
-            <div className="l-5">
-              <div
-                className={
-                  headerInputFocus ? "header__input focus" : "header__input"
-                }
-              >
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm"
-                  onFocus={() => {
-                    setHeaderInputFocus(true);
-                  }}
-                  onBlur={() => {
-                    setHeaderInputFocus(false);
-                  }}
-                />
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </div>
-            </div>
-            {/* <div className="l-2"></div> */}
-            <div className="l-5 header__user">
-              <Link className="link" href={"/tai-khoan/dang-ky"}>
-                Đăng ký
-              </Link>
-              <Link className="link" href={"/tai-khoan/dang-nhap"}>
-                Đăng nhập
-              </Link>
-              <button className="main-btn">Đăng bán</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="header__container">
-        <div className="grid wide">
-          <div className="row no-gutters header__categories">
-            <i className="fa-solid fa-bars"></i>
-            <div>Sách</div>
-            <div>Đồ cho nam</div>
-            <div>Thời trang nữ</div>
-            <div>Đồ làm đẹp </div>
-            <div>Đồ cho mẹ và bé</div>
-            <div>Đồ chơi & trò chơi</div>
-            <div>Đồ dùng nhà cửa</div>
-            <div>Thiết bị điện tử</div>
-            <div>Đồ văn phòng</div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-};
+    <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
+      <div className="container-fluid">
+        {/* Logo */}
+        <Link className="navbar-brand" href="/HomePage">
+          <Image src={logo} alt="Logo" width={120} height={50} />
+        </Link>
 
-export default Header;
+        {/* Nút Toggle Menu */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <FaBars />
+        </button>
+
+        {/* Nội dung menu */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          {/* Ô tìm kiếm */}
+          <form
+            className="d-flex flex-grow-1 mx-lg-4 my-2 my-lg-0 position-relative"
+            onSubmit={handleSearch}
+          >
+            <input
+              className="form-control pe-5"
+              type="search"
+              placeholder="Tìm kiếm..."
+              aria-label="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              className="btn position-absolute end-0 top-50 translate-middle-y me-2 border-0 bg-transparent"
+              type="submit"
+            >
+              <FaSearch size={18} />
+            </button>
+          </form>
+
+          {/* Menu điều hướng */}
+          <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center">
+            <Link href="/gio-hang" className="btn text-primary">
+              <FaShoppingCart size={18} className="me-1" />
+            </Link>
+
+            <Link
+              href="/tai-khoan/dang-nhap"
+              className="btn btn-outline-primary"
+              style={{ border: "none" }}
+            >
+              Đăng nhập
+            </Link>
+            <Link
+              href="/tai-khoan/dang-ky"
+              className="btn btn-outline-primary"
+              style={{ border: "none" }}
+            >
+              Đăng ký
+            </Link>
+            <Link
+              href="/dangban"
+              className="btn"
+              style={{
+                backgroundColor: "#FF8C00",
+                color: "white",
+                transition: "0.3s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#E07B00")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#FF8C00")
+              }
+            >
+              Đăng bán
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
