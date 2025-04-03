@@ -33,6 +33,7 @@ import { UserState } from "@/interfaces/userState";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
+
   const [noAccount, setNoAccount] = useState<boolean>(false);
   const [recaptchaVerifier, setRecaptchaVerifier] =
     useState<RecaptchaVerifier | null>(null);
@@ -130,6 +131,7 @@ const LoginPage = () => {
           dispatch(loginSuccess(userLogin));
 
           alert("Đăng nhập Google thành công!");
+          window.location.replace("/");
         });
     } catch (error) {
       console.error("Google Login Error:", error);
@@ -164,6 +166,7 @@ const LoginPage = () => {
         email: emailValue,
       };
       login(dispatch, loginUser, setNoAccount, phoneMode);
+      window.location.replace("/");
     }
 
     if (!phoneError && !passwordError) {
@@ -173,6 +176,7 @@ const LoginPage = () => {
         email: emailValue,
       };
       login(dispatch, loginUser, setNoAccount, phoneMode);
+      window.location.replace("/");
     }
   };
 

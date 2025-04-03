@@ -1,15 +1,16 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./grid.css";
-import "./globals.css";
+
 import "../icon/fontawesome/css/all.min.css";
 import { Providers } from "@/lib/Providers";
-import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { Toaster } from "react-hot-toast";
 import Modal from "react-modal";
-import "bootstrap/dist/css/bootstrap.min.css";
 import HeaderWrapper from "@/components/header/wrapHeader";
+import Header from "@/components/header/Header";
+import HeaderLogged from "@/components/header/Headerlogged";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

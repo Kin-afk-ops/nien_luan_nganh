@@ -1,15 +1,19 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+
 import logo from "../../assets/logo/logo.png";
-import { useAppSelector } from "@/lib/store";
 // import userAvatar from '../../assets/avatar/default-avatar.png';
-import React, { ChangeEvent, useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useState, useEffect } from "react";
+
 import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
 import { logout } from "@/lib/features/user/userSlice";
-import { useDispatch } from "react-redux";
+
 import axiosInstance from "@/helpers/api/config";
+import "./header.css";
+import { InfoUserInterface } from "@/interfaces/infoUser";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface ChildProps {
   user: {
@@ -18,164 +22,136 @@ interface ChildProps {
     phone: string;
     email: string;
     firebase: boolean;
-  } | null;
+  };
 }
 
 const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const currentUser = useAppSelector((state) => state.user.currentUser);
-  const [userInfo, setUserInfo] = useState({ name: "", avatar: "" });
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [infoUser, setInfoUser] = useState<InfoUserInterface | null>(null);
+  const [infoUserName, setInfoUserName] = useState<string | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getUserInfoApi();
-  }, []);
-
-  const getUserInfo = (user: any) => {
-    try {
-      if (user && user.name) {
-        setUserInfo({
-          name: user.name,
-          avatar: user.avatar?.path || "",
-        });
+    const getInfoUser = async (): Promise<void> => {
+      if (user.firebase) {
+        setInfoUserName(user.email);
       } else {
-        setUserInfo({ name: "User", avatar: "" });
+        if (user.email !== "none") {
+          setInfoUserName(user.email);
+        } else {
+          setInfoUserName(user.phone);
+        }
       }
-    } catch (err) {
-      setUserInfo({ name: "User", avatar: "" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const getUserInfoApi = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await axiosInstance.get(
-        "infoUser/67d2576a25ba8a11767e2b53"
-      );
-      getUserInfo(response.data);
-    } catch (err) {
-      setError("Failed to load user info");
-      setUserInfo({ name: "User", avatar: "" });
-      setIsLoading(false);
-    }
-  };
+      try {
+        const res = await axiosInstance.get(`/infoUser/${user?._id}`);
+        console.log(res.data);
+
+        setInfoUser(res.data);
+        if (res.data.name) setInfoUserName(res.data.name);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getInfoUser();
+  }, [user]);
 
   const handleSearch = (e: any) => {
     e.preventDefault();
     console.log("Searching for:", searchTerm);
   };
-  const dispatch = useDispatch();
-  const handleLogout = () => {
+
+  const handleLogout = async () => {
     dispatch(logout());
-    alert("Đăng xuất thành công");
-    window.location.href = "/tai-khoan/dang-nhap";
+    window.location.replace("/");
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-      <div className="container-fluid">
+    <nav className="header">
+      <div className="header__container">
         {/* Logo */}
-        <Link className="navbar-brand" href="/HomePage">
+        <Link href="/">
           <Image src={logo} alt="Logo" width={120} height={50} />
         </Link>
 
         {/* Nút Toggle Menu */}
-        <button
+        {/* <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
         >
           <FaBars />
-        </button>
+        </button> */}
 
         {/* Nội dung menu */}
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div className="header__search">
           {/* Ô tìm kiếm */}
-          <form
-            className="d-flex flex-grow-1 mx-lg-4 my-2 my-lg-0 position-relative"
-            onSubmit={handleSearch}
-          >
-            <input
-              className="form-control pe-5"
-              type="search"
-              placeholder="Tìm kiếm..."
-              aria-label="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button
-              className="btn position-absolute end-0 top-50 translate-middle-y me-2 border-0 bg-transparent"
-              type="submit"
-            >
-              <FaSearch size={18} />
-            </button>
-          </form>
+
+          <input type="search" placeholder="Tìm kiếm..." />
+          <button className="header__search--icon">
+            <FaSearch size={18} />
+          </button>
 
           {/* Menu điều hướng */}
-          <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center">
-            <Link href="/gio-hang" className="btn text-primary">
-              <FaShoppingCart size={18} className="me-1" />
-            </Link>
+        </div>
+        <div className="header__navbar">
+          <Link href="/gio-hang" className="header__navbar--item">
+            <FaShoppingCart size={18} className="me-1" />
+          </Link>
 
-            {/* Thông tin người dùng */}
-            <div className="dropdown">
-              <button
-                className="btn dropdown-toggle d-flex align-items-center"
-                type="button"
-                data-bs-toggle="dropdown"
-              >
-                {!isLoading && userInfo.avatar && (
-                  <Image
-                    src={userInfo.avatar}
-                    alt="User Avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-circle me-2"
-                  />
-                )}
-                {isLoading ? "Loading..." : userInfo.name || "User"}
-              </button>
-              <ul className="dropdown-menu">
-                <li>
-                  <Link className="dropdown-item" href="/tai-khoan">
-                    Trang cá nhân
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    href="/dang-xuat"
-                    onClick={handleLogout}
-                  >
-                    Đăng xuất
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          {/* Thông tin người dùng */}
+          <div className="header__navbar--item header__navbar--image">
+            <Image
+              src={
+                infoUser?.avatar
+                  ? infoUser?.avatar?.path
+                  : "/assets/account/avatar_default.png"
+              }
+              alt="User Avatar"
+              width={40}
+              height={40}
+            />
 
-            <Link
-              href="/dangban"
-              className="btn"
-              style={{
-                backgroundColor: "#FF8C00",
-                color: "white",
-                transition: "0.3s",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "#E07B00")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "#FF8C00")
-              }
-            >
-              Đăng bán
-            </Link>
+            <p className="header__navbar--name">{infoUserName}</p>
+            <i className="fa-solid fa-angle-down"></i>
+
+            <ul className=" header__navbar--dropdown">
+              <li className="header__navbar--dropdown-item">
+                <i className="customer__nav--icon fa-regular fa-user"></i>
+
+                <Link href="/ho-so/thong-tin">Hồ sơ của tôi</Link>
+              </li>
+
+              <li className="header__navbar--dropdown-item">
+                <i className="customer__nav--icon  fa-solid fa-chart-line"></i>
+                <Link href="/ho-so/don-ban">Đơn bán</Link>
+              </li>
+
+              <li className="header__navbar--dropdown-item">
+                <i className="customer__nav--icon  fa-solid fa-cart-shopping"></i>
+                <Link href="/ho-so/don-mua">Đơn mua</Link>
+              </li>
+              <li className="header__navbar--dropdown-item">
+                <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                <button
+                  className="header__navbar--dropdown-logout"
+                  onClick={handleLogout}
+                >
+                  Đăng xuất
+                </button>
+              </li>
+            </ul>
           </div>
+
+          <Link href="/dang-ban" className="header__navbar--item">
+            Đăng bán
+          </Link>
         </div>
       </div>
     </nav>

@@ -34,7 +34,6 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
       setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
 
       setFIrebaseIsAccount(user?.firebase);
-      console.log(user);
     }
 
     const getInfoUser = async (): Promise<void> => {
@@ -42,7 +41,6 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
         .get(`/infoUser/${user?._id}`)
         .then((res) => {
           setName(res.data.name);
-          console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
@@ -77,8 +75,8 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
             href={"/ho-so/thong-tin"}
             className={
               slug === "thong-tin"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
+                ? "link customer__nav--link active"
+                : "link customer__nav--link"
             }
           >
             <i className="customer__nav--icon fa-regular fa-user"></i>
@@ -136,7 +134,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
       <ul className="customer__nav--list">
         <li onClick={() => setMenuToggle(false)}>
           <Link
-            href={"/ho-so/them-san-pham"}
+            href={"/sellform"}
             className={
               slug === "them-san-pham"
                 ? "customer__nav--link active"
