@@ -101,12 +101,6 @@ const AddressList: React.FC<ChildProps> = ({
                   setAddressModal(true);
                 }}
               ></i>
-              <i
-                className="fa-regular fa-trash-can"
-                onClick={() =>
-                  handleDeleteAddress({ id: a._id, isDefault: a.default })
-                }
-              ></i>
             </div>
           </div>
         ))}
@@ -117,6 +111,7 @@ const AddressList: React.FC<ChildProps> = ({
           setAddressModal(true);
           setEditAddressMode(false);
         }}
+        style={{ display: addresses.some(address => address === address) ? 'none' : 'inline-block' }}
       >
         <i className="fa-solid fa-plus"></i>
         Thêm mới

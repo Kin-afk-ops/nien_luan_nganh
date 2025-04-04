@@ -10,6 +10,7 @@ import {
 import { getDistrictAddress, getProvincesAddress, getWardAddress } from "@/helpers/getAddress/getAddress";
 import { AddressInterface } from "@/interfaces/addressUser";
 import { validationEmpty } from "@/helpers/validation/address";
+import { useAppSelector } from "@/lib/store";
 
 interface ChildProps {
   addressModal: boolean;
@@ -27,10 +28,10 @@ const AddressModal: React.FC<ChildProps> = ({
   indexAddress,
   editAddressMode,
 }) => {
+  const currentUser = useAppSelector((state) => state.user.currentUser);
   const [provinces, setProvinces] = useState<ProvinceInterface[]>([]);
   const [districts, setDistricts] = useState<DistrictInterface[]>([]);
   const [wards, setWards] = useState<WardInterface[]>([]);
-
   const [nameAddress, setNameAddress] = useState<string>("");
   const [phoneAddress, setPhoneAddress] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -38,12 +39,14 @@ const AddressModal: React.FC<ChildProps> = ({
   const [district, setDistrict] = useState<string>("");
   const [ward, setWard] = useState<string>("");
   const [isDefaultAddress, setIsDefaultAddress] = useState<boolean>(false);
-
   const [nameAddressError, setNameAddressError] = useState<boolean>(false);
   const [addressError, setAddressError] = useState<boolean>(false);
   const [provinceError, setProvinceError] = useState<boolean>(false);
   const [districtError, setDistrictError] = useState<boolean>(false);
   const [wardError, setWardError] = useState<boolean>(false);
+  const [addressinfousers, setaddressinfousers] = useState({ address: '', province: '', district: '', ward: '' });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getProvince = async (): Promise<void> => {
@@ -54,6 +57,41 @@ const AddressModal: React.FC<ChildProps> = ({
     };
     getProvince();
   }, []);
+
+  useEffect(() => {
+      require('bootstrap/dist/js/bootstrap.bundle.min.js');
+      getUserInfoApi();
+    }, []);
+
+    const getUserAddressInfo = (user: any) => {
+      try {
+        if (user && user.name) {
+          setaddressinfousers({
+            address: user.address,
+            avatar: user.avatar?.path || ''
+          });
+        } else {
+          setaddressinfousers({ address: '', province: '', district: '', ward: '' });
+        }
+      } catch (err) {
+        setaddressinfousers({ address: '', province: '', district: '', ward: '' });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    const getUserInfoApi = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await axiosInstance.get('addressinfousers/67d2576a25ba8a11767e2b53');
+        getUserInfo(response.data);
+      } catch (err) {
+        setError('Failed to load user info');
+        setUserInfo({ name: 'User', avatar: '' });
+        setIsLoading(false);
+      }
+    }
 
   const handleChangeDistrict = async (value: string): Promise<void> => {
     if (value) {
@@ -126,6 +164,11 @@ const AddressModal: React.FC<ChildProps> = ({
     validationDistrict();
     validationWard();
     validationAddress();
+
+    if (!validationNameAddress || !validationProvince || !validationDistrict || !validationWard || !validationAddress) {
+      return;
+    }
+
     const newAddress: AddressForm = {
       nameAddress,
       phoneAddress,
@@ -135,9 +178,23 @@ const AddressModal: React.FC<ChildProps> = ({
       address,
       default: isDefaultAddress,
     };
-    
+
     if (newAddress) {
-      setAddresses(prevAddresses => [...prevAddresses, newAddress]);
+      setAddresses(prevAddresses => {
+        // Tìm địa chỉ đã tồn tại trong danh sách (có thể dựa trên một id hoặc thuộc tính nhận diện nào đó)
+        const existingAddressIndex = prevAddresses.findIndex(addr => addr.phoneAddress === newAddress.phoneAddress);
+
+        if (existingAddressIndex >= 0) {
+          // Nếu địa chỉ đã tồn tại, cập nhật thông tin của nó
+          const updatedAddresses = [...prevAddresses];
+          updatedAddresses[existingAddressIndex] = newAddress;
+          return updatedAddresses;
+        } else {
+          // Nếu địa chỉ không tồn tại, thêm mới vào danh sách
+          return [...prevAddresses, newAddress];
+        }
+      });
+
       setAddressModal(false);
       setNameAddress("");
       setPhoneAddress("");
@@ -149,6 +206,20 @@ const AddressModal: React.FC<ChildProps> = ({
     } else {
       console.log("error");
     }
+
+    // if (newAddress) {
+    //   setAddresses(prevAddresses => [...prevAddresses, newAddress]);
+    //   setAddressModal(false);
+    //   setNameAddress("");
+    //   setPhoneAddress("");
+    //   setProvince("");
+    //   setDistrict("");
+    //   setWard("");
+    //   setAddress("");
+    //   setIsDefaultAddress(false);
+    // } else {
+    //   console.log("error");
+    // }
   };
 
   return (
@@ -162,13 +233,13 @@ const AddressModal: React.FC<ChildProps> = ({
           <h3>Địa chỉ của bạn</h3>
           <p>Nhập địa chỉ của bạn</p>
         </div>
-        <form 
+        <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
-          }} 
+          }}
           className="address__modal">
-        <div className="address__modal--block address__modal--address">
+          <div className="address__modal--block address__modal--address">
             <label htmlFor="address__modal--ward">Địa chỉ</label>
 
             <textarea
@@ -226,7 +297,7 @@ const AddressModal: React.FC<ChildProps> = ({
           {/* Checkbox chọn làm địa chỉ mặc định */}
           <div className="address__modal--block d-flex align-items-center">
             <input type="checkbox" id="defaultAddress" checked={isDefaultAddress} onChange={() => setIsDefaultAddress(!isDefaultAddress)} />
-            <label htmlFor="defaultAddress">Dùng địa chỉ mặc định</label>
+            <label htmlFor="defaultAddress">Sử dụng địa chỉ mặc định</label>
           </div>
 
           <div className="address__modal--btn">
@@ -247,3 +318,11 @@ const AddressModal: React.FC<ChildProps> = ({
 };
 
 export default AddressModal;
+function getUserInfoApi() {
+  throw new Error("Function not implemented.");
+}
+
+function setIsLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+

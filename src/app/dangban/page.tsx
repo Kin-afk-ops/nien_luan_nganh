@@ -31,7 +31,6 @@ const DangBan = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                console.log(categoriesData);
                 setCategories(categoriesData);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -188,10 +187,6 @@ const formattedAddress = `${lastAddress.address}, ${lastAddress.ward}, ${lastAdd
                 alert("Vui lòng nhập mô tả sản phẩm!");
                 return;
             }
-            if (!detail.trim()) {
-                alert("Vui lòng nhập chi tiết sản phẩm!");
-                return;
-            }
             if (!isFree && (!price || Number(price) <= 0)) {
                 alert("Vui lòng nhập giá hợp lệ!");
                 return;
@@ -278,7 +273,7 @@ const formattedAddress = `${lastAddress.address}, ${lastAddress.ward}, ${lastAdd
                             value={category}
                             onChange={handleCategoryChange}
                         >
-                            <option value="">Chọn danh mục</option>
+                            <option value="" hidden>Chọn danh mục</option>
                             {categories.map((cat) => (
                                 <option key={cat.attributeId} value={cat.attributeId}>
                                     {cat.label}
@@ -467,16 +462,6 @@ const formattedAddress = `${lastAddress.address}, ${lastAddress.ward}, ${lastAdd
                             id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                        ></textarea>
-                    </div>
-                    <div className="detail">
-                        <h4>Chi tiết sản phẩm:</h4>
-                        <textarea
-                            name="detail"
-                            maxLength={500}
-                            id="detail"
-                            value={detail}
-                            onChange={(e) => setDetail(e.target.value)}
                         ></textarea>
                     </div>
                 </div>
