@@ -6,11 +6,17 @@ import { useState, FormEvent, useEffect } from "react";
 
 import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
 import "./header.css";
+import axiosInstance from "@/helpers/api/config";
 
 export default function Header() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault();
+  const [searchValue, setSearchValue] = useState<string>("");
+  const handleSearch = async (): Promise<void> => {
+    await axiosInstance
+      .get(`/product/search?searchValue=${searchValue}`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -36,15 +42,22 @@ export default function Header() {
           {/* Ô tìm kiếm */}
 
           <input
-            type="search"
+            type="text"
             placeholder="Tìm kiếm..."
-            aria-label="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                handleSearch();
+              }
+            }}
           />
-          <button className="header__search--icon" type="submit">
+          <button className="header__search--icon" onClick={handleSearch}>
             <FaSearch size={18} />
           </button>
+
+          {/* Menu điều hướng */}
         </div>
         <div className="header__navbar">
           <Link

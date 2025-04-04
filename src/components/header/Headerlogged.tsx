@@ -26,12 +26,12 @@ interface ChildProps {
 }
 
 const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
-  const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
 
   const [infoUser, setInfoUser] = useState<InfoUserInterface | null>(null);
   const [infoUserName, setInfoUserName] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,9 +61,13 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
     getInfoUser();
   }, [user]);
 
-  const handleSearch = (e: any) => {
-    e.preventDefault();
-    console.log("Searching for:", searchTerm);
+  const handleSearch = async (): Promise<void> => {
+    await axiosInstance
+      .get(`/product/search?searchValue=${searchValue}`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleLogout = async () => {
@@ -93,8 +97,19 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
         <div className="header__search">
           {/* Ô tìm kiếm */}
 
-          <input type="search" placeholder="Tìm kiếm..." />
-          <button className="header__search--icon">
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                handleSearch();
+              }
+            }}
+          />
+          <button className="header__search--icon" onClick={handleSearch}>
             <FaSearch size={18} />
           </button>
 
