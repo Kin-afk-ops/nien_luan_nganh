@@ -1,30 +1,82 @@
 "use client";
 import "./dangban.css";
-import axios from 'axios';
 import { Button, Form, Table, Breadcrumb, Card } from 'react-bootstrap';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
+import AddressModal from "@/components/addressModal/addressModal2";
+import { AddressInterface } from "@/interfaces/addressUser";
+import { useParams } from "next/navigation";
+import categoriesData from "@/components/category/categories";
+import AddressList from "@/components/addressList/AddressList";
 
 
 const DangBan = () => {
+    const [addressModal, setAddressModal] = useState<boolean>(false);
+    const [addresses, setAddresses] = useState<AddressInterface[]>([]);
+    const [indexAddress, setIndexAddress] = useState<number | null>(null);
+    const [editAddressMode, setEditAddressMode] = useState<boolean>(false);
+    const [categories, setCategories] = useState<{attributeId: number; label: string; listDataType: any[]}[]>([]);
+    const [category, setCategory] = useState<string>("");
+    const [selectedAttributes, setSelectedAttributes] = useState<{[key: string]: string}>({});
+    const [currentListDataType, setCurrentListDataType] = useState<any[]>([]);
+    const { categorySlug } = useParams();
+    const [productName, setProductName] = React.useState("");
+    const [status, setStatus] = React.useState("");
+    const [address, setAddress] = React.useState("");
+    const [description, setDescription] = React.useState("");
+    const [detail, setDetail] = React.useState("");
+    const [files, setFiles] = React.useState<File[]>([]);
+    const [price, setPrice] = React.useState<number | string>("");
+    const [isFree, setIsFree] = React.useState(false);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                console.log(categoriesData);
+                setCategories(categoriesData);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    useEffect(() => {
+        if (addresses.length > 0) {
+            const lastAddress = addresses[addresses.length - 1];
+const formattedAddress = `${lastAddress.address}, ${lastAddress.ward}, ${lastAddress.district}, ${lastAddress.province}`;
+            setAddress(formattedAddress);
+        }
+    }, [addresses]);
+
     const handleImagePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
+        const uploadedFiles = event.target.files;
         const previewContainer = document.getElementById("image-preview-container");
 
-        if (files && previewContainer) {
-            Array.from(files).forEach(file => {
+        if (uploadedFiles && previewContainer) {
+            // Update the files state with the new files
+            const newFiles = Array.from(uploadedFiles);
+            setFiles(prevFiles => {
+                // Filter out any duplicates based on file name and size
+                const existingFileNames = prevFiles.map(f => `${f.name}-${f.size}`);
+                const uniqueNewFiles = newFiles.filter(file => 
+                    !existingFileNames.includes(`${file.name}-${file.size}`)
+                );
+                return [...prevFiles, ...uniqueNewFiles];
+            });
+            console.log('Files after update:', newFiles);
+
+            Array.from(uploadedFiles).forEach(file => {
                 if (file && (file.type.startsWith("image/") || file.type.startsWith("video/"))) {
                     const reader = new FileReader();
 
                     reader.onload = function (e) {
                         const result = e.target?.result as string;
 
-                        // Tạo div chứa preview và nút xóa
                         const fileContainer = document.createElement("div");
                         fileContainer.style.position = "relative";
                         fileContainer.style.display = "inline-block";
                         fileContainer.style.margin = "5px";
 
-                        // Tạo phần tử preview
                         const previewElement = document.createElement(file.type.startsWith("image/") ? "img" : "video");
                         previewElement.src = result;
                         previewElement.style.display = "block";
@@ -35,7 +87,6 @@ const DangBan = () => {
                             previewElement.setAttribute("controls", "controls");
                         }
 
-                        // Tạo nút xóa
                         const deleteButton = document.createElement("button");
                         deleteButton.innerText = "✖";
                         deleteButton.style.position = "absolute";
@@ -53,13 +104,12 @@ const DangBan = () => {
                         deleteButton.style.textAlign = "center";
                         deleteButton.onclick = () => {
                             previewContainer.removeChild(fileContainer);
+                            // Remove the file from files state
+                            setFiles(prevFiles => prevFiles.filter(f => f !== file));
                         };
 
-                        // Gắn các phần tử vào fileContainer
                         fileContainer.appendChild(previewElement);
                         fileContainer.appendChild(deleteButton);
-
-                        // Thêm vào previewContainer
                         previewContainer.appendChild(fileContainer);
                     };
 
@@ -67,14 +117,9 @@ const DangBan = () => {
                 }
             });
 
-            // Reset input để có thể thêm lại file cũ
             event.target.value = "";
         }
     };
-
-
-    const [price, setPrice] = React.useState<number | string>("");
-    const [isFree, setIsFree] = React.useState(false);
 
     const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
         setPrice(e.target.value);
@@ -90,46 +135,103 @@ const DangBan = () => {
     };
 
 
-    const [quantity, setQuantity] = React.useState<number>(1); 
+    const [quantity, setQuantity] = React.useState<number>(1);
 
     const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newQuantity = Math.max(1, Number(e.target.value));
         setQuantity(newQuantity);
     };
 
-    const [productName, setProductName] = React.useState("");
-    const [category, setCategory] = React.useState("");
-    const [status, setStatus] = React.useState("");
-    const [address, setAddress] = React.useState("");
-    const [description, setDescription] = React.useState("");
-    const [detail, setDetail] = React.useState("");
-    const [files, setFiles] = React.useState<File[]>([]);
 
-    const handleSell = async () => {
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedCategoryId = e.target.value;
+        setCategory(selectedCategoryId);
+        
+        // Find the selected category and update its listDataType
+        const selectedCategory = categories.find(cat => cat.attributeId.toString() === selectedCategoryId);
+        if (selectedCategory) {
+            setCurrentListDataType(selectedCategory.listDataType || []);
+            setSelectedAttributes({}); // Reset selected attributes when category changes
+        } else {
+            setCurrentListDataType([]);
+        }
+    };
+
+    const handleAttributeChange = (attributeId: string, value: string) => {
+        setSelectedAttributes(prev => ({
+            ...prev,
+            [attributeId]: value
+        }));
+    };
+
+    const handleSell = () => {
         try {
-
-            if (!productName || !category || !status || !address || !description || !detail) {
-                alert("Vui lòng điền đầy đủ thông tin!");
+            // Comprehensive form validation
+            if (!productName.trim()) {
+                alert("Vui lòng nhập tên sản phẩm!");
+                return;
+            }
+            if (!category) {
+                alert("Vui lòng chọn danh mục!");
+                return;
+            }
+            if (!status) {
+                alert("Vui lòng chọn tình trạng sản phẩm!");
+                return;
+            }
+            if (!address) {
+                alert("Vui lòng nhập địa chỉ!");
+                return;
+            }
+            if (!description.trim()) {
+                alert("Vui lòng nhập mô tả sản phẩm!");
+                return;
+            }
+            if (!detail.trim()) {
+                alert("Vui lòng nhập chi tiết sản phẩm!");
+                return;
+            }
+            if (!isFree && (!price || Number(price) <= 0)) {
+                alert("Vui lòng nhập giá hợp lệ!");
                 return;
             }
 
-            const formData = new FormData();
-            files.forEach((file) => {
-                formData.append("images", file);
-            });
+            // Create product object with form data
+            const productData = {
+                name: productName.trim(),
+                categoryId: category,
+                status: status,
+                quantity: quantity,
+                price: isFree ? 0 : Number(price),
+                address: address.trim(),
+                description: description.trim(),
+                detail: detail.trim(),
+                attributes: selectedAttributes,
+                images: files
+            };
 
-            formData.append("name", productName);
-            formData.append("category", category);
-            formData.append("status", status);
-            formData.append("quantity", quantity.toString());
-            formData.append("price", price.toString());
-            formData.append("address", address);
-            formData.append("description", description);
-            formData.append("detail", detail);
-            console.log(formData);
-
+            console.log("Product data:", productData);
+            alert("Sản phẩm đã được đăng bán thành công!");
+            
+            // Reset form
+            setProductName("");
+            setCategory("");
+            setStatus("");
+            setAddress("");
+            setDescription("");
+            setDetail("");
+            setPrice("");
+            setQuantity(1);
+            setFiles([]);
+            setSelectedAttributes({});
+            const previewContainer = document.getElementById("image-preview-container");
+            if (previewContainer) {
+                previewContainer.innerHTML = "";
+            }
+            
         } catch (error) {
-            console.error("Error creating product:", error);
+            console.error("Error:", error);
             alert("Có lỗi xảy ra khi đăng bán sản phẩm. Vui lòng thử lại!");
         }
     };
@@ -171,25 +273,47 @@ const DangBan = () => {
                     </div>
                     <div className="category">
                         <h4>Danh mục</h4>
-                        <select 
+                        <select
                             className="category-option"
                             value={category}
-                            onChange={(e) => setCategory(e.target.value)}
+                            onChange={handleCategoryChange}
                         >
-                            <option value="" hidden>Lựa chọn danh mục</option>
-                            <option value="electronics">Điện tử</option>
-                            <option value="fashion">Thời trang</option>
-                            <option value="home">Nhà cửa</option>
-                            <option value="books">Sách</option>
-                            <option value="sports">Thể thao</option>
+                            <option value="">Chọn danh mục</option>
+                            {categories.map((cat) => (
+                                <option key={cat.attributeId} value={cat.attributeId}>
+                                    {cat.label}
+                                </option>
+                            ))}
                         </select>
+                        
+                        {currentListDataType.length > 0 && (
+                            <div className="category-attributes" style={{ marginTop: '20px' }}>
+                                {currentListDataType.map((attribute, index) => (
+                                    <div key={index} className="attribute-select" style={{ marginBottom: '10px' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px' }}>{attribute.label}:</label>
+                                        <select
+                                            className="form-select"
+                                            value={selectedAttributes[attribute.id] || ''}
+                                            onChange={(e) => handleAttributeChange(attribute.id, e.target.value)}
+                                        >
+                                            <option value="">Chọn {attribute.label}</option>
+                                            {attribute.options?.map((option: any, optIndex: number) => (
+                                                <option key={option.id} value={option.id}>
+                                                    {option.value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                     <div className="name-product">
                         <h4>Tên sản phẩm:</h4>
-                        <input 
-                            type="text" 
-                            name="product-name" 
-                            id="product-name" 
+                        <input
+                            type="text"
+                            name="product-name"
+                            id="product-name"
                             value={productName}
                             onChange={(e) => setProductName(e.target.value)}
                         />
@@ -198,10 +322,10 @@ const DangBan = () => {
                         <h4>Tình trạng:</h4>
                         <div>
                             <div className="option">
-                                <input 
-                                    type="radio" 
-                                    name="status" 
-                                    id="new" 
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    id="new"
                                     value="new"
                                     checked={status === "new"}
                                     onChange={(e) => setStatus(e.target.value)}
@@ -209,10 +333,10 @@ const DangBan = () => {
                                 <label htmlFor="new">Hàng mới</label>
                             </div>
                             <div className="option">
-                                <input 
-                                    type="radio" 
-                                    name="status" 
-                                    id="like-new" 
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    id="like-new"
                                     value="like-new"
                                     checked={status === "like-new"}
                                     onChange={(e) => setStatus(e.target.value)}
@@ -220,10 +344,10 @@ const DangBan = () => {
                                 <label htmlFor="like-new">Như mới</label>
                             </div>
                             <div className="option">
-                                <input 
-                                    type="radio" 
-                                    name="status" 
-                                    id="good" 
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    id="good"
                                     value="good"
                                     checked={status === "good"}
                                     onChange={(e) => setStatus(e.target.value)}
@@ -231,10 +355,10 @@ const DangBan = () => {
                                 <label htmlFor="good">Tốt</label>
                             </div>
                             <div className="option">
-                                <input 
-                                    type="radio" 
-                                    name="status" 
-                                    id="average" 
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    id="average"
                                     value="average"
                                     checked={status === "average"}
                                     onChange={(e) => setStatus(e.target.value)}
@@ -242,10 +366,10 @@ const DangBan = () => {
                                 <label htmlFor="average">Trung bình</label>
                             </div>
                             <div className="option">
-                                <input 
-                                    type="radio" 
-                                    name="status" 
-                                    id="bad" 
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    id="bad"
                                     value="bad"
                                     checked={status === "bad"}
                                     onChange={(e) => setStatus(e.target.value)}
@@ -275,43 +399,71 @@ const DangBan = () => {
                     <div className="price relative w-full">
                         <h4>Giá bán:</h4>
                         <div className="d-flex">
-                        <input
-                            type="number"
-                            name="price"
-                            id="price-input"
-                            value={price}
-                            onChange={handlePriceChange}
-                            disabled={isFree}
-                            className="w-full border border-gray-300 rounded-md p-2 pr-12 text-right"
-                        />
-                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                            VND
-                        </span>
-                        <input
-                            type="checkbox"
-                            name="free"
-                            id="free-checkbox"
-                            onChange={handleFreeChange}
-                            checked={isFree}
-                        />
-                        <label htmlFor="free-checkbox">Hàng miễn phí</label>
+                            <input
+                                type="number"
+                                name="price"
+                                id="price-input"
+                                value={price}
+                                onChange={handlePriceChange}
+                                disabled={isFree}
+                                className="w-full border border-gray-300 rounded-md p-2 pr-12 text-right"
+                            />
+                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                                VND
+                            </span>
+                            <input
+                                type="checkbox"
+                                name="free"
+                                id="free-checkbox"
+                                onChange={handleFreeChange}
+                                checked={isFree}
+                            />
+                            <label htmlFor="free-checkbox">Hàng miễn phí</label>
                         </div>
                     </div>
                     <div className="address">
                         <h4>Địa chỉ:</h4>
-                        <input 
-                            type="text" 
-                            name="address" 
-                            id="address" 
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                        />
+                        <AddressList
+                            setAddressModal={setAddressModal}
+                            setEditAddressMode={setEditAddressMode}
+                            setAddressId={setAddress}
+                            setIndexAddress={setIndexAddress}
+                            addresses={addresses}
+                            setAddresses={setAddresses} userId={null} setChoiceAddress={function (value: React.SetStateAction<AddressInterface | null>): void {
+                                throw new Error("Function not implemented.");
+                            } } setChoiceAddressModal={function (value: React.SetStateAction<boolean>): void {
+                                throw new Error("Function not implemented.");
+                            } }            />
+                        {/* <div className="profile__info--form-block">
+                            <p className="profile__info--form-address">Địa chỉ</p>
+                            <button
+                                className="profile__info--form-address-btn"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setAddressModal(true);
+                                }}
+                            >
+                                <i className="fa-solid fa-plus"></i>
+                                Thêm mới
+                            </button>
+                        </div> */}
+                        {addressModal && (
+                            <AddressModal
+                                addressModal={addressModal}
+                                setAddressModal={setAddressModal}
+                                addresses={addresses}
+                                setAddresses={setAddresses}
+                                indexAddress={indexAddress}
+                                editAddressMode={editAddressMode}
+                            />
+                        )}
+                    
                     </div>
                     <div className="description">
                         <h4>Mô tả:</h4>
-                        <textarea 
-                            name="description" 
-                            maxLength={500} 
+                        <textarea
+                            name="description"
+                            maxLength={500}
                             id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -319,9 +471,9 @@ const DangBan = () => {
                     </div>
                     <div className="detail">
                         <h4>Chi tiết sản phẩm:</h4>
-                        <textarea 
-                            name="detail" 
-                            maxLength={500} 
+                        <textarea
+                            name="detail"
+                            maxLength={500}
                             id="detail"
                             value={detail}
                             onChange={(e) => setDetail(e.target.value)}

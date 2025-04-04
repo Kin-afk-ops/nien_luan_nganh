@@ -4,3 +4,4 @@ export interface categoryModel {
     slug: string;
     parentId: number;
 }
+

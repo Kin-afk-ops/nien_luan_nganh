@@ -23,7 +23,7 @@ interface ChildProps {
   setAddressModal: React.Dispatch<React.SetStateAction<boolean>>;
   addresses: AddressInterface[];
   setAddresses: React.Dispatch<React.SetStateAction<AddressInterface[]>>;
-  indexAddress: number;
+  indexAddress: any;
   editAddressMode: boolean;
 }
 
@@ -320,8 +320,8 @@ const AddressModal: React.FC<ChildProps> = ({
               placeholder="Nhập địa chỉ"
               name=""
               id="address__modal--address"
-              cols="40"
-              rows="4"
+              cols={40}
+              rows={4}
             />
           </div>
           <div className="address__modal--check">

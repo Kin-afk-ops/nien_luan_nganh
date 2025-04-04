@@ -193,8 +193,8 @@ const ProfilePage = () => {
               placeholder="Nhập giới thiệu"
               name=""
               id="profile__info--form-introduce"
-              cols="50"
-              rows="8"
+              cols={50}
+              rows={8}
             />
           </div>
 
