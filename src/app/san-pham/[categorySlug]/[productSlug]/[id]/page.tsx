@@ -36,6 +36,7 @@ import { addToCart } from "@/utils/addToCart";
 import toast from "react-hot-toast";
 import formatPrice from "@/helpers/format/formatPrice";
 import { getLabelNamePairsByCateId } from "@/utils/addCategory";
+import { useIsMobile } from "@/hooks/useIsMobile";
 interface LabelNamePair {
   label: string;
   name: string;
@@ -56,6 +57,7 @@ const ProductDetail = () => {
   const [similarProduct, setSimilarProduct] = useState<ProductModel[]>([]);
   const [showAll, setShowAll] = useState(false);
   const currentUser = useAppSelector((state) => state.user.currentUser);
+  const isMobile = useIsMobile();
 
   
 
@@ -183,7 +185,7 @@ const ProductDetail = () => {
   const visibleDetails = showAll ? detailEntries : detailEntries.slice(0, 1);
 
   return (
-    <div className="container">
+    <div className={isMobile ? "container_mobile" : "container"}>
       {product && (
         <BreadcrumbComponent
           id={product.categories.id}
@@ -194,11 +196,41 @@ const ProductDetail = () => {
       <div className="sub-container">
         <div className="main-info-container">
           <div className="product-image-container">
-            <img
-              src={product.images.url[imgIndex]}
-              alt={product.name}
-              className="product-image"
-            />
+            <div className="product-images">
+                <img
+                  src={product.images.url[imgIndex]}
+                  alt={product.name}
+                  className="product-image"
+                />
+            </div>
+            <div className="carousel-wrapper">
+              <div className="arrow left" onClick={handlePrev}>
+                &lt;
+              </div>
+              <div className="carousel-container" ref={containerRef}>
+                {product.images.url.map((img, index) => (
+                  <div
+                    className={`thumbnail ${
+                      selectedIndex === index ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => [setSelectedIndex(index), setimgIndex(index)]}
+                    ref={(el) => setItemRef(el, index)}
+                  >
+                    <img
+                      src={img}
+                      alt={`Image ${index}`}
+                      width={80}
+                      height={80}
+                      className="thumbnail-img"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="arrow right" onClick={handleNext}>
+                &gt;
+              </div>
+            </div>
           </div>
           <div className="info">
             <h2>{product.name}</h2>
@@ -221,7 +253,7 @@ const ProductDetail = () => {
                 style={{ color: "gray" }}
               >{`Còn lại ${product.quantity} sản phẩm có sẵn trong kho`}</p>
             </div>
-            <div className="row-container">
+            <div className="row-container mobile-display">
               <ButtonComponent
                 label="Thêm vào giỏ hàng"
                 style={{ color: "coral", border: "2px solid coral" }}
@@ -243,35 +275,8 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        <div className="carousel-wrapper">
-          <div className="arrow left" onClick={handlePrev}>
-            &lt;
-          </div>
-          <div className="carousel-container" ref={containerRef}>
-            {product.images.url.map((img, index) => (
-              <div
-                className={`thumbnail ${
-                  selectedIndex === index ? "active" : ""
-                }`}
-                key={index}
-                onClick={() => [setSelectedIndex(index), setimgIndex(index)]}
-                ref={(el) => setItemRef(el, index)}
-              >
-                <img
-                  src={img}
-                  alt={`Image ${index}`}
-                  width={80}
-                  height={80}
-                  className="thumbnail-img"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="arrow right" onClick={handleNext}>
-            &gt;
-          </div>
-        </div>
-        <div className="row-container gap-40">
+       
+        {/* <div className="row-container gap-40 ">
           <div className="row">
             <p>Bạn có sản phẩm tương tự?</p>
             <a href="#" style={{ color: "coral", fontWeight: "bold" }}>
@@ -296,7 +301,7 @@ const ProductDetail = () => {
               Yêu thích
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
       {/* Thông tin người bán*/}
       <div className="seller-container">
@@ -304,17 +309,13 @@ const ProductDetail = () => {
           <ContainerComponent title="Thông tin người bán">
             <div className="seller-content">
               <div className="seller-info">
-                <div className="row">
+                <div className="row-info">
                   <div className="seller-avatar">
                     <img src={sellerInfo?.avatar} alt="Avatar" />
                   </div>
                   <div className="seller_main_info">
                     <h3>{sellerInfo?.name}</h3>
-                    <div className="row gap-20">
-                      <a
-                        href="#"
-                        style={{ color: "blue" }}
-                      >{`(${sellerInfo?.report} đánh giá)`}</a>
+                    <div className="item-info gap-20 mobile_info">
                       <p>{`${sellerInfo?.productQuantity} sản phẩm`}</p>
                       <p>{`${sellerInfo?.sold} đã bán`}</p>
                     </div>
@@ -443,7 +444,7 @@ const ProductDetail = () => {
             )}
           </div>
           <div className="link">
-            <Link href={"#"} className="link_item">
+            <Link href={`/${categorySlug}?id=${product.categories.id}`} className="link_item">
               Xem chi tiết
             </Link>
           </div>

@@ -1,7 +1,7 @@
 .main-info-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     gap: 20px;
 }
 
@@ -15,9 +15,10 @@
 .product-image-container {
     width: 100%;
     height: 440px;
+    display: flex;
+    flex-direction: column;
 
 }
-
 .info{
     display: flex;
     flex-direction: column;
@@ -27,19 +28,26 @@
 .product-image-container {
     margin-left: 40px;
     width: 75%;
-    height: 500px;
 }
 
 .product-image{
     width: 100%;
-    height: 100%;
-    
+    height: 100%; 
+}
+.product-images{
+  flex: 1;
 }
 .row-container{
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 20px;
+}
+
+.item-info{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .gap-40{
@@ -128,7 +136,6 @@
     max-width: 500px;
     padding-left: 20px;
     position: relative;
-    margin-bottom: 20px;
   }
 
   .arrow{
@@ -163,6 +170,13 @@
   .content{
     grid-area: content;;
     
+  }
+
+  .row-info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
   }
 
   .seller-content{
@@ -300,4 +314,59 @@
     justify-content: center;
     margin-top: 10px;
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 768px) {
+    .main-info-container {
+        grid-template-columns: 1fr;
+    }
+    .product-image-container {
+        width: 100%;
+        margin-left: 0;
+    }
+    .product-image {
+        width: 100%;
+        height: 100%;
+    }
+    .carousel-container {
+        max-width: 100%;
+        padding: 10px;
+    }
+    .seller-container {
+        grid-template-columns: 1fr;
+        grid-template-areas: "content" "similar-products";
+    }
+    .seller-info {
+        border-right: none;
+    }
+    .mobile-display{
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .seller-content{
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .seller-info{
+      border-right: none;
+      margin-bottom: 10px;
+    }
+    .seller_main_info{
+      margin-left: 0;
+    }
+
+    .mobile_info{
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+    }
+
+    .similar-products{
+      margin-top: 0;
+      max-width: 100vw;
+    }
+    
   }

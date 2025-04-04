@@ -13,3 +13,53 @@
 .similar_title{
     padding: 20px;
 }
+
+.mySwiper{
+    width: 100%;
+    height: 100%;
+}
+
+.swipper_wrap_container{
+    position: relative;
+}
+
+.swipper_wrapper{
+    position: relative;
+    height: 100%;
+}
+
+.swipper_container{
+    position: relative;
+    height: 380px;
+    display: block;
+}
+
+@media  screen and (max-width: 768px) {
+    .main_container {
+        padding: 10px 10px;
+        max-width: 100vw;
+    }
+    .flex{
+        flex-direction: column;
+    }
+    .similar_title{
+        padding: 10px;
+    }
+    .mySwiper{
+        width: 100%;
+        height: 100%;
+    }
+    .swipper_wrap_container{
+        position: relative;
+    }
+    .swipper_wrapper{
+        position: relative;
+        height: 100%;
+    }
+    .swipper_container{
+        position: relative;
+        height: 380px;
+        display: block;
+    }
+    
+}

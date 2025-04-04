@@ -175,3 +175,14 @@
     font-weight: bold;
     color: yellow;
 }
+
+@media screen and (max-width: 768px) {
+    .container{
+        padding: 20px 10px;
+    }
+    .header{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+}

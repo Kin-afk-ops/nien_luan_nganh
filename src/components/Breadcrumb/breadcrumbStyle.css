@@ -24,3 +24,18 @@ li:hover{
     gap: 10px;
     color: rgb(112, 112, 224);
 }
+
+@media screen and (max-width: 768px) {
+    .breadcrumb_container{
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    .text-small{
+        font-size: 12px;
+    }
+    .item{
+        gap: 5px;
+    }
+    
+}

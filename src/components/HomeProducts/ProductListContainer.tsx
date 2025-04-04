@@ -12,6 +12,7 @@ import { ProductModel } from "@/models/ProductModel";
 import {useGlobalState} from '../../data/stateStore';
 import "./style.css"
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Props {
   header?: string;
@@ -37,6 +38,7 @@ const ProductListContainer: React.FC<Props> = ({
   freeCost,
 }) => {
   const swiper = useSwiper();
+  const isMobile = useIsMobile();
 
   const {setFilter, filterList} = useGlobalState();
 
@@ -66,8 +68,8 @@ const ProductListContainer: React.FC<Props> = ({
             <Swiper
               modules={[Navigation, Pagination]} // Đảm bảo sử dụng modules đúng
               spaceBetween={10}
-              slidesPerView={5}
-              slidesPerGroup={5}
+              slidesPerView={isMobile ? 2 : 5}
+              slidesPerGroup={isMobile ? 2 : 5}
               navigation={{
                 nextEl: `.swiper-button-next.next${uniqueId}`,
                 prevEl: `.swiper-button-prev.prev${uniqueId}`,
