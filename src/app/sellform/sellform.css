@@ -12,7 +12,7 @@ body {
 
 .wrapper {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 50px auto;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
@@ -37,6 +37,19 @@ body {
 .sellform-container {
   display: flex;
   flex-direction: column;
+}
+
+.sell__form--image-error {
+  color: var(--error);
+}
+
+.sell__form--image {
+  object-fit: contain;
+}
+
+.sell__form--image-label {
+  width: 40%;
+  text-align: center;
 }
 
 .image-vid,
@@ -262,4 +275,14 @@ label[for="file-upload"]:hover {
 
 .sell__form--button {
   margin-top: 20px;
+}
+
+.sell__form--block textarea {
+  resize: none;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
 }

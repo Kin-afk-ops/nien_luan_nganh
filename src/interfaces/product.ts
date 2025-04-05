@@ -1,4 +1,5 @@
 import { AddressInterface } from "./addressUser";
+import { CategoriesInterface } from "./categories";
 import { InfoUserInterface } from "./infoUser";
 
 export interface ICategory {
@@ -31,4 +32,19 @@ export interface ProductInterface {
   size: string;
   isFreeShip: boolean;
   sold: boolean;
+}
+
+export interface productFormInterface {
+  name: string;
+  categories: CategoriesInterface | null;
+  slug: string;
+  condition: string | null;
+  quantity: number;
+  price: number;
+  description: string;
+  addressId: string | null;
+  image: {
+    publicId: string;
+    path: string;
+  } | null;
 }

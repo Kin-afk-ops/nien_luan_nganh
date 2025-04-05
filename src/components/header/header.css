@@ -99,6 +99,7 @@
   padding: 10px 20px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  z-index: 9999;
 }
 
 .header__navbar--dropdown-item {

@@ -26,7 +26,7 @@ const ProductCard = (props: Props) => {
       onClick={handleReload}
     >
       <div className={styles.image}>
-        <img src={product?.images.url[0]} alt="product" />
+        {product?.images && <img src={product?.images.url[0]} alt="product" />}
       </div>
       <div className={styles.info}>
         <div className={styles.nameField}>

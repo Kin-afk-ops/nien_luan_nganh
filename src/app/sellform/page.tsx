@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import "./sellform.css";
 import Image from "next/image";
-import { ICategory } from "@/interfaces/product";
+import { ICategory, productFormInterface } from "@/interfaces/product";
 import axiosInstance from "@/helpers/api/config";
 import CategoriesBlock from "@/components/categoriesBlock/CategoriesBlock";
 import { CategoriesInterface } from "@/interfaces/categories";
@@ -11,6 +11,10 @@ import AddressModal from "@/components/addressModal/AddressModal";
 import AddressList from "@/components/addressList/addressList";
 import { useSelector } from "react-redux";
 import { RootState } from "@/hooks/useAppDispatch";
+import { validationEmpty } from "@/helpers/validation/address";
+import formatSlug from "@/helpers/format/formatSlug";
+import Loading from "@/components/loading/Loading";
+import uploadImage from "@/helpers/image/uploadImage";
 
 const DangBan = () => {
   const user =
@@ -48,6 +52,8 @@ const DangBan = () => {
 
   const [choiceAddressModal, setChoiceAddressModal] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (user) setUserId(user?._id);
@@ -96,16 +102,69 @@ const DangBan = () => {
   //   getAttributesOfCategory();
   // }, [cateLabel]);
 
+  const validationForm = (): boolean => {
+    if (
+      validationEmpty(nameValue) &&
+      cateLabel &&
+      condition &&
+      quantity &&
+      validationEmpty(price) &&
+      validationEmpty(description) &&
+      choiceAddress &&
+      checkFile
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSubmit = async (): Promise<void> => {
-    console.log("haha");
+    setLoading(true);
+
+    if (validationForm()) {
+      if (!editMode) {
+        const image = await uploadImage(file);
+
+        const newProduct: productFormInterface = {
+          name: nameValue,
+          categories: cateLabel ? cateLabel : null,
+          slug: formatSlug(nameValue),
+          condition: condition,
+          quantity: quantity,
+          price: Number(price),
+          description,
+          addressId: choiceAddress ? choiceAddress?._id : null,
+          image: image,
+        };
+
+        await axiosInstance
+          .post(`/product/${userId}`, newProduct)
+          .then((res) => {
+            setLoading(false);
+
+            alert("Thêm sản phẩm thành công! Chờ xét duyệt");
+          })
+          .catch((error) => {
+            console.log(error);
+            alert("Lỗi khi thêm");
+          });
+      }
+    } else {
+      alert("Vui lòng cung cấp đầy đủ thông tin ");
+      setLoading(false);
+    }
   };
 
   return (
     <>
+      {loading && <Loading />}
       <form
         className="wrapper"
         onSubmit={(e) => {
+          e.stopPropagation();
           e.preventDefault();
+
           handleSubmit();
         }}
       >
@@ -137,31 +196,45 @@ const DangBan = () => {
 
                   if (files[0].type?.startsWith("image/")) {
                     setProductImageError(false);
+                    setCheckFile(true);
                   } else {
                     setProductImageError(true);
+                    setCheckFile(false);
                   }
-
-                  setCheckFile(true);
                 }}
               />
 
               {file && (
                 <Image
-                  className="profile__info--top-image"
+                  className="sell__form--image"
                   src={URL.createObjectURL(file)}
                   alt="avatar "
                   width={400}
                   height={400}
                 />
               )}
+              {productImageError && (
+                <p className="sell__form--image-error">Vui lòng nhập một ảnh</p>
+              )}
 
-              <label htmlFor="sellFormImage">Tải lên hình ảnh và video</label>
+              <label
+                htmlFor="sellFormImage"
+                className="secondary-btn sell__form--image-label"
+              >
+                Tải lên hình ảnh và video
+              </label>
             </div>
           </div>
 
           <div className="name-product">
             <h4>Tên sản phẩm:</h4>
-            <input type="text" name="product-name" id="product-name" />
+            <input
+              type="text"
+              name="product-name"
+              id="product-name"
+              value={nameValue}
+              onChange={(e) => setNameValue(e.target.value)}
+            />
           </div>
 
           <div className="category">
@@ -263,7 +336,12 @@ const DangBan = () => {
               name="free"
               id="free-radio"
               checked={freePrice}
-              onChange={() => setFreePrice(!freePrice)}
+              onChange={(e) => {
+                setFreePrice(!freePrice);
+                if (e.target.checked) {
+                  setPrice("0");
+                }
+              }}
             />
             <label htmlFor="free-radio">Hàng miễn phí</label>
           </div>
@@ -310,7 +388,7 @@ const DangBan = () => {
               <div className="order__address--default">Mặc định</div>
             )}
 
-            <button onClick={() => setChoiceAddressModal(true)}>
+            <button onClick={() => setChoiceAddressModal(true)} type="button">
               Thay đổi
             </button>
           </div>

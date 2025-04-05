@@ -98,9 +98,9 @@ const ProductTable: React.FC<ChildProps> = ({
                 <td className="product__table--name">{p.name}</td>
                 <td>{p.categories?.name || "N/A"}</td>
 
-                <td>{p?.updatedAt ? formatDate(p.updatedAt) : "N/A"}</td>
+                <td>{p?.updatedAt ? formatDate(p?.updatedAt) : "N/A"}</td>
 
-                <td>wow</td>
+                <td>{p.condition}</td>
                 <td>
                   <button>Sửa</button>
                   <button>Xóa</button>
