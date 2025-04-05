@@ -249,6 +249,7 @@ const AddressModal: React.FC<ChildProps> = ({
     } else {
       console.log("error");
     }
+    setLoadingAddress(!loadingAddress);
   };
 
   return (

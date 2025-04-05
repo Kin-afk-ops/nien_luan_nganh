@@ -43,8 +43,16 @@ body {
 .category,
 .name-product,
 .status,
-.review-image {
+.price,
+.sell__form--block {
   margin-bottom: 20px;
+}
+
+.category {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 h4 {
@@ -197,4 +205,61 @@ label[for="file-upload"]:hover {
 
 .price label {
   font-size: 18px;
+}
+
+.sell__form--block {
+  display: flex;
+  flex-direction: column;
+}
+
+.order__address--container {
+  display: flex;
+}
+
+.order__address--default {
+  border: 1px solid var(--primary-color);
+  padding: 2px 5px;
+  margin-left: 15px;
+  font-size: 10px;
+  text-transform: capitalize;
+  border-radius: 1px;
+  color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order__address--container button {
+  margin-left: auto;
+  cursor: pointer;
+  border: none;
+  background-color: #fff;
+  color: var(--success);
+  font-size: 16px;
+}
+
+.choice__address {
+  position: absolute;
+  z-index: 1002;
+  background-color: #fff;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 30px;
+}
+
+.choice__address--close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.choice__address--close:hover {
+  color: #616161;
+}
+
+.sell__form--button {
+  margin-top: 20px;
 }

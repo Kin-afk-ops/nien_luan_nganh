@@ -164,7 +164,7 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
             </ul>
           </div>
 
-          <Link href="/dang-ban" className="header__navbar--item">
+          <Link href="/sellform" className="header__navbar--item">
             Đăng bán
           </Link>
         </div>
