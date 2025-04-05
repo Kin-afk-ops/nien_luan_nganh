@@ -16,6 +16,10 @@ import FilterListComponent from "@/components/filterComponent/FilterListComponen
 import {useGlobalState} from '../../data/stateStore';
 import { priceData, statusData, clothSize } from '../../data/sortData';
 import PaginationComponent from "@/components/PaginationComponent/PaginationComponent";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { FaList } from "react-icons/fa";
+import { Sheet } from "react-modal-sheet";
+import BottomSheetModalComponent from "@/components/BottomSheetComponent/BottomSheetModalComponent";
 
 
 const FillerProductByCategory = () => {
@@ -34,6 +38,8 @@ const FillerProductByCategory = () => {
   const [freeCost, setfreeCost] = useState(searchParams.get("freeCost") || "");
   const {filterList, setFilter} = useGlobalState();
   const [search, setsearch] = useState(searchParams.get("search") || "");
+  const [isOpen, setIsOpen] = useState(false)
+  const isMobile = useIsMobile();
 
 
   
@@ -64,8 +70,6 @@ const FillerProductByCategory = () => {
         }
     });
 
-    console.log("Đây là seach",filterList['search']);
-
     const fetchData = async () => {
         try {
             const res = await axiosInstance.get(
@@ -81,68 +85,119 @@ const FillerProductByCategory = () => {
 }, [category?.id, page, sort, minPrice, maxPrice, status, filterList]);
 
 
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const priceRange = priceData.find(p => p.label === filterList.price);
+//   useEffect(() => {
+//     const query = new URLSearchParams(window.location.search);
+//     const priceRange = priceData.find(p => p.label === filterList.price);
 
-    if (priceRange) {
+//     if (priceRange) {
+//         const min = priceRange.minValue || 0;
+//         const max = priceRange.maxValue || 1000000000;
+        
+//         setMinPrice(min);
+//         setMaxPrice(max);
+
+//         // Cập nhật URL với minPrice và maxPrice nếu tồn tại
+//         if (priceRange.minValue) {
+//             query.set("minPrice", String(min));
+//         } else {
+//             query.delete("minPrice");
+//         }
+
+//         if (priceRange.maxValue) {
+//             query.set("maxPrice", String(max));
+//         } else {
+//             query.delete("maxPrice");
+//         }
+
+//     } else {
+//         // Nếu filterList.price bị reset, xóa cả minPrice và maxPrice khỏi URL
+//         setMinPrice(0);
+//         setMaxPrice(1000000000);
+//         query.delete("minPrice");
+//         query.delete("maxPrice");
+//     }
+
+//     router.push(`?${query.toString()}`);
+// }, [filterList.price]);
+
+//   useEffect(() => {
+//     const query = new URLSearchParams(window.location.search);
+//     const statusValue = statusData.find(s => s.label === filterList.status);
+
+//     if (statusValue) {
+//         setStatus(statusValue.value);
+//         query.set("conditions", statusValue.value);
+//     } else {
+//         setStatus("all");
+//         query.delete("conditions");
+//     }
+
+//     router.push(`?${query.toString()}`);
+//     }, [filterList.status]);
+
+//     useEffect(() => {
+//       const query = new URLSearchParams(window.location.search);
+//       if(filterList.isFreeShip) {
+//         setFreeShip(filterList.isFreeShip);
+//         query.set("isFreeShip", filterList.isFreeShip);
+//       }else {
+//         setFreeShip("");
+//         query.delete("isFreeShip");
+//       }
+
+//       router.push(`?${query.toString()}`);
+//     },[filterList.isFreeShip]);
+
+    useEffect(() => {
+      // Tạo một đối tượng URLSearchParams để xây dựng query string
+      const query = new URLSearchParams(window.location.search);
+      // Cập nhật giá trị của bộ lọc price
+      const priceRange = priceData.find(p => p.label === filterList.price);
+      if (priceRange) {
         const min = priceRange.minValue || 0;
         const max = priceRange.maxValue || 1000000000;
-        
+    
         setMinPrice(min);
         setMaxPrice(max);
-
+    
         // Cập nhật URL với minPrice và maxPrice nếu tồn tại
         if (priceRange.minValue) {
-            query.set("minPrice", String(min));
+          query.set("minPrice", String(min));
         } else {
-            query.delete("minPrice");
+          query.delete("minPrice");
         }
-
+    
         if (priceRange.maxValue) {
-            query.set("maxPrice", String(max));
+          query.set("maxPrice", String(max));
         } else {
-            query.delete("maxPrice");
+          query.delete("maxPrice");
         }
-
-    } else {
-        // Nếu filterList.price bị reset, xóa cả minPrice và maxPrice khỏi URL
+      } else {
         setMinPrice(0);
         setMaxPrice(1000000000);
         query.delete("minPrice");
         query.delete("maxPrice");
-    }
-
-    router.push(`?${query.toString()}`);
-}, [filterList.price]);
-
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const statusValue = statusData.find(s => s.label === filterList.status);
-
-    if (statusValue) {
+      }
+      const statusValue = statusData.find(s => s.label === filterList.status);
+      if (statusValue) {
         setStatus(statusValue.value);
         query.set("conditions", statusValue.value);
-    } else {
+      } else {
         setStatus("all");
         query.delete("conditions");
-    }
-
-    router.push(`?${query.toString()}`);
-    }, [filterList.status]);
-
-    useEffect(() => {
-      const query = new URLSearchParams(window.location.search);
-      if(filterList.isFreeShip) {
+      }
+      // Cập nhật trạng thái bộ lọc isFreeShip
+      if (filterList.isFreeShip) {
         setFreeShip(filterList.isFreeShip);
         query.set("isFreeShip", filterList.isFreeShip);
-      }else {
+      } else {
         setFreeShip("");
         query.delete("isFreeShip");
       }
-
+      // Thay đổi URL của trang hiện tại với các bộ lọc mới
       router.push(`?${query.toString()}`);
-    },[filterList.isFreeShip])
+    }, [filterList, router]);
+    
 
 
 
@@ -160,7 +215,7 @@ const FillerProductByCategory = () => {
       <div className="page_container">
         <BreadcrumbComponent id={category?.id ?? 0}></BreadcrumbComponent>
         <div className="list_container">
-          <aside>
+          <aside className="aside_container">
             <SortBarComponent categoryId={category?.id}></SortBarComponent>
           </aside>
           <main>
@@ -170,7 +225,7 @@ const FillerProductByCategory = () => {
                 <p>{`(${data?.totalProducts ?? ""} sản phẩm)`}</p>
               </div>
               <div className="select">
-                <label htmlFor="sort_product">Lọc theo: </label>
+                {!isMobile && <label htmlFor="sort_product">Lọc theo: </label>}
                 <select
                   name="Lọc sản phẩm"
                   id="sort_product"
@@ -185,8 +240,14 @@ const FillerProductByCategory = () => {
                   ))}
                 </select>
               </div>
+              {isMobile && (
+              <div className="filter_icon" onClick={() => setIsOpen(true)}>
+                <FaList size={24} color="black" />
+              </div>
+            )}
             </div>
             <FilterListComponent></FilterListComponent>
+            
             <div className="product_list">
               {data?.products ? (
                 data.products.map((product, index) => (
@@ -203,6 +264,22 @@ const FillerProductByCategory = () => {
           </main>
         </div>
       </div>
+        {/* <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
+         <Sheet.Container className="sheet_container">
+           <Sheet.Header />
+           <Sheet.Content>
+             <div className="filter_sheet_container">
+               <SortBarComponent categoryId={category?.id} />
+             </div>
+           </Sheet.Content>
+         </Sheet.Container>
+         <Sheet.Backdrop onTap={() => setIsOpen(false)} />
+       </Sheet> */}
+       <BottomSheetModalComponent isOpen={isOpen} onClose={() => setIsOpen(false)}>
+         <div className="filter_sheet_container">
+           <SortBarComponent categoryId={category?.id} />
+         </div>
+        </BottomSheetModalComponent>
     </div>
   );
 };
