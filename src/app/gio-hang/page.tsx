@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  Button,
-  Form,
-  Table,
-  Breadcrumb,
-  Card,
-  Spinner,
-} from "react-bootstrap";
 import React, { ChangeEvent, useState, useEffect } from "react";
 import axiosInstance from "@/helpers/api/config";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useAppSelector } from "@/lib/store";
+import CartProduct from "@/components/payProduct/CartProduct";
+import { CartInterface } from "@/interfaces/cart";
 
 // Gọi API lấy giỏ hàng
 const getCart = async (id: string) => {
@@ -25,7 +18,7 @@ const getCart = async (id: string) => {
 };
 
 const CartUI: React.FC = () => {
-  const [cartData, setCartData] = useState<any>(null);
+  const [cartData, setCartData] = useState<CartInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -40,7 +33,7 @@ const CartUI: React.FC = () => {
         setError(null);
         if (currentUser?._id) {
           const data = await getCart(currentUser._id);
-          setCartData({ cart: data || [] });
+          setCartData(data);
         }
       } catch (err) {
         setError("Không thể tải dữ liệu giỏ hàng. Vui lòng thử lại sau.");
@@ -90,6 +83,8 @@ const CartUI: React.FC = () => {
     );
   };
 
+  console.log(cartData);
+
   // Tính tổng tiền
   const totalAmount =
     cartData?.cart?.reduce((sum: number, item: any) => {
@@ -105,11 +100,7 @@ const CartUI: React.FC = () => {
       <div
         className="container d-flex justify-content-center align-items-center"
         style={{ minHeight: "400px" }}
-      >
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </div>
+      ></div>
     );
   }
 
@@ -124,7 +115,7 @@ const CartUI: React.FC = () => {
   }
 
   return (
-    <div className="container">
+    <div className="grid wide">
       <div
         className="card mb-3 shadow-5"
         style={{ backgroundColor: "#EEEEEE" }}
@@ -136,12 +127,14 @@ const CartUI: React.FC = () => {
         </div>
       </div>
 
-      <Breadcrumb>
+      {cartData.length !== 0 && <CartProduct cartProduct={cartData} />}
+
+      {/* <Breadcrumb>
         <Breadcrumb.Item href="/">Trang chủ</Breadcrumb.Item>
         <Breadcrumb.Item active>Giỏ hàng</Breadcrumb.Item>
-      </Breadcrumb>
+      </Breadcrumb> */}
 
-      <Table responsive="sm" bordered>
+      {/* <table>
         <thead>
           <tr>
             <th></th>
@@ -181,8 +174,7 @@ const CartUI: React.FC = () => {
                 <td>{(product.discount || 0) * 100}%</td>
                 <td>
                   <div className="d-flex">
-                    <Button
-                      variant="info"
+                    <button
                       style={{ marginRight: "2px" }}
                       onClick={() =>
                         handleQuantityChange(
@@ -193,25 +185,17 @@ const CartUI: React.FC = () => {
                       }
                     >
                       -
-                    </Button>
+                    </button>
 
-                    <Form.Control
+                    <input
                       type="number"
                       value={item.quantity}
                       min="1"
                       max={product.quantity}
                       style={{ width: "80px" }}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        handleQuantityChange(
-                          item._id,
-                          Number(e.target.value),
-                          product.quantity
-                        )
-                      }
                     />
 
-                    <Button
-                      variant="info"
+                    <button
                       onClick={() =>
                         handleQuantityChange(
                           item._id,
@@ -221,7 +205,7 @@ const CartUI: React.FC = () => {
                       }
                     >
                       +
-                    </Button>
+                    </button>
                   </div>
                 </td>
                 <td>
@@ -235,33 +219,28 @@ const CartUI: React.FC = () => {
                   </b>
                 </td>
                 <td>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleRemoveItem(item._id)}
-                  >
+                  <button onClick={() => handleRemoveItem(item._id)}>
                     Xóa
-                  </Button>
+                  </button>
                 </td>
               </tr>
             );
           })}
         </tbody>
-      </Table>
+      </table> */}
 
-      <Card>
-        <Card.Body>
+      <div>
+        <div>
           <div className="float-start">
             <h4 className="text-success">
               Tổng tiền: {totalAmount.toLocaleString()} VNĐ
             </h4>
           </div>
           <div className="float-end">
-            <Button variant="success" style={{ margin: "15px" }}>
-              Thanh Toán
-            </Button>
+            <button style={{ margin: "15px" }}>Thanh Toán</button>
           </div>
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

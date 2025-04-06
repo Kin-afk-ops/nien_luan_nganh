@@ -141,7 +141,10 @@ const ProductDetail = () => {
 
   //Thêm hàng vào giỏ hàng
   const handleAddToCart = () => {
-    const cart: Cart = {
+    const cart: {
+      productId: string;
+      quantity: number;
+    } = {
       productId: product?._id || "", // Use the product ID if available
       quantity: count, // Use the current count as the quantity
     };
