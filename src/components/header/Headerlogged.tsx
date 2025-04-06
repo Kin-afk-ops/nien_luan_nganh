@@ -11,6 +11,7 @@ import { logout } from "@/lib/features/user/userSlice";
 
 import axiosInstance from "@/helpers/api/config";
 import "./header.css";
+import "./responsive.css";
 import { InfoUserInterface } from "@/interfaces/infoUser";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
+  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
 
   useEffect(() => {
     const getInfoUser = async (): Promise<void> => {
@@ -76,8 +78,8 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
   };
 
   return (
-    <nav className="header">
-      <div className="header__container">
+    <nav className=" header">
+      <div className=" grid wide header__container">
         {/* Logo */}
         <Link href="/">
           <Image src={logo} alt="Logo" width={120} height={50} />
@@ -94,10 +96,50 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
         </button> */}
 
         {/* Nội dung menu */}
+        <div
+          className="header__search--mobile-icon"
+          onClick={() => setDisplaySearch(true)}
+        >
+          {" "}
+          <i className="fa-solid fa-magnifying-glass "></i>
+        </div>
+
+        {displaySearch && (
+          <>
+            <div
+              className="modal-overlay "
+              onClick={() => setDisplaySearch(false)}
+            ></div>
+            <div className="header__search--mobile">
+              {/* Ô tìm kiếm */}
+
+              <input
+                className=""
+                type="text"
+                placeholder="Tìm kiếm..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                    handleSearch();
+                  }
+                }}
+              />
+              <button className="header__search--icon" onClick={handleSearch}>
+                <FaSearch size={18} />
+              </button>
+
+              {/* Menu điều hướng */}
+            </div>
+          </>
+        )}
+
         <div className="header__search">
           {/* Ô tìm kiếm */}
 
           <input
+            className=""
             type="text"
             placeholder="Tìm kiếm..."
             value={searchValue}

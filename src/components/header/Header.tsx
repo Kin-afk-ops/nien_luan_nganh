@@ -6,6 +6,8 @@ import { useState, FormEvent, useEffect } from "react";
 
 import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
 import "./header.css";
+import "./responsive.css";
+
 import axiosInstance from "@/helpers/api/config";
 
 export default function Header() {
@@ -21,7 +23,7 @@ export default function Header() {
 
   return (
     <nav className="header">
-      <div className="header__container">
+      <div className="grid wide header__container">
         {/* Logo */}
         <Link href="/">
           <Image src={logo} alt="Logo" width={120} height={50} />
