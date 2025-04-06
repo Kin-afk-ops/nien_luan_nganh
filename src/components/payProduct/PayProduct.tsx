@@ -27,7 +27,7 @@ const PayProduct: React.FC<ChildProps> = ({ cartProduct }) => {
             <div className="l-12 pay__product--buyer">
               {" "}
               <i className="fa-solid fa-shop"></i>
-              <p>{c.product.sellerInfo.name}</p>
+              <p>{c.product.sellerInfo && c.product.sellerInfo.name}</p>
               <button className="pay__product--buyer-chat">Chat</button>
               <Link href={"/"} className="link pay__product--buyer-view">
                 Xem shop

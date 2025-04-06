@@ -116,7 +116,10 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
           {/* Menu điều hướng */}
         </div>
         <div className="header__navbar">
-          <Link href="/gio-hang" className="header__navbar--item">
+          <Link
+            href={`/gio-hang/${user?._id}`}
+            className="header__navbar--item"
+          >
             <FaShoppingCart size={18} className="me-1" />
           </Link>
 

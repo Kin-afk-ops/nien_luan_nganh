@@ -80,7 +80,7 @@ const OrderProductContainer: React.FC<ChildProps> = ({
             <div className="l-10 m-9 s-12 pay__product--buyer">
               {" "}
               <i className="fa-solid fa-shop"></i>
-              <p>{c.product.sellerInfo.name}</p>
+              <p>{c.product.sellerInfo && c.product.sellerInfo.name}</p>
               <button className="pay__product--buyer-chat">Chat</button>
               <Link href={"/"} className="link pay__product--buyer-view">
                 Xem shop
@@ -140,16 +140,18 @@ const OrderProductContainer: React.FC<ChildProps> = ({
 
             <div className="l-10 m-12 s-12 order__product--address">
               Đơn hàng được vận chuyển từ{" "}
-              <b>
-                {c.product.addressInfo.address +
-                  ", " +
-                  c.product.addressInfo.ward +
-                  ", " +
-                  c.product.addressInfo.district +
-                  ", " +
-                  c.product.addressInfo.province +
-                  " "}
-              </b>{" "}
+              {c.product.addressInfo && (
+                <b>
+                  {c.product.addressInfo.address +
+                    ", " +
+                    c.product.addressInfo.ward +
+                    ", " +
+                    c.product.addressInfo.district +
+                    ", " +
+                    c.product.addressInfo.province +
+                    " "}
+                </b>
+              )}
               đến
               {
                 <b>

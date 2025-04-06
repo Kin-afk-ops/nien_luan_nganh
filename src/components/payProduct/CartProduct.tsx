@@ -4,16 +4,34 @@ import "./responsive.css";
 import formatPrice from "@/helpers/format/formatPrice";
 import { CartInterface } from "@/interfaces/cart";
 import Link from "next/link";
+import axiosInstance from "@/helpers/api/config";
+import CartProductItem from "./CartProductItem";
+import { useEffect, useState } from "react";
 
 interface ChildProps {
   cartProduct: CartInterface[];
+
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CartProduct: React.FC<ChildProps> = ({ cartProduct }) => {
+const CartProduct: React.FC<ChildProps> = ({ cartProduct, setLoading }) => {
+  const [shippingFee, setShippingFee] = useState<number>(27000);
+  const [totalPrice, setTotalPrice] = useState<number>(() => {
+    return cartProduct.reduce((sum, c) => {
+      return c.checked ? sum + c.product.price : sum;
+    }, 0);
+  });
+  const [totalPriceNoShip, setTotalPriceNoShip] = useState<number>(() => {
+    return cartProduct.reduce((sum, c) => {
+      return c.checked ? sum + c.product.price + shippingFee : sum;
+    }, 0);
+  });
+
   return (
     <div className="pay__product">
       <div className="row no-gutters pay__product--head">
         <h2 className="l-6 m-12 s-12">Sản phẩm</h2>
+
         <div className="l-2 m-0 s-0">Đơn giá</div>
         <div className="l-2 m-0 s-0">Số lượng</div>
         <div className="l-2 m-0 s-0">Thành tiền</div>
@@ -21,66 +39,39 @@ const CartProduct: React.FC<ChildProps> = ({ cartProduct }) => {
 
       {cartProduct !== null &&
         cartProduct?.map((c, index) => (
-          <div className="row no-gutters pay__product--body" key={index}>
-            <div className="l-12 m-12 s-12 pay__product--buyer">
-              {" "}
-              <i className="fa-solid fa-shop"></i>
-              <p>{c.product.sellerInfo && c.product.sellerInfo.name}</p>
-              <button className="pay__product--buyer-chat">Chat</button>
-              <Link href={"/"} className="link pay__product--buyer-view">
-                Xem shop
-              </Link>
-            </div>
-            <input
-              className="l-1 m-1 s-1 cart__product--checkbox"
-              type="checkbox"
-            />
-            <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
-              <Image
-                className="pay__product--item-image pc"
-                src={"/assets/account/avatar_default.png"}
-                alt="anh san pham"
-                width={40}
-                height={40}
-              />
-
-              <Image
-                className="pay__product--item-image tablet"
-                src={"/assets/account/avatar_default.png"}
-                alt="anh san pham"
-                width={80}
-                height={80}
-              />
-
-              <Image
-                className="pay__product--item-image mobile"
-                src={"/assets/account/avatar_default.png"}
-                alt="anh san pham"
-                width={100}
-                height={100}
-              />
-            </div>
-            <div className="l-4 m-9 s-7 pay__product--name">
-              <p>{c.product.name}</p>
-              <div className="l-0 pay__product--name-item">
-                {"Đơn giá: " + formatPrice(c.product.price)}
-              </div>
-              <div className="l-0 pay__product--name-item">
-                {"Số lượng: " + c.quantity}
-              </div>
-              <div className="l-0 pay__product--name-item">
-                {"Thành tiền: " + formatPrice(c.product.price * c.quantity)}
-              </div>
-            </div>
-            <div className="l-2 m-0 s-0 pay__product--item">
-              {formatPrice(c.product.price)}
-            </div>
-            <div className="l-2 m-0 s-0 pay__product--item">{c.quantity}</div>
-            <div className="l-2 m-0 s-0 pay__product--item">
-              {formatPrice(c.product.price * c.quantity)}
-            </div>
-          </div>
+          <CartProductItem
+            key={index}
+            setLoading={setLoading}
+            c={c}
+            setTotalPrice={setTotalPrice}
+            setTotalPriceNoShip={setTotalPriceNoShip}
+          />
         ))}
+
+      <div className="row no-gutters order__pay--content-wrap">
+        {/* <div className="l-9 m-4 s-0"></div> */}
+        {/* <div className="l-3 m-8 s-12"> */}
+        {/* <div className="grid"> */}
+        {/* <div className="row no-gutters order__pay--content "> */}
+        <div className="order__pay--content ">
+          <div className="">Tổng tiền hàng:</div>
+          <div className="">{formatPrice(totalPrice)}</div>
+        </div>
+
+        <div className=" order__pay--content">
+          <div className="">Tiền phí vận chuyển:</div>
+          <div className="">{formatPrice(shippingFee)}/1 sản phẩm</div>
+        </div>
+
+        <div className=" order__pay--content">
+          <div className="">Tổng thanh toán:</div>
+          <div className=" order__pay--content-total">
+            {formatPrice(totalPriceNoShip)}
+          </div>
+        </div>
+        {/* </div> */}
+        {/* </div> */}
+      </div>
     </div>
   );
 };

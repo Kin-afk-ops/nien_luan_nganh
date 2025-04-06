@@ -32,6 +32,10 @@
   .order__product--address {
     margin-bottom: 10px;
   }
+
+  .order__pay--content div:last-child {
+    width: 26%;
+  }
 }
 
 /* mobile */
@@ -73,5 +77,9 @@
 
   .order__product--address {
     margin-bottom: 10px;
+  }
+
+  .order__pay--content div:last-child {
+    width: 40%;
   }
 }
