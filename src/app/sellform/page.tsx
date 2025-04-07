@@ -15,6 +15,10 @@ import { validationEmpty } from "@/helpers/validation/address";
 import formatSlug from "@/helpers/format/formatSlug";
 import Loading from "@/components/loading/Loading";
 import uploadImage from "@/helpers/image/uploadImage";
+import { useSearchParams } from "next/navigation";
+import { AvatarInterface } from "@/interfaces/avatar";
+import updateImage from "@/helpers/image/updateImage";
+import { ImageUploadInterface } from "@/interfaces/imageUpload";
 
 const DangBan = () => {
   const user =
@@ -52,8 +56,16 @@ const DangBan = () => {
 
   const [choiceAddressModal, setChoiceAddressModal] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
-  const [editMode, setEditMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const searchParams = useSearchParams();
+
+  const editMode = searchParams.get("edit") === "true";
+  const productEditId = searchParams.get("id");
+  const [imageProduct, setImageProduct] = useState<ImageUploadInterface>({
+    path: "/assets/account/avatar_default.png",
+    publicId: "",
+  });
 
   useEffect(() => {
     if (user) setUserId(user?._id);
@@ -79,10 +91,33 @@ const DangBan = () => {
       }
     };
 
+    const getProduct = async (): Promise<void> => {
+      if (productEditId) {
+        try {
+          const res = await axiosInstance.get(
+            `/product/oneProduct/${productEditId}`
+          );
+
+          setNameValue(res.data.name);
+          setCateLabel(res.data.categories);
+          setCondition(res.data.condition);
+          setQuantity(res.data.quantity);
+          setPrice(res.data.price);
+          setDescription(res.data.description);
+          setChoiceAddress(res.data.addressInfo);
+          setImageProduct(res.data.image);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
     getCategories();
 
     getAddressUser();
-  }, [user, userId, loadingAddress]);
+
+    getProduct();
+  }, [user, userId, loadingAddress, productEditId]);
 
   // useEffect(() => {
   //   const getAttributesOfCategory = async (): Promise<void> => {
@@ -149,6 +184,32 @@ const DangBan = () => {
             console.log(error);
             alert("Lỗi khi thêm");
           });
+      } else {
+        const newProduct: productFormInterface = {
+          name: nameValue,
+          categories: cateLabel ? cateLabel : null,
+          slug: formatSlug(nameValue),
+          condition: condition,
+          quantity: quantity,
+          price: Number(price),
+          description,
+          addressId: choiceAddress ? choiceAddress?._id : null,
+          image: checkFile
+            ? await updateImage(file, imageProduct?.publicId)
+            : imageProduct,
+        };
+
+        await axiosInstance
+          .put(`/product/${productEditId}`, newProduct)
+          .then((res) => {
+            setLoading(false);
+
+            alert("Chỉnh sửa sản phẩm thành công! Chờ xét duyệt");
+          })
+          .catch((error) => {
+            console.log(error);
+            alert("Lỗi khi thêm");
+          });
       }
     } else {
       alert("Vui lòng cung cấp đầy đủ thông tin ");
@@ -204,15 +265,14 @@ const DangBan = () => {
                 }}
               />
 
-              {file && (
-                <Image
-                  className="sell__form--image"
-                  src={URL.createObjectURL(file)}
-                  alt="avatar "
-                  width={400}
-                  height={400}
-                />
-              )}
+              <Image
+                className="sell__form--image"
+                src={!checkFile ? imageProduct.path : URL.createObjectURL(file)}
+                alt="avatar "
+                width={400}
+                height={400}
+              />
+
               {productImageError && (
                 <p className="sell__form--image-error">Vui lòng nhập một ảnh</p>
               )}
@@ -261,6 +321,7 @@ const DangBan = () => {
                 <input
                   type="radio"
                   name="status"
+                  checked={condition === "Hàng mới"}
                   onChange={(e) => setCondition(e.target.value)}
                   id="new"
                   value="Hàng mới"
@@ -271,6 +332,7 @@ const DangBan = () => {
                 <input
                   type="radio"
                   name="status"
+                  checked={condition === "Như mới"}
                   onChange={(e) => setCondition(e.target.value)}
                   id="like-new"
                   value="Như mới"
@@ -281,6 +343,7 @@ const DangBan = () => {
                 <input
                   type="radio"
                   name="status"
+                  checked={condition === "Tốt"}
                   onChange={(e) => setCondition(e.target.value)}
                   id="good"
                   value="Tốt"
@@ -293,6 +356,7 @@ const DangBan = () => {
                   name="status"
                   id="average"
                   value="Trung bình"
+                  checked={condition === "Trung bình"}
                   onChange={(e) => setCondition(e.target.value)}
                 />
                 <label htmlFor="average">Trung bình</label>
@@ -301,6 +365,7 @@ const DangBan = () => {
                 <input
                   type="radio"
                   name="status"
+                  checked={condition === "Kém"}
                   onChange={(e) => setCondition(e.target.value)}
                   id="bad"
                   value="Kém"

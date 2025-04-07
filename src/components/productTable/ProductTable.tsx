@@ -5,6 +5,7 @@ import "./responsive.css";
 import { ProductInterface } from "@/interfaces/product";
 import axiosInstance from "@/helpers/api/config";
 import formatDate from "@/helpers/format/formattedDate";
+import { useRouter } from "next/navigation";
 
 interface ChildProps {
   userId: string | null;
@@ -23,6 +24,7 @@ const ProductTable: React.FC<ChildProps> = ({
   setSearchMode,
   dateValue,
 }) => {
+  const router = useRouter();
   const [products, setProducts] = useState<ProductInterface[] | null>(null);
 
   useEffect(() => {
@@ -102,7 +104,13 @@ const ProductTable: React.FC<ChildProps> = ({
 
                 <td>{p.condition}</td>
                 <td>
-                  <button>Sửa</button>
+                  <button
+                    onClick={() =>
+                      router.push(`/sellform?edit=${true}&id=${p._id}`)
+                    }
+                  >
+                    Sửa
+                  </button>
                   <button>Xóa</button>
                 </td>
               </tr>

@@ -20,6 +20,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
     useSelector((state: RootState) => state.user.currentUser) || null;
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
 
   const [slug, setSlug] = useState<string | null>(null);
@@ -34,6 +35,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
       setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
 
       setFIrebaseIsAccount(user?.firebase);
+      setUserId(user?._id);
     }
 
     const getInfoUser = async (): Promise<void> => {
@@ -132,6 +134,21 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
       <h3>Bán hàng</h3>
 
       <ul className="customer__nav--list">
+        <li onClick={() => setMenuToggle(false)}>
+          <Link
+            href={`/shop/${userId}`}
+            className={
+              slug === "them-san-pham"
+                ? "customer__nav--link active"
+                : "customer__nav--link"
+            }
+          >
+            <i className=" customer__nav--icon  fa-solid fa-shop"></i>
+
+            <p>Shop của tôi</p>
+          </Link>
+        </li>
+
         <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/sellform"}

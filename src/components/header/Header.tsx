@@ -12,6 +12,8 @@ import axiosInstance from "@/helpers/api/config";
 
 export default function Header() {
   const [searchValue, setSearchValue] = useState<string>("");
+  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
+
   const handleSearch = async (): Promise<void> => {
     await axiosInstance
       .get(`/product/search?searchValue=${searchValue}`)
@@ -39,6 +41,44 @@ export default function Header() {
           <FaBars />
         </button> */}
 
+        <div
+          className="header__search--mobile-icon"
+          onClick={() => setDisplaySearch(true)}
+        >
+          {" "}
+          <i className="fa-solid fa-magnifying-glass "></i>
+        </div>
+
+        {displaySearch && (
+          <>
+            <div
+              className="modal-overlay "
+              onClick={() => setDisplaySearch(false)}
+            ></div>
+            <div className="header__search--mobile">
+              {/* Ô tìm kiếm */}
+
+              <input
+                className=""
+                type="text"
+                placeholder="Tìm kiếm..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                    handleSearch();
+                  }
+                }}
+              />
+              <button className="header__search--icon" onClick={handleSearch}>
+                <FaSearch size={18} />
+              </button>
+
+              {/* Menu điều hướng */}
+            </div>
+          </>
+        )}
         {/* Nội dung menu */}
         <div className="header__search">
           {/* Ô tìm kiếm */}
