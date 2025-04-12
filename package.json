@@ -32,6 +32,7 @@
     "react-paginate": "^8.3.0",
     "react-redux": "^9.2.0",
     "react-spinners": "^0.15.0",
+    "react-star-ratings": "^2.3.0",
     "redis": "^4.7.0",
     "redux-persist": "^6.0.0",
     "swiper": "^11.2.5",
@@ -45,6 +46,7 @@
     "@types/react-dom": "^19",
     "@types/react-modal": "^3.16.3",
     "@types/react-slick": "^0.23.13",
+    "@types/react-star-ratings": "^2.3.3",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "typescript": "^5"

@@ -22,7 +22,8 @@ const ListCommentComponent = (props: Props) => {
         const fetchComments = async () => {
             try{
                 const reponse = await getComments(productId);
-                setComments(reponse);
+                console.log(reponse);
+                // setComments(reponse);
             }catch(error){
                 console.error('Error fetching comments', error)
             }

@@ -6,6 +6,7 @@ import { comments, postComment } from '@/interfaces/comment';
 import { createComment, deleteComment, updateComment } from '@/utils/createComment';
 import ListCommentComponent from './ListCommentComponent';
 import { toast } from 'react-hot-toast';
+import StarRatings from 'react-star-ratings';
 
 interface Props {
     productId: string;
@@ -20,6 +21,7 @@ const CommentComponent = (props: Props) => {
     const [editedComment, setEditedComment] = useState<comments>()
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const [forceUpdate, setForceUpdate] = useState(false);
+    const [ratingStar, setRatingStar] = useState(0)
     
     
 
@@ -29,11 +31,14 @@ const CommentComponent = (props: Props) => {
             alert("Bạn cần phải đăng nhập để đánh giá");
         }else if(content === '') {
             toast.error("Bạn cần nhập bình luận để đánh giá");
-        }else {
+        }else if(ratingStar === 0) {
+            toast.error("Bạn cần chọn sao để đánh giá");
+        } else{
            try{
                 const comment: postComment = {
                     content,
-                    like
+                    like,
+                    ratingStar
                 }
                 setContent('');
                 
@@ -97,6 +102,16 @@ const CommentComponent = (props: Props) => {
 
   return (
     <div className='comment_container'>
+        <div className="star_rating_box">
+            <StarRatings
+                rating={ratingStar}
+                starRatedColor="#FFD700"
+                changeRating={(newRating) => setRatingStar(newRating)}
+                numberOfStars={5}
+                starDimension="24px"
+                starSpacing="3px"
+            />
+        </div>
         <div className="comment_box">
             <textarea className='comment_input'
                 ref={inputRef}

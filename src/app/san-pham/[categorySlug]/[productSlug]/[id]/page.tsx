@@ -115,7 +115,7 @@ const ProductDetail = () => {
       }      
     };
     fetchLabelNamePairs();
-  }, [product?.categories.id]);
+  }, [product?.categories?.id]);
 
 
   const handlePlus = () => {

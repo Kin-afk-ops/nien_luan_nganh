@@ -40,6 +40,7 @@ export const getAttributeByCateId = (cateId: number) => {
 
 export const getLabelNamePairsByCateId = async (cateId: number): Promise<{ label: string; name: string }[]> => {
     try {
+        console.log(cateId);
         const data: CategoryAttribute = await getAttributeByCateId(cateId);
         return data.listDataTypes.reduce((acc, { label, name }) => {
             acc.push({ label, name });
