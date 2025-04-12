@@ -1,0 +1,18 @@
+@media (min-width: 768px) and (max-width: 1023px) {
+  .order__filter--search input {
+    width: 80%;
+  }
+  .order__filter--search button {
+    width: 18%;
+  }
+}
+
+/* mobile */
+@media (max-width: 767px) {
+  .order__filter--search input {
+    width: 75%;
+  }
+  .order__filter--search button {
+    width: 18%;
+  }
+}

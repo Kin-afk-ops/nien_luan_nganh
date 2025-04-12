@@ -1,0 +1,37 @@
+/* tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .header__search {
+    display: none;
+  }
+
+  .header__search--mobile-icon {
+    width: 25%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* mobile */
+@media (max-width: 767px) {
+  .header__search {
+    display: none;
+  }
+
+  .header__search--mobile-icon {
+    width: 15%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header__navbar--name {
+    display: none;
+  }
+
+  .header__navbar--dropdown {
+    width: 190px;
+
+    left: -60px;
+  }
+}

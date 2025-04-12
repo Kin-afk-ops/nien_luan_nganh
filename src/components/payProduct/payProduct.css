@@ -1,0 +1,167 @@
+.pay__product {
+  padding: 0 30px;
+  margin-bottom: 20px;
+}
+
+.pay__product--head {
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.pay__product--head h2 {
+  font-weight: 400;
+}
+.pay__product--head div {
+  display: flex;
+  justify-content: flex-end;
+  color: #616161;
+}
+
+.pay__product--body {
+  padding: 30px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.pay__product--item {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pay__product--name {
+  padding-left: 20px;
+}
+
+.pay__product--name p {
+  white-space: nowrap; /* Không xuống dòng */
+  overflow: hidden; /* Ẩn phần bị tràn */
+  text-overflow: ellipsis;
+}
+
+.pay__product--item-image.tablet {
+  display: none;
+}
+
+.pay__product--item-image.mobile {
+  display: none;
+}
+
+.pay__product--image {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pay__product--buyer {
+  margin-bottom: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.pay__product--buyer i {
+  margin-right: 10px;
+}
+.pay__product--buyer p {
+  max-width: 70%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  margin-right: 10px;
+}
+
+.pay__product--buyer-chat {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  margin-right: 10px;
+}
+
+.pay__product--buyer-view {
+  font-weight: 400;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.pay__product--buyer-view:hover {
+  text-decoration: underline;
+  color: var(--success);
+}
+
+/* order product */
+
+.order__product--status {
+  border: 1px solid var(--primary-color);
+  font-size: 12px;
+  color: var(--primary-color);
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order__product--address {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #616161;
+}
+
+.order__receive {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.cart__product--checkbox {
+  height: 25px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+  color: #fff;
+}
+
+.cart__product--delete {
+  font-size: 20px;
+  cursor: pointer;
+  text-align: right;
+  transition: 0.2s;
+  margin-bottom: 10px;
+}
+
+.cart__product--delete:hover {
+  color: var(--primary-color);
+}
+
+.order__pay--content-wrap {
+  padding-top: 20px;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.order__pay--content {
+  display: flex;
+  padding: 10px 0;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.order__pay--content div:first-child {
+  font-size: 14px;
+  text-align: right;
+  color: #616161;
+  margin-right: 30px;
+}
+
+.order__pay--content div:last-child {
+  text-align: left;
+  width: 15%;
+}
+
+.order__pay--content-total {
+  font-size: 25px;
+  color: var(--primary-color);
+}

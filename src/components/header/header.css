@@ -1,0 +1,145 @@
+.header {
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__search--mobile {
+  position: fixed;
+  top: 10px;
+  z-index: 1001;
+  width: 100%;
+  display: flex;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.header__search {
+  display: flex;
+  width: 45%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.header__search--mobile-icon {
+  display: none;
+}
+
+.header__search--mobile input,
+.header__search input {
+  width: 100%;
+  padding: 10px 10px;
+  outline: none;
+  border: none;
+  background-color: #eee;
+}
+
+.header__search--mobile:has(input:focus),
+.header__search:has(input:focus) {
+  border: 1px solid var(--primary-color);
+}
+
+.header__search--icon {
+  width: 10%;
+  border: none;
+  background-color: white;
+  color: #111;
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.header__navbar {
+  display: flex;
+  font-size: 14px;
+  color: #616161;
+  align-items: center;
+}
+
+.header__navbar--item {
+  margin-left: 15px;
+}
+
+.header__navbar--item:hover {
+  text-decoration: underline;
+  color: var(--success);
+}
+
+.header__navbar--item:last-child {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 10px;
+}
+
+.header__navbar--item:last-child:hover {
+  text-decoration: inherit;
+}
+
+.header__navbar--image {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.header__navbar--image:hover {
+  text-decoration: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.header__navbar--name {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.header__navbar--image:hover .header__navbar--dropdown {
+  display: block;
+}
+
+.header__navbar--dropdown {
+  width: 100%;
+  position: absolute;
+  display: none;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  z-index: 9999;
+}
+
+.header__navbar--dropdown-item {
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+}
+.header__navbar--dropdown-logout:hover,
+.header__navbar--dropdown-item:hover {
+  color: var(--primary-color);
+  transition: 0.2s;
+}
+
+.header__navbar--dropdown-item i {
+  margin-right: 10px;
+}
+
+.header__navbar--dropdown-logout {
+  border: none;
+  background-color: #fff;
+  font-size: 14px;
+  color: #616161;
+  cursor: pointer;
+}

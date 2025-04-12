@@ -1,0 +1,288 @@
+/* sellform.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f5f5f5;
+}
+
+.wrapper {
+  max-width: 800px;
+  margin: 50px auto;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-name {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-name h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.page-name p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.sellform-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.sell__form--image-error {
+  color: var(--error);
+}
+
+.sell__form--image {
+  object-fit: contain;
+}
+
+.sell__form--image-label {
+  width: 40%;
+  text-align: center;
+}
+
+.image-vid,
+.category,
+.name-product,
+.status,
+.price,
+.sell__form--block {
+  margin-bottom: 20px;
+}
+
+.category {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.file-upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#file-upload {
+  display: none;
+}
+
+label[for="file-upload"] {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+label[for="file-upload"]:hover {
+  background-color: #0056b3;
+}
+
+.category select,
+.name-product input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.status div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* khoảng cách giữa các option */
+}
+
+/* .option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    position: relative;
+  } */
+
+/* .option:hover {
+    background-color: #f0f0f0;
+    border-color: #888;
+  } */
+
+.option input {
+  display: none;
+}
+
+.option input:checked + label {
+  background-color: orange; /* Màu khi chọn */
+  color: white;
+  border-color: orange;
+}
+
+.option input:checked + label:hover {
+  background-color: rgb(255, 106, 0);
+}
+
+.option label {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  display: block;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+/* Thêm CSS cho container của ảnh và video */
+#image-preview-container {
+  display: grid; /* Sử dụng Grid Layout */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(150px, 1fr)
+  ); /* Định dạng grid, mỗi cột có kích thước tối thiểu là 150px */
+  gap: 10px; /* Khoảng cách giữa các phần tử */
+  justify-items: center; /* Căn giữa các phần tử */
+  margin-top: 20px;
+}
+
+/* Thêm kiểu cho các phần tử ảnh và video */
+#image-preview-container img,
+#image-preview-container video {
+  width: 100%; /* Đảm bảo ảnh và video chiếm hết chiều rộng của các ô grid */
+  max-height: 150px; /* Giới hạn chiều cao của ảnh/video */
+  object-fit: cover; /* Đảm bảo ảnh và video không bị méo */
+}
+
+.nextbtn {
+  display: inline-block;
+  background-color: orange;
+  color: white;
+  padding: 12px 20px;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.nextbtn:hover {
+  background-color: rgb(255, 106, 0);
+}
+
+.quantity input {
+  width: 40%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.price h4 {
+  margin-top: 5px;
+}
+
+#price-input {
+  width: 40%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+#free-radio {
+  margin-left: 150px;
+  margin-right: 15px;
+}
+
+.price label {
+  font-size: 18px;
+}
+
+.sell__form--block {
+  display: flex;
+  flex-direction: column;
+}
+
+.order__address--container {
+  display: flex;
+}
+
+.order__address--default {
+  border: 1px solid var(--primary-color);
+  padding: 2px 5px;
+  margin-left: 15px;
+  font-size: 10px;
+  text-transform: capitalize;
+  border-radius: 1px;
+  color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order__address--container button {
+  margin-left: auto;
+  cursor: pointer;
+  border: none;
+  background-color: #fff;
+  color: var(--success);
+  font-size: 16px;
+}
+
+.choice__address {
+  position: absolute;
+  z-index: 1002;
+  background-color: #fff;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 30px;
+}
+
+.choice__address--close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.choice__address--close:hover {
+  color: #616161;
+}
+
+.sell__form--button {
+  margin-top: 20px;
+}
+
+.sell__form--block textarea {
+  resize: none;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+}

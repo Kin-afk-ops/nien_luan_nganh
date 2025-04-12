@@ -1,0 +1,6 @@
+/* mobile 0*/
+@media (max-width: 767px) {
+  .shop__top--left {
+    justify-content: center;
+  }
+}

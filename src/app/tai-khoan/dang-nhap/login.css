@@ -1,0 +1,8 @@
+.account__forgot--password {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+  text-decoration: underline;
+  font-size: 14px;
+  color: #003399;
+}
