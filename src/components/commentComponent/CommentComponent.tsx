@@ -7,13 +7,15 @@ import { createComment, deleteComment, updateComment } from '@/utils/createComme
 import ListCommentComponent from './ListCommentComponent';
 import { toast } from 'react-hot-toast';
 import StarRatings from 'react-star-ratings';
+import { RatingStar } from '@/models/ProductModel';
 
 interface Props {
     productId: string;
+    starRating?: RatingStar;
 }
 
 const CommentComponent = (props: Props) => {
-    const { productId } = props;
+    const { productId, starRating} = props;
     const currentUser = useAppSelector((state) => state.user.currentUser);
     const [content, setContent] = useState('');
     const [like, setLike] = useState(0);
@@ -102,6 +104,7 @@ const CommentComponent = (props: Props) => {
 
   return (
     <div className='comment_container'>
+
         <div className="star_rating_box">
             <StarRatings
                 rating={ratingStar}

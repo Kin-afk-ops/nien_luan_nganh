@@ -6,7 +6,7 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { id: 2, name: "Sách", image: "/category_img/1.jpg", slug: "sach" },
+  { id: 2, name: "Sách", image: "/category_img/1.jpg", slug: "mua-ban-sach" },
   { id: 1, name: "Thời trang nữ", image: "/category_img/2.jpg" },
   { id: 3, name: "Thời trang nam", image: "/category_img/3.jpg" },
   { id: 4, name: "Đồ cho mẹ và bé", image: "/category_img/4.jpg" },

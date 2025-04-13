@@ -64,6 +64,20 @@ main {
   overflow-y: auto; /* Cuộn nội dung nếu vượt quá chiều cao */
 }
 
+.search_key_container{
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  gap: 8px;
+}
+
+.search_key{
+  color: coral;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 768px){
   .list_container {
     grid-template-areas: "main";

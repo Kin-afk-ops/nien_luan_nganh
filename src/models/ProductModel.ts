@@ -39,6 +39,12 @@ export interface ProductModel {
     isFreeShip: boolean;
     createdAt: string; // ISO Date string
     updatedAt: string; // ISO Date string
+    ratingStar: RatingStar;
+}
+
+export interface RatingStar {
+    count: number;
+    average: number;
 }
 
 export interface ProductCardModel {

@@ -19,6 +19,7 @@ const Header = () => {
       const query = new URLSearchParams(window.location.search);
       query.set("search", searchValue);
       router.push(`/mua-ban-do-cu?id=1&${query.toString()}`);
+      setsearchValue('');
     }
   };
 

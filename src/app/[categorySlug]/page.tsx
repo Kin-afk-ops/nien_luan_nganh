@@ -246,6 +246,14 @@ const FillerProductByCategory = () => {
               </div>
             )}
             </div>
+           
+                {filterList["search"] && (
+                  <div className="search_key_container">
+                    <p>Từ khóa tìm kiếm: </p>
+                    <p className="search_key">{` "${filterList['search']}"`}</p>
+                  </div>
+                )}
+              
             <FilterListComponent></FilterListComponent>
             
             <div className="product_list">

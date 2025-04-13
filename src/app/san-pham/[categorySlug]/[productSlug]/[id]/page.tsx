@@ -37,6 +37,7 @@ import toast from "react-hot-toast";
 import formatPrice from "@/helpers/format/formatPrice";
 import { getLabelNamePairsByCateId } from "@/utils/addCategory";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import StarRatings from "react-star-ratings";
 interface LabelNamePair {
   label: string;
   name: string;
@@ -418,7 +419,21 @@ const ProductDetail = () => {
             </div>
           </ContainerComponent>
           <ContainerComponent title="Đánh giá">
-              <CommentComponent productId={product._id}></CommentComponent>
+              <div className="review">
+                <div className="rating">
+                  <StarRatings 
+                      rating={product.ratingStar.average}
+                      starRatedColor="#FFD700"
+                      numberOfStars={5}
+                      starDimension="24px"  
+                      starSpacing="3px"    
+                  ></StarRatings>
+                </div>
+                <div className="rating_count">
+                  <p>{`(${product.ratingStar.count} đánh giá)`}</p>
+                </div>
+              </div>
+              <CommentComponent productId={product._id} starRating={product.ratingStar}></CommentComponent>
           </ContainerComponent>
           <div ref={ref}>
             {differentProduct ? (
