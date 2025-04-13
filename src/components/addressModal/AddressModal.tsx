@@ -409,8 +409,8 @@ const AddressModal: React.FC<ChildProps> = ({
               placeholder="Nhập địa chỉ"
               name=""
               id="address__modal--address"
-              cols="40"
-              rows="4"
+              cols={40}
+              rows={4}
             />
           </div>
           <div className="address__modal--check">
