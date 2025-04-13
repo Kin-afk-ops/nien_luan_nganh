@@ -1,221 +1,289 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-
 import logo from "../../assets/logo/logo.png";
-// import userAvatar from '../../assets/avatar/default-avatar.png';
-import { useState, useEffect } from "react";
-
+import { useAppSelector } from "@/lib/store";
+import React, { useEffect, useState, FormEvent } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
 import { logout } from "@/lib/features/user/userSlice";
-
-import axiosInstance from "@/helpers/api/config";
-import "./header.css";
-import "./responsive.css";
-import { InfoUserInterface } from "@/interfaces/infoUser";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import axiosInstance from "@/helpers/api/config";
 
-interface ChildProps {
-  user: {
-    _id: string;
-    accessToken: string;
-    phone: string;
-    email: string;
-    firebase: boolean;
-  };
-}
+type SubCategoryType = {
+  [key: string]: string;
+};
 
-const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
-  const dispatch = useDispatch();
-  const router = useRouter();
+type CategoryType = {
+  "hang-sx"?: SubCategoryType;
+  "loai-sp"?: SubCategoryType;
+  "dung-luong"?: SubCategoryType;
+  "mau-sac"?: SubCategoryType;
+};
 
-  const [infoUser, setInfoUser] = useState<InfoUserInterface | null>(null);
-  const [infoUserName, setInfoUserName] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
+type DanhmucType = {
+  [key: string]: CategoryType;
+};
 
+export default function Header() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [userInfo, setUserInfo] = useState({ name: "", avatar: "" });
   const [isLoading, setIsLoading] = useState(true);
-  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const dispatch = useDispatch();
+
+  const danhmuc: DanhmucType = {
+    "dien-thoai": {
+      "hang-sx": {
+        samsung: "Samsung",
+        apple: "Apple",
+        xiaomi: "Xiaomi",
+        oppo: "Oppo",
+        vivo: "Vivo",
+        nokia: "Nokia",
+      },
+      "dung-luong": {
+        "64gb": "64GB",
+        "128gb": "128GB",
+        "256gb": "256GB",
+        "512gb": "512GB",
+      },
+      "mau-sac": {
+        den: "Đen",
+        trang: "Trắng",
+        xanh: "Xanh",
+        do: "Đỏ",
+        vang: "Vàng",
+      },
+    },
+    "phu-kien": {
+      "loai-sp": {
+        "tai-nghe": "Tai nghe",
+        "sac-du-phong": "Sạc dự phòng",
+        "cap-sac": "Cáp sạc",
+      },
+      "hang-sx": {
+        apple: "Apple",
+        samsung: "Samsung",
+        xiaomi: "Xiaomi",
+        oppo: "Oppo",
+        vivo: "Vivo",
+      },
+    },
+    laptop: {
+      "hang-sx": {
+        apple: "Apple",
+        samsung: "Samsung",
+        xiaomi: "Xiaomi",
+      },
+    },
+  };
 
   useEffect(() => {
-    const getInfoUser = async (): Promise<void> => {
-      if (user.firebase) {
-        setInfoUserName(user.email);
+    require("bootstrap/dist/js/bootstrap.bundle.min.js");
+    getUserInfoApi();
+  }, []);
+
+  const getUserInfo = (user: any) => {
+    try {
+      if (user && user.name) {
+        setUserInfo({
+          name: user.name,
+          avatar: user.avatar?.path || "",
+        });
       } else {
-        if (user.email !== "none") {
-          setInfoUserName(user.email);
-        } else {
-          setInfoUserName(user.phone);
-        }
+        setUserInfo({ name: "User", avatar: "" });
       }
-
-      try {
-        const res = await axiosInstance.get(`/infoUser/${user?._id}`);
-        console.log(res.data);
-
-        setInfoUser(res.data);
-        if (res.data.name) setInfoUserName(res.data.name);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getInfoUser();
-  }, [user]);
-
-  const handleSearch = async (): Promise<void> => {
-    await axiosInstance
-      .get(`/product/search?searchValue=${searchValue}`)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => console.log(error));
+    } catch (err) {
+      setUserInfo({ name: "User", avatar: "" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLogout = async () => {
+  const getUserInfoApi = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await axiosInstance.get(
+        "infoUser/67d2576a25ba8a11767e2b53"
+      );
+      getUserInfo(response.data);
+    } catch (err) {
+      setError("Failed to load user info");
+      setUserInfo({ name: "User", avatar: "" });
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    console.log("Searching for:", searchTerm);
+  };
+
+  const handleLogout = () => {
     dispatch(logout());
-    window.location.replace("/");
+    alert("Đăng xuất thành công");
+    window.location.href = "/tai-khoan/dang-nhap";
   };
 
   return (
-    <nav className=" header">
-      <div className=" grid wide header__container">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
+      <div className="container-fluid">
         {/* Logo */}
-        <Link href="/">
+        <Link className="navbar-brand" href="/HomePage">
           <Image src={logo} alt="Logo" width={120} height={50} />
         </Link>
 
-        {/* Nút Toggle Menu */}
-        {/* <button
+        {/* Toggle button */}
+        <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
         >
           <FaBars />
-        </button> */}
+        </button>
 
-        {/* Nội dung menu */}
-        <div
-          className="header__search--mobile-icon"
-          onClick={() => setDisplaySearch(true)}
-        >
-          {" "}
-          <i className="fa-solid fa-magnifying-glass "></i>
-        </div>
-
-        {displaySearch && (
-          <>
-            <div
-              className="modal-overlay "
-              onClick={() => setDisplaySearch(false)}
-            ></div>
-            <div className="header__search--mobile">
-              {/* Ô tìm kiếm */}
-
-              <input
-                className=""
-                type="text"
-                placeholder="Tìm kiếm..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault(); // Ngăn hành động mặc định (nếu có)
-                    handleSearch();
-                  }
-                }}
-              />
-              <button className="header__search--icon" onClick={handleSearch}>
-                <FaSearch size={18} />
+        {/* Menu content */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-3">
+            {/* Dropdown Danh Mục */}
+            <li className="nav-item dropdown">
+              <button
+                className="nav-link dropdown-toggle btn"
+                data-bs-toggle="dropdown"
+              >
+                Danh Mục
               </button>
+              <ul className="dropdown-menu">
+                {Object.keys(danhmuc).map((key) => (
+                  <li key={key} className="dropdown-submenu position-relative">
+                    <div
+                      className="dropdown-item"
+                      onMouseEnter={() => setHoveredCategory(key)}
+                      onMouseLeave={() => setHoveredCategory(null)}
+                    >
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                      {hoveredCategory === key && (
+                        <ul className="dropdown-menu position-absolute start-100 top-0 mt-0 ms-1 show">
+                          {Object.entries(danhmuc[key]).map(
+                            ([subKey, subValue]) => (
+                              <li key={subKey}>
+                                <span className="dropdown-item-text fw-bold">
+                                  {subKey === "hang-sx"
+                                    ? "Hãng sản xuất"
+                                    : subKey === "loai-sp"
+                                    ? "Loại sản phẩm"
+                                    : subKey === "dung-luong"
+                                    ? "Dung lượng"
+                                    : subKey === "mau-sac"
+                                    ? "Màu sắc"
+                                    : subKey}
+                                </span>
+                                <ul className="dropdown-menu show position-static">
+                                  {Object.entries(subValue).map(
+                                    ([subSubKey, subSubValue]) => (
+                                      <li key={subSubKey}>
+                                        <Link
+                                          className="dropdown-item ps-4"
+                                          href={`/${key}/${subKey}/${subSubKey}`}
+                                        >
+                                          {subSubValue}
+                                        </Link>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ul>
 
-              {/* Menu điều hướng */}
-            </div>
-          </>
-        )}
-
-        <div className="header__search">
-          {/* Ô tìm kiếm */}
-
-          <input
-            className=""
-            type="text"
-            placeholder="Tìm kiếm..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
-                handleSearch();
-              }
-            }}
-          />
-          <button className="header__search--icon" onClick={handleSearch}>
-            <FaSearch size={18} />
-          </button>
-
-          {/* Menu điều hướng */}
-        </div>
-        <div className="header__navbar">
-          <Link
-            href={`/gio-hang/${user?._id}`}
-            className="header__navbar--item"
+          {/* Search form */}
+          <form
+            className="d-flex flex-grow-1 position-relative mx-2"
+            onSubmit={handleSearch}
           >
-            <FaShoppingCart size={18} className="me-1" />
-          </Link>
-
-          {/* Thông tin người dùng */}
-          <div className="header__navbar--item header__navbar--image">
-            <Image
-              src={
-                infoUser?.avatar
-                  ? infoUser?.avatar?.path
-                  : "/assets/account/avatar_default.png"
-              }
-              alt="User Avatar"
-              width={40}
-              height={40}
+            <input
+              className="form-control pe-5"
+              type="search"
+              placeholder="Tìm kiếm..."
+              aria-label="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
+            <button
+              className="btn position-absolute end-0 top-50 translate-middle-y me-2 border-0 bg-transparent"
+              type="submit"
+            >
+              <FaSearch size={18} />
+            </button>
+          </form>
 
-            <p className="header__navbar--name">{infoUserName}</p>
-            <i className="fa-solid fa-angle-down"></i>
+          {/* Right Menu */}
+          <div className="d-flex align-items-center gap-3 ms-auto">
+            <Link href="/gio-hang" className="btn text-primary">
+              <FaShoppingCart size={20} />
+            </Link>
 
-            <ul className=" header__navbar--dropdown">
-              <li className="header__navbar--dropdown-item">
-                <i className="customer__nav--icon fa-regular fa-user"></i>
+            {/* User dropdown */}
+            <div className="dropdown">
+              <button
+                className="btn dropdown-toggle d-flex align-items-center"
+                type="button"
+                data-bs-toggle="dropdown"
+              >
+                {!isLoading && userInfo.avatar && (
+                  <Image
+                    src={userInfo.avatar}
+                    alt="User Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-circle me-2"
+                  />
+                )}
+                {isLoading ? "Loading..." : userInfo.name || "User"}
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <Link className="dropdown-item" href="/tai-khoan">
+                    Trang cá nhân
+                  </Link>
+                </li>
+                <li>
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    Đăng xuất
+                  </button>
+                </li>
+              </ul>
+            </div>
 
-                <Link href="/ho-so/thong-tin">Hồ sơ của tôi</Link>
-              </li>
-
-              <li className="header__navbar--dropdown-item">
-                <i className="customer__nav--icon  fa-solid fa-chart-line"></i>
-                <Link href="/ho-so/don-ban">Đơn bán</Link>
-              </li>
-
-              <li className="header__navbar--dropdown-item">
-                <i className="customer__nav--icon  fa-solid fa-cart-shopping"></i>
-                <Link href="/ho-so/don-mua">Đơn mua</Link>
-              </li>
-              <li className="header__navbar--dropdown-item">
-                <i className="fa-solid fa-arrow-right-from-bracket"></i>
-                <button
-                  className="header__navbar--dropdown-logout"
-                  onClick={handleLogout}
-                >
-                  Đăng xuất
-                </button>
-              </li>
-            </ul>
+            {/* Đăng bán */}
+            <Link
+              href="/dangban"
+              className="btn text-white"
+              style={{ backgroundColor: "#FF8C00" }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#E07B00")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#FF8C00")
+              }
+            >
+              Đăng bán
+            </Link>
           </div>
-
-          <Link href="/dangban" className="header__navbar--item">
-            Đăng bán
-          </Link>
         </div>
       </div>
     </nav>
   );
-};
-
-export default HeaderLogged;
+}

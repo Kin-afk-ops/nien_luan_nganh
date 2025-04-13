@@ -149,104 +149,104 @@ const CartUI: React.FC = () => {
         )}
 
         {/* <Breadcrumb>
-          <Breadcrumb.Item href="/">Trang chủ</Breadcrumb.Item>
-          <Breadcrumb.Item active>Giỏ hàng</Breadcrumb.Item>
-        </Breadcrumb> */}
+           <Breadcrumb.Item href="/">Trang chủ</Breadcrumb.Item>
+           <Breadcrumb.Item active>Giỏ hàng</Breadcrumb.Item>
+         </Breadcrumb> */}
 
         {/* <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Hình ảnh</th>
-              <th>Tên sản phẩm</th>
-              <th>Đơn giá</th>
-              <th>Khuyến mãi</th>
-              <th>Số lượng</th>
-              <th>Thành tiền</th>
-              <th>Thay đổi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cartData?.cart?.map((item: any) => {
-              const product = item.productId;
-              if (!product) return null;
-  
-              return (
-                <tr key={item._id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(item._id)}
-                      onChange={() => handleCheckboxChange(item._id)}
-                    />
-                  </td>
-                  <td>
-                    <img
-                      src={product.images?.url?.[0] || "/default-image.jpg"}
-                      alt={product.name}
-                      className="img-fluid rounded-start"
-                      width="100px"
-                    />
-                  </td>
-                  <td>{product.name}</td>
-                  <td>{product.price.toLocaleString()} VNĐ</td>
-                  <td>{(product.discount || 0) * 100}%</td>
-                  <td>
-                    <div className="d-flex">
-                      <button
-                        style={{ marginRight: "2px" }}
-                        onClick={() =>
-                          handleQuantityChange(
-                            item._id,
-                            item.quantity - 1,
-                            product.quantity
-                          )
-                        }
-                      >
-                        -
-                      </button>
-  
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        min="1"
-                        max={product.quantity}
-                        style={{ width: "80px" }}
-                      />
-  
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
-                            item._id,
-                            item.quantity + 1,
-                            product.quantity
-                          )
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <b>
-                      {(
-                        product.price *
-                        item.quantity *
-                        (1 - (product.discount || 0))
-                      ).toLocaleString()}{" "}
-                      VNĐ
-                    </b>
-                  </td>
-                  <td>
-                    <button onClick={() => handleRemoveItem(item._id)}>
-                      Xóa
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table> */}
+           <thead>
+             <tr>
+               <th></th>
+               <th>Hình ảnh</th>
+               <th>Tên sản phẩm</th>
+               <th>Đơn giá</th>
+               <th>Khuyến mãi</th>
+               <th>Số lượng</th>
+               <th>Thành tiền</th>
+               <th>Thay đổi</th>
+             </tr>
+           </thead>
+           <tbody>
+             {cartData?.cart?.map((item: any) => {
+               const product = item.productId;
+               if (!product) return null;
+   
+               return (
+                 <tr key={item._id}>
+                   <td>
+                     <input
+                       type="checkbox"
+                       checked={selectedItems.includes(item._id)}
+                       onChange={() => handleCheckboxChange(item._id)}
+                     />
+                   </td>
+                   <td>
+                     <img
+                       src={product.images?.url?.[0] || "/default-image.jpg"}
+                       alt={product.name}
+                       className="img-fluid rounded-start"
+                       width="100px"
+                     />
+                   </td>
+                   <td>{product.name}</td>
+                   <td>{product.price.toLocaleString()} VNĐ</td>
+                   <td>{(product.discount || 0) * 100}%</td>
+                   <td>
+                     <div className="d-flex">
+                       <button
+                         style={{ marginRight: "2px" }}
+                         onClick={() =>
+                           handleQuantityChange(
+                             item._id,
+                             item.quantity - 1,
+                             product.quantity
+                           )
+                         }
+                       >
+                         -
+                       </button>
+   
+                       <input
+                         type="number"
+                         value={item.quantity}
+                         min="1"
+                         max={product.quantity}
+                         style={{ width: "80px" }}
+                       />
+   
+                       <button
+                         onClick={() =>
+                           handleQuantityChange(
+                             item._id,
+                             item.quantity + 1,
+                             product.quantity
+                           )
+                         }
+                       >
+                         +
+                       </button>
+                     </div>
+                   </td>
+                   <td>
+                     <b>
+                       {(
+                         product.price *
+                         item.quantity *
+                         (1 - (product.discount || 0))
+                       ).toLocaleString()}{" "}
+                       VNĐ
+                     </b>
+                   </td>
+                   <td>
+                     <button onClick={() => handleRemoveItem(item._id)}>
+                       Xóa
+                     </button>
+                   </td>
+                 </tr>
+               );
+             })}
+           </tbody>
+         </table> */}
 
         {cartData.length > 0 && (
           <div className="cart__btn">

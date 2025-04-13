@@ -143,3 +143,116 @@
   color: #616161;
   cursor: pointer;
 }
+
+/* General Navbar Styling */
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+  max-height: 50px;
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+  display: none;
+  min-width: 200px;
+  padding: 0.5rem 0;
+  margin: 0;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item-container {
+  position: relative;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+/* Submenu Styling */
+.submenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-top: -0.5rem;
+  display: none;
+}
+
+.dropdown-item-container:hover > .submenu {
+  display: block;
+}
+
+.submenu-title {
+  font-weight: 600;
+  color: #333;
+  cursor: default;
+}
+
+/* Search Bar Styling */
+.form-control {
+  border-radius: 20px;
+  padding-right: 40px;
+}
+
+.btn[aria-label="Search"] {
+  color: #007bff;
+}
+
+.btn[aria-label="Search"]:hover {
+  color: #0056b3;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .d-flex.flex-column.flex-lg-row {
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  .form-control {
+    width: 100%;
+  }
+
+  .submenu {
+    position: static;
+    margin-top: 0;
+    box-shadow: none;
+  }
+}
+
+/* Button Styling */
+.btn-orange {
+  background-color: #ff6b00;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.btn-orange:hover {
+  background-color: #e65100;
+  color: white;
+}
