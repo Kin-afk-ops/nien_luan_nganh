@@ -133,7 +133,7 @@ const SortBarComponent = (props: Props) => {
                 {priceData.map((item, index) => (
                     <li key={index}>
                         <label className='checkbox_label price'>
-                            <input type="checkbox" checked={price === item.label} onChange={() => handleSetPrice(item.label)}/>
+                            <input type="checkbox" checked={filterList.price === item.label} onChange={() => handleSetPrice(item.label)}/>
                             <p style={{fontSize: 15}}>{item.label}</p>
                         </label>
                     </li>))}
@@ -144,7 +144,7 @@ const SortBarComponent = (props: Props) => {
                 {statusData.map((item, index) => (
                     <li key={index}>
                         <label className='checkbox_label'>
-                            <input type="checkbox" checked={status === item.label} onChange={() => handleSetStatus(item.label)}/>
+                            <input type="checkbox" checked={filterList.status === item.label} onChange={() => handleSetStatus(item.label)}/>
                             <p style={{fontSize: 15}}>{item.label}</p>
                         </label>
                     </li>))}

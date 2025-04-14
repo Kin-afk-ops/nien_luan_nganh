@@ -3,11 +3,12 @@ import { CategoryAttribute } from '@/models/attributesModel';
 import { categoryModel } from '@/models/CategoryModel';
 import React, { useEffect, useState } from 'react';
 import "./addCateForm.css";
-import { createCategory, getAllCateAttr, getAllCategories } from '@/utils/addCategory';
+import { createCategory, getAllCateAttr, getAllCategories, updateCategory } from '@/utils/addCategory';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import Modal from "react-modal";
 import AddCateAttributeComponent from './AddCateAttributeComponent';
 import { FaEdit } from "react-icons/fa";
+import toast from 'react-hot-toast';
 
 
 Modal.setAppElement("body");
@@ -21,6 +22,8 @@ const AddCategoryComponent = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [isChange, setisChange] = useState(false);
+    const [isEditCateMode, setIsEditCateMode] = useState(false);
+    const [isOpenEditCateModal, setIsOpenEditCateModal] = useState(false)
 
     useEffect(() => {
         getAllCategories()
@@ -65,18 +68,50 @@ const AddCategoryComponent = () => {
         setModalIsOpen(true);
     }
 
+    const handleSelectCategoryToEdit = (category: categoryModel) => {
+        setNewCategory(category);
+        setIsOpenEditCateModal(false);
+    };
+
+    const handleEditCategory = () => {
+        setIsEditCateMode(true);
+        setIsOpenEditCateModal(true);
+    }
+
+    const handleEditCategorySubmit = async() => {
+        if(newCategory) {
+            if (newCategory.id !== undefined) {
+                await updateCategory(newCategory as categoryModel);
+            } else {
+                console.error("Category ID is required for updating.");
+            }
+            setNewCategory({});
+            setSelectedAttribute(null);
+            setIsEditCateMode(false);
+        }
+
+        toast.success("Cập nhật danh mục thành công");
+        setisChange(!isChange);
+    }
+
     return (
         <div>
             <form>
-                <div className="form-group">
-                    <label className='form-label'>Tên danh mục:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={newCategory.name || ''}
-                        onChange={handleChange}
-                        className='form-input'
-                    />
+                <div className="form-group attribute-group">
+                    <label className='form-label '>Tên danh mục:</label>
+                    <div className="select-group">
+                        <input
+                            type="text"
+                            name="name"
+                            value={newCategory.name || ''}
+                            onChange={handleChange}
+                            className='form-input'
+                        />
+                        <ButtonComponent label='Sửa danh mục'
+                            style={{backgroundColor: 'coral', width: 180, height: 40, fontSize: 13, color: 'white'}}
+                            onClick={handleEditCategory}
+                        ></ButtonComponent>
+                    </div>
                 </div>
 
                 <div className="form-group">
@@ -132,9 +167,14 @@ const AddCategoryComponent = () => {
                     <p>Chọn danh mục và thuộc tính để xem chi tiết</p>
                 )}
             </div>
-            <ButtonComponent label='Tạo danh mục' onClick={handleSubmit}
+            {isEditCateMode ? (
+                <ButtonComponent label='Lưu thay đổi' onClick={handleEditCategorySubmit}
+                    style={{backgroundColor: 'blue', width: 200, color: 'white'}}
+                ></ButtonComponent>
+            ) :
+            (<ButtonComponent label='Tạo danh mục' onClick={handleSubmit}
                 style={{backgroundColor: 'blue', width: 200, color: 'white'}}
-            ></ButtonComponent>
+            ></ButtonComponent>)}
             <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}
                 style={{
                     overlay: {
@@ -159,6 +199,33 @@ const AddCategoryComponent = () => {
                     isEditAttribute={editMode}
                 ></AddCateAttributeComponent>
                 <button onClick={() => setModalIsOpen(false)}>Đóng</button>
+            </Modal>
+            <Modal
+                isOpen={isOpenEditCateModal}
+                onRequestClose={() => setIsOpenEditCateModal(false)}
+                style={{
+                    overlay: {
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                    content: {
+                        width: "500px",
+                        margin: "auto",
+                        padding: "20px",
+                        borderRadius: "10px",
+                    },
+                }}
+            >
+                <h2>Chọn danh mục để chỉnh sửa</h2>
+                <ul className='category-list'>
+                    {categories.map(cat => (
+                        <li key={cat.id} style={{ padding: "10px", cursor: "pointer", borderBottom: "1px solid #ccc" }}
+                            onClick={() => handleSelectCategoryToEdit(cat)}
+                        >
+                            {cat.name}
+                        </li>
+                    ))}
+                </ul>
+                <button onClick={() => setIsOpenEditCateModal(false)}>Đóng</button>
             </Modal>
         </div>
     );

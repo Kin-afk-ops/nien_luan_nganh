@@ -151,6 +151,14 @@ const AddCateAttributeComponent = (props: Props) => {
     }
   }
 
+  const handleCancel = () => {
+    setAttribute((prev) => ({
+      ...prev,
+      listDataTypes: prev.listDataTypes.filter((_, index) => index !== attrIndex),
+    }));
+    setIsAdding(false);
+  }
+
   return (
     <div className='attribute_form_container'>
       <form className='add_attribute_container'>
@@ -216,7 +224,7 @@ const AddCateAttributeComponent = (props: Props) => {
               {isAdding && (
                 (
                   <div className="add_data_button isAdding">
-                    <div className="cancle">
+                    <div className="cancle" onClick={handleCancel}>
                       <p>Hủy</p>
                     </div>
                     <div className="add" onClick={() => handleSaveAttribute(attrIndex)}>
@@ -249,7 +257,7 @@ const AddCateAttributeComponent = (props: Props) => {
           ))}
            {!isAdding && (
                 <div className="add_data_button" onClick={addAttribute}>
-                  <p>+ Thêm thuộc tính</p>
+                  <p className='add_attribute_button'>+ Thêm thuộc tính</p>
                 </div>
               ) }
         

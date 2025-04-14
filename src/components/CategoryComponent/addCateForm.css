@@ -167,6 +167,11 @@
   .add_option{
     color: blue;
     cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .add_option:hover{
+    color: #007bff;
+    background-color: #f9f9f9;
   }
 
   .remove_attribute{
@@ -230,3 +235,29 @@
   .button:hover {
     opacity: 0.8;
   }
+
+  .category-list li{
+    list-style: none;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .category-list li:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+    font-weight: 500;
+    color: #007bff;
+}
+
+.add_attribute_button{
+  transition: all 0.2s ease;
+}
+
+.add_attribute_button:hover{
+  background-color: #0550a19d;
+  color: rgb(227, 227, 227);
+  transform: scale(1.02);
+  border-radius: 15px;
+}

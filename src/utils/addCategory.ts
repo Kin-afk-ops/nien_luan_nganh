@@ -38,6 +38,7 @@ export const getAttributeByCateId = (cateId: number) => {
     return response.then(res => res.data);
 }
 
+
 export const getLabelNamePairsByCateId = async (cateId: number): Promise<{ label: string; name: string }[]> => {
     try {
         console.log(cateId);
