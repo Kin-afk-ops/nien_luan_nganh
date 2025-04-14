@@ -27,7 +27,9 @@ const SortBarComponent = (props: Props) => {
     const [categories, setCategories] = useState<categoryModel[]>();
     const [attributes, setAttributes] = useState<CategoryAttribute>();
     const [showAll, setShowAll] = useState(false);
+    const [showAllCate, setShowAllCate] = useState(false);
     const visibleAttributes = showAll ? attributes?.listDataTypes : attributes?.listDataTypes.slice(0, 1);
+    const visibleCategories = showAllCate ? categories : categories?.slice(0, 8);
     useEffect(() => {
         
             setOffer('');
@@ -122,11 +124,16 @@ const SortBarComponent = (props: Props) => {
         </DropdownWrapper>
         <DropdownWrapper label='Danh mục'>
             <ul>
-                {categories?.map((item, index) => (
+                {visibleCategories?.map((item, index) => (
                     <li key={index}>
                         <Link href={`/${item.slug}?id=${item.id}`}><p style={{fontSize: 15}}>{item.name}</p></Link>
                     </li>))}
             </ul>
+            {(visibleCategories?.length ?? 0) >= 8 && (
+                <div className="show_all_button" onClick={() => setShowAllCate(!showAll)}>
+                <p>{`${showAll ? "Thu gọn"  : "Xem thêm"}`}</p>
+            </div>
+            )}
         </DropdownWrapper>
         <DropdownWrapper label='Giá'>
             <ul>

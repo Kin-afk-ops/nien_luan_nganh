@@ -60,6 +60,8 @@ const AddCategoryComponent = () => {
             await createCategory(newCategory);
             setNewCategory({});
             setSelectedAttribute(null);
+            setisChange(!isChange);
+            toast.success("Tạo danh mục thành công");
         }
     };
 

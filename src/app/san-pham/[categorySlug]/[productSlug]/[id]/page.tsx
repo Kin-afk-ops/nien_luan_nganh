@@ -421,13 +421,15 @@ const ProductDetail = () => {
           <ContainerComponent title="Đánh giá">
               <div className="review">
                 <div className="rating">
-                  <StarRatings 
-                      rating={product.ratingStar.average}
-                      starRatedColor="#FFD700"
-                      numberOfStars={5}
-                      starDimension="24px"  
-                      starSpacing="3px"    
-                  ></StarRatings>
+                  {product.ratingStar !== null && (
+                    <StarRatings 
+                        rating={product.ratingStar.average}
+                        starRatedColor="#FFD700"
+                        numberOfStars={5}
+                        starDimension="24px"  
+                        starSpacing="3px"    
+                    ></StarRatings>
+                  )}
                 </div>
                 <div className="rating_count">
                   <p>{`(${product.ratingStar.count} đánh giá)`}</p>
