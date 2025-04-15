@@ -28,6 +28,16 @@
 .pay__product--item {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+
+.pay__product--item-item {
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
 }
 
 .pay__product--name {

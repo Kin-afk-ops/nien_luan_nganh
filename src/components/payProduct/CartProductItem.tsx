@@ -15,6 +15,8 @@ interface ChildProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setTotalPrice: React.Dispatch<React.SetStateAction<number>>;
   setTotalPriceNoShip: React.Dispatch<React.SetStateAction<number>>;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  refresh: boolean;
 }
 
 const CartProductItem: React.FC<ChildProps> = ({
@@ -22,10 +24,13 @@ const CartProductItem: React.FC<ChildProps> = ({
   setLoading,
   setTotalPrice,
   setTotalPriceNoShip,
+  setRefresh,
+  refresh,
 }) => {
   const params = useParams<{ id: string }>();
   const [userId, setUserId] = useState<string | null>(null);
-  const [checkCart, setCheckCart] = useState<boolean>(c.checked);
+  const [checkCart, setCheckCart] = useState<boolean>(c?.checked);
+  const [quantity, setQuantity] = useState<number>(c?.quantity);
 
   useEffect(() => {
     if (params) {
@@ -49,18 +54,95 @@ const CartProductItem: React.FC<ChildProps> = ({
       .then((res) => {
         setLoading(false);
         if (res.data.checked) {
-          setTotalPrice((prevTotal) => prevTotal + price);
-          setTotalPriceNoShip((prevTotal) => prevTotal + price + 27000);
+          setTotalPrice((prevTotal) => prevTotal + price * c.quantity);
+          setTotalPriceNoShip(
+            (prevTotal) => prevTotal + price * c.quantity + 27000
+          );
         } else {
-          setTotalPrice((prevTotal) => prevTotal - price);
-          setTotalPriceNoShip((prevTotal) => prevTotal - price - 27000);
+          setTotalPrice((prevTotal) => prevTotal - price * c.quantity);
+          setTotalPriceNoShip(
+            (prevTotal) => prevTotal - price * c.quantity - 27000
+          );
         }
+
+        setRefresh(!refresh);
       })
       .catch((error) => {
         console.log(error);
         setLoading(false);
+        setRefresh(!refresh);
+
         alert("Có lỗi");
       });
+  };
+
+  const handleQuantityChange = async (
+    mode: string,
+    cartId: string
+  ): Promise<void> => {
+    setLoading(true);
+    if (mode === "increase") {
+      try {
+        await axiosInstance.put(`/cart/${cartId}/${userId}`, {
+          quantity: quantity + 1,
+        });
+        setQuantity((q) => q + 1);
+
+        setTotalPrice((prevTotal) => prevTotal + c.product.price);
+        setTotalPriceNoShip((prevTotal) => prevTotal + c.product.price);
+
+        setRefresh(!refresh);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+      }
+      setLoading(false);
+    }
+
+    if (mode === "reduce") {
+      if (c.quantity > 1) {
+        try {
+          const res = await axiosInstance.put(`/cart/${cartId}/${userId}`, {
+            quantity: quantity - 1 > 1 ? quantity - 1 : 1,
+          });
+          setQuantity(res.data.quantity);
+
+          setTotalPrice((prevTotal) => prevTotal - c.product.price);
+          setTotalPriceNoShip((prevTotal) => prevTotal - c.product.price);
+          setRefresh(!refresh);
+
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+          setLoading(false);
+        }
+      }
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (
+    cartId: string,
+    cartCheck: boolean,
+    cartPrice: number
+  ): Promise<void> => {
+    setLoading(true);
+
+    try {
+      if (cartCheck) {
+        setTotalPrice((p) => p - cartPrice);
+        setTotalPriceNoShip((p) => p - cartPrice - 27000);
+      }
+      await axiosInstance.delete(`/cart/delete/${cartId}/${userId}`);
+      alert("Đã xóa");
+
+      setRefresh(!refresh);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
   };
 
   return (
@@ -74,15 +156,17 @@ const CartProductItem: React.FC<ChildProps> = ({
           Xem shop
         </Link>
       </div>
-      <div className="l-2 m-2 s-1 cart__product--delete">
+      <div
+        className="l-2 m-2 s-1 cart__product--delete"
+        onClick={() => handleDelete(c._id, c.checked, c.product.price)}
+      >
         <i className="fa-regular fa-trash-can"></i>
       </div>
       <input
         className="l-1 m-1 s-1 cart__product--checkbox"
         type="checkbox"
-        checked={checkCart}
+        checked={c.checked}
         onChange={(e) => {
-          setCheckCart(!checkCart);
           handleChecked(e.target.checked, c._id, c.product.price);
         }}
       />
@@ -117,18 +201,46 @@ const CartProductItem: React.FC<ChildProps> = ({
           {"Đơn giá: " + formatPrice(c.product.price)}
         </div>
         <div className="l-0 pay__product--name-item">
-          {"Số lượng: " + c.quantity}
+          Số lượng:
+          <div
+            className="pay__product--item-item"
+            onClick={() => handleQuantityChange("reduce", c._id)}
+          >
+            -
+          </div>
+          {quantity}
+          <div
+            className="pay__product--item-item"
+            onClick={() => handleQuantityChange("increase", c._id)}
+          >
+            +
+          </div>
         </div>
         <div className="l-0 pay__product--name-item">
-          {"Thành tiền: " + formatPrice(c.product.price * c.quantity)}
+          {"Thành tiền: " + formatPrice(c.product.price * quantity)}
         </div>
       </div>
       <div className="l-2 m-0 s-0 pay__product--item">
         {formatPrice(c.product.price)}
       </div>
-      <div className="l-2 m-0 s-0 pay__product--item">{c.quantity}</div>
       <div className="l-2 m-0 s-0 pay__product--item">
-        {formatPrice(c.product.price * c.quantity)}
+        <div
+          className="pay__product--item-item"
+          onClick={() => handleQuantityChange("reduce", c._id)}
+        >
+          -
+        </div>
+        {quantity}
+
+        <div
+          className="pay__product--item-item"
+          onClick={() => handleQuantityChange("increase", c._id)}
+        >
+          +
+        </div>
+      </div>
+      <div className="l-2 m-0 s-0 pay__product--item">
+        {formatPrice(c.product.price * quantity)}
       </div>
     </div>
   );

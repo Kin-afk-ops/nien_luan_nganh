@@ -49,7 +49,7 @@ const OrderPage = () => {
 
     const getAddressUser = async (): Promise<void> => {
       try {
-        const res = await axiosInstance.get(`/addressInfoUser/${userId}`);
+        const res = await axiosInstance.get(`/addressInfoUser/${params.id}`);
         setAddresses(res?.data);
 
         setChoiceAddress(res?.data.filter((a) => a.default === true)[0]);
@@ -60,7 +60,7 @@ const OrderPage = () => {
 
     const getCartCheck = async (): Promise<void> => {
       try {
-        const res = await axiosInstance.get(`/cart/checked/${userId}`);
+        const res = await axiosInstance.get(`/cart/checked/${params.id}`);
         setCartCheck(res?.data);
 
         console.log(res.data);
@@ -78,6 +78,16 @@ const OrderPage = () => {
 
     cartCheck?.forEach((c) => {
       totalPrice += c.quantity * c.product.price;
+    });
+
+    return totalPrice;
+  };
+
+  const getTotalPriceShip = (): number => {
+    let totalPrice: number = 0;
+
+    cartCheck?.forEach((c) => {
+      totalPrice += c.quantity * c.product.price + 27000;
     });
 
     return totalPrice;
@@ -187,7 +197,9 @@ const OrderPage = () => {
               <div className="l-7 m-6 s-12 gird order__foot--ship">
                 <div className="row no-gutters order__foot--ship-content">
                   <div className="l-8 m-8 s-5">Phí vận chuyển:</div>
-                  <div className="l-4 m-4 s-7">{formatPrice(shippingFee)}</div>
+                  <div className="l-4 m-4 s-7">
+                    {formatPrice(shippingFee)}/1 Sản phẩm
+                  </div>
                 </div>
               </div>
             </div>
@@ -196,7 +208,7 @@ const OrderPage = () => {
                 Tổng số tiền ({cartCheck?.length} sản phẩm):
               </div>
               <div className="l-2 m-2 s-5">
-                {formatPrice(getTotalPrice() + shippingFee)}
+                {formatPrice(getTotalPriceShip())}
               </div>
             </div>
           </div>
@@ -238,13 +250,15 @@ const OrderPage = () => {
 
                   <div className=" order__pay--content">
                     <div className="">Tổng tiền phí vận chuyển:</div>
-                    <div className="">{formatPrice(shippingFee)}</div>
+                    <div className="">
+                      {formatPrice(shippingFee)} /1 Sản phẩm
+                    </div>
                   </div>
 
                   <div className=" order__pay--content">
                     <div className="">Tổng thanh toán:</div>
                     <div className=" order__pay--content-total">
-                      {formatPrice(getTotalPrice() + shippingFee)}
+                      {formatPrice(getTotalPriceShip())}
                     </div>
                   </div>
                   {/* </div> */}

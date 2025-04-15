@@ -12,18 +12,25 @@ interface ChildProps {
   cartProduct: CartInterface[];
 
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  refresh: boolean;
 }
 
-const CartProduct: React.FC<ChildProps> = ({ cartProduct, setLoading }) => {
+const CartProduct: React.FC<ChildProps> = ({
+  cartProduct,
+  setLoading,
+  setRefresh,
+  refresh,
+}) => {
   const [shippingFee, setShippingFee] = useState<number>(27000);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
     return cartProduct.reduce((sum, c) => {
-      return c.checked ? sum + c.product.price : sum;
+      return c.checked ? sum + c.product.price * c.quantity : sum;
     }, 0);
   });
   const [totalPriceNoShip, setTotalPriceNoShip] = useState<number>(() => {
     return cartProduct.reduce((sum, c) => {
-      return c.checked ? sum + c.product.price + shippingFee : sum;
+      return c.checked ? sum + c.product.price * c.quantity + shippingFee : sum;
     }, 0);
   });
 
@@ -45,6 +52,8 @@ const CartProduct: React.FC<ChildProps> = ({ cartProduct, setLoading }) => {
             c={c}
             setTotalPrice={setTotalPrice}
             setTotalPriceNoShip={setTotalPriceNoShip}
+            setRefresh={setRefresh}
+            refresh={refresh}
           />
         ))}
 

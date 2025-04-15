@@ -12,7 +12,7 @@ import { Toaster } from "react-hot-toast";
 import Modal from "react-modal";
 import HeaderWrapper from "@/components/header/wrapHeader";
 import Header from "@/components/header/Header";
-import HeaderLogged from "@/components/header/Headerlogged";
+import HeaderLogged from "@/components/header/HeaderLogged";
 import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
