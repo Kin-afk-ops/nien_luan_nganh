@@ -57,11 +57,25 @@ const AddCategoryComponent = () => {
 
     const handleSubmit = async() => {
         if(newCategory) {
-            await createCategory(newCategory);
-            setNewCategory({});
-            setSelectedAttribute(null);
-            setisChange(!isChange);
-            toast.success("Tạo danh mục thành công");
+
+            const isDuplicate = categories.some(
+                (cat) => cat.name.toLowerCase().trim() === newCategory.name!.toLowerCase().trim()
+            );
+
+            if (isDuplicate) {
+                toast.error("Danh mục đã tồn tại");
+                return;
+            }
+            if(newCategory.name) {
+                await createCategory(newCategory);
+                setNewCategory({});
+                setSelectedAttribute(null);
+                setisChange(!isChange);
+                toast.success("Tạo danh mục thành công");
+            }else {
+                toast.error("Vui lòng nhập tên danh mục");
+                return;
+            }
         }
     };
 
