@@ -41,6 +41,20 @@ export default function Header() {
           <FaBars />
         </button> */}
 
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <FaBars />
+        </button>
+
+        {/* Menu Content */}
+
         <div
           className="header__search--mobile-icon"
           onClick={() => setDisplaySearch(true)}

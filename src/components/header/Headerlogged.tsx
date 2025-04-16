@@ -15,6 +15,8 @@ import "./responsive.css";
 import { InfoUserInterface } from "@/interfaces/infoUser";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import CategoriesBlock from "../categoriesBlock/CategoriesBlock";
+import { CategoriesInterface } from "@/interfaces/categories";
 
 interface ChildProps {
   user: {
@@ -26,6 +28,21 @@ interface ChildProps {
   };
 }
 
+type SubCategoryType = {
+  [key: string]: string;
+};
+
+type CategoryType = {
+  "hang-sx"?: SubCategoryType;
+  "loai-sp"?: SubCategoryType;
+  "dung-luong"?: SubCategoryType;
+  "mau-sac"?: SubCategoryType;
+};
+
+type DanhmucType = {
+  [key: string]: CategoryType;
+};
+
 const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -36,6 +53,16 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [displaySearch, setDisplaySearch] = useState<boolean>(false);
+  const [activeCategory, setActiveCategory] = useState<string>("dien-thoai");
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [displayCategories, setDisplayCategories] = useState<boolean>(false);
+  const [categories, setCategories] = useState<CategoriesInterface[] | null>(
+    null
+  );
+
+  const [serchMode, setSearchMode] = useState<boolean>(false);
+
+  const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
 
   useEffect(() => {
     const getInfoUser = async (): Promise<void> => {
@@ -77,6 +104,92 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
     window.location.replace("/");
   };
 
+  useEffect(() => {
+    const getCategories = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get(`/category/getallCategories`);
+        setCategories(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCategories();
+  }, []);
+
+  const danhmuc: DanhmucType = {
+    "dien-thoai": {
+      "hang-sx": {
+        samsung: "Samsung",
+        apple: "Apple",
+        xiaomi: "Xiaomi",
+        oppo: "Oppo",
+        vivo: "Vivo",
+        nokia: "Nokia",
+      },
+      "dung-luong": {
+        "64gb": "64GB",
+        "128gb": "128GB",
+        "256gb": "256GB",
+        "512gb": "512GB",
+      },
+      "mau-sac": {
+        den: "Đen",
+        trang: "Trắng",
+        xanh: "Xanh",
+        do: "Đỏ",
+        vang: "Vàng",
+      },
+    },
+    "phu-kien": {
+      "loai-sp": {
+        "tai-nghe": "Tai nghe",
+        "sac-du-phong": "Sạc dự phòng",
+        "cap-sac": "Cáp sạc",
+      },
+      "hang-sx": {
+        apple: "Apple",
+        samsung: "Samsung",
+        xiaomi: "Xiaomi",
+        oppo: "Oppo",
+        vivo: "Vivo",
+      },
+    },
+    laptop: {
+      "hang-sx": {
+        apple: "Apple",
+        samsung: "Samsung",
+        xiaomi: "Xiaomi",
+      },
+    },
+  };
+  const handleWhenMouseEnter = (state: boolean) => {
+    const dropdownMenu = document.querySelector(
+      ".dropdown-menu"
+    ) as HTMLElement;
+    if (dropdownMenu) {
+      if (state) {
+        dropdownMenu.style.display = "block";
+      } else {
+        dropdownMenu.style.display = "none";
+      }
+    }
+  };
+
+  const handleSubmenuMouseEnter = (state: boolean) => {
+    const submenu = document.querySelector(".submenu") as HTMLElement;
+    if (submenu) {
+      if (state) {
+        submenu.style.display = "block";
+      } else {
+        submenu.style.display = "none";
+      }
+    }
+  };
+
+  const handleCategoryHover = (category: string | null) => {
+    setHoveredCategory(category);
+  };
+
   return (
     <nav className=" header">
       <div className=" grid wide header__container">
@@ -96,6 +209,85 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
         </button> */}
 
         {/* Nội dung menu */}
+
+        {/* Menu Content */}
+        <div className="header__categories" id="">
+          <button
+            className="m-0 s-0 nav-link dropdown-toggle"
+            type="button"
+            // onMouseEnter={() => handleWhenMouseEnter(true)}
+            // onMouseLeave={() => handleWhenMouseEnter(false)}
+            onClick={() => setDisplayCategories(true)}
+          >
+            Danh Mục
+          </button>
+
+          <button className="l-0 " onClick={() => setDisplayCategories(true)}>
+            <i className="fa-solid fa-bars"></i>
+          </button>
+
+          {displayCategories && (
+            <CategoriesBlock
+              setDisplayCategories={setDisplayCategories}
+              categories={categories}
+              setSearchMode={setSearchMode}
+              setCateLabel={setCateLabel}
+            />
+          )}
+
+          {/* <ul
+            className="header__categories--list"
+            onMouseEnter={() => handleWhenMouseEnter(true)}
+            onMouseLeave={() => handleWhenMouseEnter(false)}
+          >
+            {Object.keys(danhmuc).map((key) => (
+              <li
+                key={key}
+                onMouseEnter={() => handleCategoryHover(key)}
+                onMouseLeave={() => handleCategoryHover(null)}
+              >
+                <button className="dropdown-item">
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </button>
+
+                {hoveredCategory === key && (
+                  <ul className="dropdown-menu submenu">
+                    {Object.entries(danhmuc[key]).map(([subKey, subValue]) => (
+                      <li key={subKey} className="dropdown-item-container">
+                        <span className="dropdown-item submenu-title">
+                          {subKey === "hang-sx"
+                            ? "Hãng sản xuất"
+                            : subKey === "loai-sp"
+                            ? "Loại sản phẩm"
+                            : subKey === "dung-luong"
+                            ? "Dung lượng"
+                            : subKey === "mau-sac"
+                            ? "Màu sắc"
+                            : subKey}
+                        </span>
+                        <ul className="dropdown-menu submenu">
+                          {Object.entries(subValue).map(
+                            ([subSubKey, subSubValue]) => (
+                              <li key={subSubKey}>
+                                <Link
+                                  className="dropdown-item"
+                                  href={`/${key}/${subKey}/${subSubKey}`}
+                                >
+                                  {subSubValue}
+                                </Link>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul> */}
+        </div>
+
         <div
           className="header__search--mobile-icon"
           onClick={() => setDisplaySearch(true)}
