@@ -37,7 +37,8 @@ export default function SanPham() {
     const fetchProducts = async () => {
       try {
         const data = await getProducts();
-        setProductList(data);
+        const approvedProducts = data.filter((product: any) => product.approve === true);
+        setProductList(approvedProducts);
       } catch (err) {
         console.error("❌ Lỗi khi lấy dữ liệu sản phẩm:", err);
         setMessage("❌ Không thể tải dữ liệu sản phẩm.");

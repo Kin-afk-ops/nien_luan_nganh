@@ -15,19 +15,46 @@ const getProducts = async (id: string) => {
     }
 };
 
+// Hàm cập nhật sản phẩm (duyệt sản phẩm)
+const approveProduct = async (id: string) => {
+    try {
+        const response = await axiosInstance.put(`/products/` +id, {
+            approve: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error approving product:", error);
+        throw error;
+    }
+};
+
 const DetailProductPage = () => {
     const { id } = useParams();
     const router = useRouter();
     const [product, setProduct] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
 
-    // Tải dữ liệu sản phẩm khi có id
     useEffect(() => {
         if (id) {
             getProducts(id as string).then((data) => setProduct(data));
         }
     }, [id]);
 
-    // Nếu chưa có dữ liệu sản phẩm, hiển thị thông báo
+    const handleApprove = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!id) return;
+        try {
+            setLoading(true);
+            await approveProduct(id as string);
+            alert("Sản phẩm đã được duyệt!");
+            router.push("/admin/sanpham");
+        } catch (error) {
+            alert("Duyệt sản phẩm thất bại.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (!product) return <p>Đang tải dữ liệu sản phẩm...</p>;
 
     return (
@@ -41,7 +68,7 @@ const DetailProductPage = () => {
 
             <div className="card-body">
                 <div className="table-responsive">
-                    <form encType="multipart/form-data">
+                    <form encType="multipart/form-data" onSubmit={handleApprove}>
                         <input type="hidden" name="id_sanpham" value={product.id || ''} />
 
                         {/* Tên sản phẩm */}
@@ -53,7 +80,7 @@ const DetailProductPage = () => {
                                 name="ten_sanpham"
                                 defaultValue={product.name}
                                 readOnly
-                                style={{ backgroundColor: '#e0e0e0' }} // Màu xám nhạt
+                                style={{ backgroundColor: '#e0e0e0' }}
                             />
                         </div>
 
@@ -92,7 +119,7 @@ const DetailProductPage = () => {
                                 name="mo_ta"
                                 defaultValue={product.description}
                                 readOnly
-                                style={{ backgroundColor: '#e0e0e0' }} // Màu xám nhạt
+                                style={{ backgroundColor: '#e0e0e0' }}
                             ></textarea>
                         </div>
 
@@ -105,7 +132,7 @@ const DetailProductPage = () => {
                                 name="don_gia"
                                 defaultValue={product.price}
                                 readOnly
-                                style={{ backgroundColor: '#e0e0e0' }} // Màu xám nhạt
+                                style={{ backgroundColor: '#e0e0e0' }}
                             />
                         </div>
 
@@ -118,12 +145,14 @@ const DetailProductPage = () => {
                                 name="so_luong"
                                 defaultValue={product.quantity}
                                 readOnly
-                                style={{ backgroundColor: '#e0e0e0' }} // Màu xám nhạt
+                                style={{ backgroundColor: '#e0e0e0' }}
                             />
                         </div>
 
                         {/* Nút duyệt và quay lại */}
-                        <button type="submit" className="btn btn-primary">Duyệt</button>
+                        <button type="submit" className="btn btn-primary" disabled={loading}>
+                            {loading ? "Đang duyệt..." : "Duyệt"}
+                        </button>
                         <a href="/admin/sanpham" className="btn btn-info ms-2">Quay lại</a>
                     </form>
                 </div>

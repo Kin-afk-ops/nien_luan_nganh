@@ -1,186 +1,152 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import "../layout.css";
-import "./login.css";
 import Link from "next/link";
-import { auth, facebookProvider, googleProvider } from "../../../../firebase";
+import { useRouter } from "next/navigation";
+
+import {
+  auth,
+  googleProvider,
+} from "../../../../firebase";
 import {
   ConfirmationResult,
   RecaptchaVerifier,
-  signInWithPhoneNumber,
   signInWithPopup,
 } from "firebase/auth";
+
+import googleLogo from "../../../../public/assets/google_logo.png";
+
 import { EmailTestInterface } from "@/interfaces/emailTest";
-import validationEmail from "@/helpers/validation/email";
 import { PhoneInterface } from "@/interfaces/phoneTest";
+import { PasswordInterface } from "@/interfaces/passwordTest";
+
+import validationEmail from "@/helpers/validation/email";
 import validationPhone from "@/helpers/validation/phone";
 import validationPassword from "@/helpers/validation/password";
-import { PasswordInterface } from "@/interfaces/passwordTest";
-import { newUserPhone } from "@/interfaces/user";
-import axiosInstance from "@/helpers/api/config";
 
+import axiosInstance from "@/helpers/api/config";
 import { login } from "@/lib/apiCall";
-import { LoginUser, LoginUserGoogle } from "@/interfaces/loginUser";
+import { LoginUser } from "@/interfaces/loginUser";
 import { useAppDispatch } from "@/lib/store";
-import googleLogo from "../../../../public/assets/google_logo.png";
+
 import {
   loginFailure,
   loginStart,
   loginSuccess,
 } from "@/lib/features/user/userSlice";
-import { UserState } from "@/interfaces/userState";
+
+import "../layout.css";
+import "./login.css";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
-  const [noAccount, setNoAccount] = useState<boolean>(false);
-  const [recaptchaVerifier, setRecaptchaVerifier] =
-    useState<RecaptchaVerifier | null>(null);
-  const [confirmationResult, setConfirmationResult] =
-    useState<ConfirmationResult | null>(null);
-  const [phoneMode, setPhoneMode] = useState<boolean>(false);
-  const [phoneValue, setPhoneValue] = useState<string>("");
-  const [emailValue, setEmailValue] = useState<string>("");
+  const [noAccount, setNoAccount] = useState(false);
+  const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
-  const [passwordValue, setPasswordValue] = useState<string>("");
+  const [phoneMode, setPhoneMode] = useState(false);
+  const [phoneValue, setPhoneValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState("");
 
-  const [emailError, setEmailError] = useState<boolean>(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
 
-  const [phoneError, setPhoneError] = useState<boolean>(false);
-  const [phoneErrorMessage, setPhoneErrorMessage] = useState<string>("");
+  const [phoneError, setPhoneError] = useState(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
 
-  const [passwordError, setPasswordError] = useState<boolean>(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const [displayPassword, setDisplayPassword] = useState<boolean>(false);
-  const [checkGoogleUser, setCheckGoogleUser] = useState<boolean>(false);
-  const [phoneGoogleValue, setPhoneGoogleValue] = useState<string>("");
+  const [displayPassword, setDisplayPassword] = useState(false);
 
   useEffect(() => {
-    const recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      "recaptcha-container",
-      {
-        size: "invisible",
-      }
-    );
+    const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: "invisible",
+    });
+    setRecaptchaVerifier(verifier);
 
-    setRecaptchaVerifier(recaptchaVerifier);
-    return () => {
-      recaptchaVerifier.clear();
-    };
-  }, [auth]);
+    return () => verifier.clear();
+  }, []);
 
-  const handleGoogleLogin = async (): Promise<void> => {
+  const handleGoogleLogin = async () => {
     dispatch(loginStart());
-
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      console.log("User Info:", user);
 
-      // Lấy Access Token từ Firebase
-      // const idToken = await user.getIdToken();
+      const res = await axiosInstance.post("/auth/register/find/email", {
+        firebaseMode: true,
+        email: user?.email,
+      });
 
-      // console.log("Access Token:", idToken);
+      alert(res.data.message);
+      // Optional: Navigate to verification step or homepage
+    } catch (error: any) {
+      console.error("Google login fallback", error);
+      try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("No user info found");
 
-      // const res = await axiosInstance.post("/auth/firebase-login", {
-      //   token: idToken,
-      // });
+        const phoneRes = await axiosInstance.get(`/auth/firebase/phone/${user.uid}`);
+        const phone = phoneRes.data.phone;
 
-      // console.log("Server Response:", res.data);
+        const userLogin = {
+          _id: user.uid,
+          accessToken: await user.getIdToken(),
+          email: user.email || "Không có email",
+          phone,
+          firebase: true,
+        };
 
-      await axiosInstance
-        .post(`/auth/register/find/email`, {
-          firebaseMode: true,
-          email: user?.email,
-        })
-        .then((res) => {
-          alert(res.data.message);
-          // setCheckGoogleUser(res.data.check);
-        })
-        .catch(async (error) => {
-          console.log(error);
-
-          let googlePhoneValue: string = "";
-
-          await axiosInstance
-            .get(`/auth/firebase/phone/${user.uid}`)
-            .then((res) => {
-              googlePhoneValue = res.data.phone;
-              console.log(googlePhoneValue);
-            })
-            .catch((error) => console.log(error));
-
-          const userLogin: {
-            _id: string;
-            accessToken: string;
-            email: string;
-            phone: string;
-            firebase: boolean;
-          } = {
-            _id: user.uid,
-            accessToken: await user.getIdToken(),
-            email: user?.email ? user?.email : "Lỗi dữ liệu",
-            phone: googlePhoneValue,
-            firebase: true,
-          };
-
-          dispatch(loginSuccess(userLogin));
-
-          alert("Đăng nhập Google thành công!");
-          window.location.replace("/");
-        });
-    } catch (error) {
-      console.error("Google Login Error:", error);
-      dispatch(loginFailure());
+        dispatch(loginSuccess(userLogin));
+        alert("Đăng nhập Google thành công!");
+        router.replace("/");
+      } catch (err) {
+        console.error("Google login failed completely", err);
+        dispatch(loginFailure());
+        alert("Đăng nhập Google thất bại.");
+      }
     }
   };
 
-  const handleValidationEmail = (value: string): void => {
-    const vEmail: EmailTestInterface = validationEmail(value);
-    setEmailError(!vEmail.pass);
-    setEmailErrorMessage(vEmail.content);
+  const handleValidationEmail = (value: string) => {
+    const v: EmailTestInterface = validationEmail(value);
+    setEmailError(!v.pass);
+    setEmailErrorMessage(v.content);
   };
 
-  const handleValidationPhone = (value: string): void => {
-    const vPhone: PhoneInterface = validationPhone(value);
-    setPhoneError(!vPhone.pass);
-    setPhoneErrorMessage(vPhone.content);
+  const handleValidationPhone = (value: string) => {
+    const v: PhoneInterface = validationPhone(value);
+    setPhoneError(!v.pass);
+    setPhoneErrorMessage(v.content);
   };
 
-  const handleValidationPassword = (value: string): void => {
-    const vPassword: PasswordInterface = validationPassword(value);
-
-    setPasswordError(!vPassword.pass);
-    setPasswordErrorMessage(vPassword.content);
+  const handleValidationPassword = (value: string) => {
+    const v: PasswordInterface = validationPassword(value);
+    setPasswordError(!v.pass);
+    setPasswordErrorMessage(v.content);
   };
 
-  const handleLogin = async (): Promise<void> => {
-    if (!emailError && !passwordError) {
+  const handleLogin = async () => {
+    const validEmail = !emailError && !phoneMode;
+    const validPhone = !phoneError && phoneMode;
+    const validPassword = !passwordError;
+
+    if ((validEmail || validPhone) && validPassword) {
       const loginUser: LoginUser = {
         phone: phoneValue,
         password: passwordValue,
         email: emailValue,
       };
-      login(dispatch, loginUser, setNoAccount, phoneMode);
-      window.location.replace("/");
-    }
 
-    if (!phoneError && !passwordError) {
-      const loginUser: LoginUser = {
-        phone: phoneValue,
-        password: passwordValue,
-        email: emailValue,
-      };
-      login(dispatch, loginUser, setNoAccount, phoneMode);
-      window.location.replace("/");
+      await login(dispatch, loginUser, setNoAccount, phoneMode);
+      router.replace("/");
     }
   };
-
-  // const handleFaceBookLogin = async (): Promise<void> => {};
 
   return (
     <div className="register">
@@ -191,30 +157,25 @@ const LoginPage = () => {
               src="/assets/account/banner_login.png"
               width={587}
               height={475}
-              alt="Picture of the author"
+              alt="Login Banner"
             />
           </div>
+
           <div className="l-4 m-8 s-12 account__container">
-            <form className="account__form">
+            <form className="account__form" onSubmit={(e) => e.preventDefault()}>
               <div className="account__head">Đăng nhập</div>
 
               {phoneMode ? (
                 <>
-                  <div
-                    className={
-                      phoneError
-                        ? "account__phone account__error"
-                        : "account__phone"
-                    }
-                  >
+                  <div className={phoneError ? "account__phone account__error" : "account__phone"}>
                     <div className="account__phone--prefix">
                       <Image
                         src="/assets/quoc_ky_VN.png"
                         className="account__phone--img"
                         width={18}
                         height={13}
-                        alt="Quoc ky Viet Nam"
-                      ></Image>
+                        alt="VN flag"
+                      />
                       +84
                     </div>
                     <input
@@ -230,25 +191,13 @@ const LoginPage = () => {
                       placeholder="Nhập số điện thoại"
                     />
                   </div>
-                  <div className="account__error--message">
-                    {phoneErrorMessage}
-                  </div>
+                  <div className="account__error--message">{phoneErrorMessage}</div>
                 </>
               ) : (
                 <>
-                  <div
-                    className={
-                      emailError
-                        ? "account__input--block account__error"
-                        : "account__input--block"
-                    }
-                  >
+                  <div className={emailError ? "account__input--block account__error" : "account__input--block"}>
                     <input
-                      className={
-                        emailError
-                          ? "account__input account__error--input"
-                          : "account__input "
-                      }
+                      className={emailError ? "account__input account__error--input" : "account__input"}
                       value={emailValue}
                       onChange={(e) => setEmailValue(e.target.value)}
                       onBlur={(e) => handleValidationEmail(e.target.value)}
@@ -260,24 +209,13 @@ const LoginPage = () => {
                       placeholder="Nhập email của bạn"
                     />
                   </div>
-                  <div className="account__error--message">
-                    {emailErrorMessage}
-                  </div>
+                  <div className="account__error--message">{emailErrorMessage}</div>
                 </>
               )}
-              <div
-                className={
-                  passwordError
-                    ? "account__input--block account__error"
-                    : "account__input--block"
-                }
-              >
+
+              <div className={passwordError ? "account__input--block account__error" : "account__input--block"}>
                 <input
-                  className={
-                    passwordError
-                      ? "account__input account__error--input"
-                      : "account__input"
-                  }
+                  className={passwordError ? "account__input account__error--input" : "account__input"}
                   type={displayPassword ? "text" : "password"}
                   placeholder="Nhập mật khẩu của bạn"
                   value={passwordValue}
@@ -290,100 +228,46 @@ const LoginPage = () => {
                     setPasswordErrorMessage("");
                   }}
                 />
-                <div
-                  className="account__password--icon"
-                  onClick={() => setDisplayPassword(!displayPassword)}
-                >
-                  {displayPassword ? (
-                    <i
-                      className={
-                        passwordError
-                          ? "fa-regular fa-eye-slash account__error--icon"
-                          : "fa-regular fa-eye-slash"
-                      }
-                    ></i>
-                  ) : (
-                    <i
-                      className={
-                        passwordError
-                          ? "fa-regular fa-eye account__error--icon"
-                          : "fa-regular fa-eye"
-                      }
-                    ></i>
-                  )}
+                <div className="account__password--icon" onClick={() => setDisplayPassword(!displayPassword)}>
+                  <i className={`fa-regular ${displayPassword ? "fa-eye-slash" : "fa-eye"} ${
+                    passwordError ? "account__error--icon" : ""
+                  }`}></i>
                 </div>
               </div>
 
-              <div className="account__error--message">
-                {passwordErrorMessage}
-              </div>
+              <div className="account__error--message">{passwordErrorMessage}</div>
 
               <div className="account__forgot--password">
-                <Link className="link " href={"/"}>
+                <Link className="link" href={"/"}>
                   Quên mật khẩu?
                 </Link>
               </div>
 
-              <button
-                className="account__form--btn main-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogin();
-                }}
-              >
+              <button className="account__form--btn main-btn" onClick={handleLogin}>
                 Đăng nhập
               </button>
             </form>
 
             <div className="account__boundary">Hoặc</div>
 
-            {!phoneMode ? (
-              <button
-                className="transparent-btn account__change--btn"
-                onClick={() => setPhoneMode(true)}
-              >
-                <i className=" fa-solid fa-square-phone account__change--phone"></i>
-                <span>Đăng nhập với số điện thoại</span>
-              </button>
-            ) : (
-              <button
-                className="transparent-btn account__change--btn"
-                onClick={() => setPhoneMode(false)}
-              >
-                <i className="account__change--email fa-solid fa-envelope"></i>
-                <span>Đăng nhập với Email</span>
-              </button>
-            )}
-
             <button
               className="transparent-btn account__change--btn"
-              onClick={() => handleGoogleLogin()}
+              onClick={() => setPhoneMode(!phoneMode)}
             >
+              <i className={`fa-solid ${phoneMode ? "fa-envelope" : "fa-square-phone"}`}></i>
+              <span>Đăng nhập với {phoneMode ? "Email" : "số điện thoại"}</span>
+            </button>
+
+            <button className="transparent-btn account__change--btn" onClick={handleGoogleLogin}>
               <div className="account__change--img">
-                <Image
-                  src={googleLogo}
-                  alt="google logo"
-                  width={18}
-                  height={18}
-                />
+                <Image src={googleLogo} alt="google logo" width={18} height={18} />
               </div>
               <span>Đăng nhập với Google</span>
             </button>
 
-            {/* <button
-              className="transparent-btn account__change--btn"
-              onClick={() => handleFaceBookLogin(false)}
-            >
-              <i className="account__change--facebook fa-brands fa-facebook"></i>
-              <span>Đăng nhập với Facebook</span>
-            </button> */}
-
             <div className="register__login">
-              Bạn chưa có tài khoản?{" "}
-              <Link
-                href={"/tai-khoan/dang-ky"}
-                className="register__login--link"
-              >
+              Bạn chưa có tài khoản?
+              <Link href="/tai-khoan/dang-ky" className="register__login--link">
                 &nbsp;Đăng ký
               </Link>
             </div>

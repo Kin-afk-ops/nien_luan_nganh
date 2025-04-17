@@ -95,7 +95,7 @@ const DangBan = () => {
       if (productEditId) {
         try {
           const res = await axiosInstance.get(
-            `/product/oneProduct/${productEditId}`
+            `/products/oneProduct/${productEditId}`
           );
 
           setNameValue(res.data.name);
@@ -174,7 +174,7 @@ const DangBan = () => {
         };
 
         await axiosInstance
-          .post(`/product/${userId}`, newProduct)
+          .post(`/products/${userId}`, newProduct)
           .then((res) => {
             setLoading(false);
 
@@ -200,7 +200,7 @@ const DangBan = () => {
         };
 
         await axiosInstance
-          .put(`/product/${productEditId}`, newProduct)
+          .put(`/products/${productEditId}`, newProduct)
           .then((res) => {
             setLoading(false);
 
@@ -419,8 +419,8 @@ const DangBan = () => {
               placeholder="mô tả"
               name=""
               id="product__description"
-              cols="50"
-              rows="8"
+              cols={50}
+              rows={8}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />

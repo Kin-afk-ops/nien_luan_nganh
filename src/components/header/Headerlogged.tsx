@@ -78,8 +78,6 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
 
       try {
         const res = await axiosInstance.get(`/infoUser/${user?._id}`);
-        console.log(res.data);
-
         setInfoUser(res.data);
         if (res.data.name) setInfoUserName(res.data.name);
       } catch (error) {

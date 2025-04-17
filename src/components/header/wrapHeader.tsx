@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Header from "@/components/header/Header";
 import { useSelector } from "react-redux";
 import { RootState } from "@/hooks/useAppDispatch";
-import HeaderLogged from "./HeaderLogged";
+import HeaderLogged from "./Headerlogged";
 
 export default function HeaderWrapper() {
   const user =
@@ -19,8 +19,6 @@ export default function HeaderWrapper() {
   useEffect(() => {
     if (user) setUserLogin(user);
   }, [user]);
-
-  console.log(user);
 
   return <>{userLogin ? <HeaderLogged user={userLogin} /> : <Header />}</>;
 }
