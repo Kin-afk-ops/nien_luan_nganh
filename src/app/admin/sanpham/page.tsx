@@ -35,15 +35,15 @@ export default function SanPham() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        const data = await getProducts();
-        const approvedProducts = data.filter((product: any) => product.approve === true);
-        setProductList(approvedProducts);
-      } catch (err) {
-        console.error("❌ Lỗi khi lấy dữ liệu sản phẩm:", err);
-        setMessage("❌ Không thể tải dữ liệu sản phẩm.");
-      }
-    };
+  try {
+    const data = await getProducts();
+    const approvedProducts = data.filter((product: any) => product.approve === true);
+    setProductList(approvedProducts);
+  } catch (err) {
+    console.error("❌ Lỗi khi lấy dữ liệu sản phẩm:", err);
+    setMessage("❌ Không thể tải dữ liệu sản phẩm.");
+  }
+};
 
     fetchProducts();
   }, [refresh]);

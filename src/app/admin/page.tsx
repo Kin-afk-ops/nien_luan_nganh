@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/helpers/api/config";
 import {
-  FaDollarSign,
   FaCalendar,
   FaClipboardList,
-  FaComments,
 } from "react-icons/fa";
 
 // API call
@@ -32,7 +30,7 @@ const getUsers = async () => {
 
 const getCategories = async () => {
   try {
-    const response = await axiosInstance.get("/categories");
+    const response = await axiosInstance.get("/category/getallCateAttr");
     return response.data;
   } catch (error) {
     console.error("Error fetching category data:", error);
@@ -41,7 +39,8 @@ const getCategories = async () => {
 };
 
 export default function Dashboard() {
-  const [productCount, setProductCount] = useState<number>(0);
+  const [approvedProductCount, setApprovedProductCount] = useState<number>(0);
+  const [pendingProductCount, setPendingProductCount] = useState<number>(0);
   const [userCount, setUserCount] = useState<number>(0);
   const [categoryCount, setCategoryCount] = useState<number>(0);
 
@@ -54,19 +53,21 @@ export default function Dashboard() {
           getCategories(),
         ]);
 
-        setProductCount(
-          Array.isArray(products) ? products.length : products.data?.length || 0
-        );
-        setUserCount(
-          Array.isArray(users) ? users.length : users.data?.length || 0
-        );
-        setCategoryCount(
-          Array.isArray(categories)
-            ? categories.length
-            : categories.data?.length || 0
-        );
+        // Handle product count based on "approve"
+        const productData = Array.isArray(products) ? products : products.data || [];
+        const approved = productData.filter((p: any) => p.approve === true).length;
+        const pending = productData.filter((p: any) => p.approve === false).length;
+        setApprovedProductCount(approved);
+        setPendingProductCount(pending);
+
+        // Other counts
+        const userData = Array.isArray(users) ? users : users.data || [];
+        const categoryData = Array.isArray(categories) ? categories : categories.data || [];
+        setUserCount(userData.length);
+        setCategoryCount(categoryData.length);
       } catch (error) {
-        setProductCount(0);
+        setApprovedProductCount(0);
+        setPendingProductCount(0);
         setUserCount(0);
         setCategoryCount(0);
       }
@@ -98,15 +99,15 @@ export default function Dashboard() {
             />
             <StatBox
               title="Số sản phẩm"
-              value={productCount}
+              value={approvedProductCount}
               icon={<FaClipboardList className="fa-2x text-gray-300" />}
               border="info"
             />
             <StatBox
               title="Số yêu cầu đăng bán"
-              value="200"
+              value={pendingProductCount}
               icon={<FaClipboardList className="fa-2x text-gray-300" />}
-              border="info"
+              border="warning"
             />
           </div>
         </div>
@@ -129,9 +130,7 @@ function StatBox({ title, value, icon, border }: StatBoxProps) {
       <div className={`card border-start border-${border} shadow-sm h-100`}>
         <div className="card-body d-flex justify-content-between align-items-center">
           <div>
-            <div
-              className={`text-muted text-uppercase small fw-bold text-${border}`}
-            >
+            <div className={`text-muted text-uppercase small fw-bold text-${border}`}>
               {title}
             </div>
             <div className="h5 fw-bold text-dark">{value}</div>

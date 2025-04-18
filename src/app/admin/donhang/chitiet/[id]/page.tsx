@@ -1,8 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axiosInstance from '@/helpers/api/config';
+import { CategoriesInterface } from '@/interfaces/categories';
+import { AddressInterface } from '@/interfaces/addressUser';
+import { ImageUploadInterface } from '@/interfaces/imageUpload';
+import CategoriesBlock from '@/components/categoriesBlock/CategoriesBlock';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/hooks/useAppDispatch';
 
 // Hàm lấy thông tin sản phẩm từ API
 const getProducts = async (id: string) => {
@@ -18,7 +24,7 @@ const getProducts = async (id: string) => {
 // Hàm cập nhật sản phẩm (duyệt sản phẩm)
 const approveProduct = async (id: string) => {
     try {
-        const response = await axiosInstance.put(`/products/` +id, {
+        const response = await axiosInstance.put(`/products/` + id, {
             approve: true,
         });
         return response.data;
@@ -33,12 +39,112 @@ const DetailProductPage = () => {
     const router = useRouter();
     const [product, setProduct] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const [displayCategories, setDisplayCategories] = useState(false);
+    const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
+    const [addresses, setAddresses] = useState<AddressInterface[]>([]);
+    const [categoriesArray, setCategoriesArray] = useState<CategoriesInterface[] | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [choiceAddress, setChoiceAddress] = useState<AddressInterface | null>(null);
+    const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
+    const [attributesList, setAttributesList] = useState<any[]>([]);
+    const [attributeValues, setAttributeValues] = useState<{ [key: string]: string }>({});
+    const [nameValue, setNameValue] = useState<string>("");
+    const [condition, setCondition] = useState<string | null>(null);
+    const [quantity, setQuantity] = useState<number>(1);
+    const [price, setPrice] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [imageProduct, setImageProduct] = useState<ImageUploadInterface>({
+        path: "/assets/account/avatar_default.png",
+        publicId: "",
+    });
+    const user = useSelector((state: RootState) => state.user.currentUser) || null;
+    const searchParams = useSearchParams();
+    const productEditId = searchParams.get("id");
 
     useEffect(() => {
         if (id) {
             getProducts(id as string).then((data) => setProduct(data));
         }
     }, [id]);
+
+    useEffect(() => {
+        const fetchAttributes = async () => {
+            if (cateLabel?.id) {
+                try {
+                    const res = await axiosInstance.get(`/category/getAttrByCateId/${cateLabel.id}`);
+                    setAttributesList(res.data.listDataTypes);
+                } catch (error) {
+                    console.error("Lỗi khi lấy thuộc tính sản phẩm", error);
+                }
+            } else {
+                setAttributesList([]);
+                setAttributeValues({});
+            }
+        };
+        fetchAttributes();
+    }, [cateLabel]);
+
+    useEffect(() => {
+        if (product && categoriesArray && !cateLabel) {
+            const matchedCategory = categoriesArray.find(
+                (cate) => cate.name === product.categories?.name
+            );
+            if (matchedCategory) {
+                setCateLabel(matchedCategory);
+            }
+
+            // Gán giá trị mặc định cho các thuộc tính khi sản phẩm đã được tải
+            const attributesFromProduct = product.attributes || {};
+            setAttributeValues(attributesFromProduct);
+        }
+    }, [product, categoriesArray]);
+
+    useEffect(() => {
+        if (user) setUserId(user._id);
+
+        const getCategories = async () => {
+            try {
+                const res = await axiosInstance.get(`/category/getallCategories`);
+                setCategoriesArray(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const getAddressUser = async () => {
+            try {
+                const res = await axiosInstance.get(`/addressInfoUser/${user?._id}`);
+                setAddresses(res.data);
+                setChoiceAddress(res.data.find((a) => a.default === true));
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const getProduct = async () => {
+            if (productEditId) {
+                try {
+                    const res = await axiosInstance.get(`/products/oneProduct/${productEditId}`);
+                    setProduct(res.data);
+                    setNameValue(res.data.name);
+                    setCateLabel(res.data.categories);
+                    setCondition(res.data.condition);
+                    setQuantity(res.data.quantity);
+                    setPrice(res.data.price);
+                    setDescription(res.data.description);
+                    setChoiceAddress(res.data.addressInfo);
+                    setImageProduct(res.data.image);
+                    setAttributeValues(res.data.attributes || {});
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        };
+
+        getCategories();
+        getAddressUser();
+        getProduct();
+    }, [user, productEditId]);
 
     const handleApprove = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -84,10 +190,57 @@ const DetailProductPage = () => {
                             />
                         </div>
 
+                        <div className="category mb-4" style={{ position: 'relative' }}>
+                            <label className="form-label"><b>Danh mục:</b></label>
+                            <div className="sell__form--categories border rounded px-3 py-2" style={{ backgroundColor: '#e0e0e0' }}>
+                                {cateLabel ? cateLabel.name : "Chọn danh mục"}
+                                <i className="fa-solid fa-angle-down float-end mt-1"></i>
+                            </div>
+                            {displayCategories && (
+                                <CategoriesBlock
+                                    setDisplayCategories={setDisplayCategories}
+                                    categories={categoriesArray}
+                                    setCateLabel={setCateLabel}
+                                    setSearchMode={() => { }}
+                                />
+                            )}
+                        </div>
+
+
+                        {attributesList.length > 0 && (
+                            <div className="attribute mb-4">
+                                <div className="row g-3">
+                                    {attributesList.map((attr) => (
+                                        <div key={attr.name} className="col-md-4 col-sm-6 col-12">
+                                            <label className="form-label"><b>{attr.label}:</b></label>
+                                            <select
+                                                value={product.details[attr.name] || ""}
+                                                className="form-select"
+                                                disabled={true}
+                                                onChange={(e) => {
+                                                    setAttributeValues((prev) => ({
+                                                        ...prev,
+                                                        [attr.name]: e.target.value,
+                                                    }))
+                                                }}
+                                            >
+                                                <option value="">Chọn {attr.label}</option>
+                                                {attr.options.map((opt: any) => (
+                                                    <option key={opt._id} value={opt.value}>
+                                                        {opt.value}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Tình trạng sản phẩm */}
                         <div className="status mb-4">
                             <h4 className="mb-2">Tình trạng:</h4>
-                            {["new", "like-new", "good", "average", "bad"].map((status) => (
+                            {["Mới", "Như mới", "Tốt", "Trung bình", "Kém"].map((status) => (
                                 <div className="form-check" key={status}>
                                     <input
                                         className="form-check-input"
@@ -100,11 +253,11 @@ const DetailProductPage = () => {
                                     />
                                     <label className="form-check-label" htmlFor={status}>
                                         {{
-                                            "new": "Hàng mới",
-                                            "like-new": "Như mới",
-                                            "good": "Tốt",
-                                            "average": "Trung bình",
-                                            "bad": "Kém",
+                                            "Mới": "Mới",
+                                            "Như mới": "Như mới",
+                                            "Tốt": "Tốt",
+                                            "Trung bình": "Trung bình",
+                                            "Kém": "Kém",
                                         }[status]}
                                     </label>
                                 </div>

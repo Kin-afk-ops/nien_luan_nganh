@@ -34,17 +34,19 @@ const EditProductPage = () => {
     const user = useSelector((state: RootState) => state.user.currentUser) || null;
     const { id } = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const productEditId = searchParams.get("id");
+
     const [product, setProduct] = useState<any>(null);
-    const [displayCategories, setDisplayCategories] = useState<boolean>(false);
+    const [displayCategories, setDisplayCategories] = useState(false);
     const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
     const [addresses, setAddresses] = useState<AddressInterface[]>([]);
     const [categoriesArray, setCategoriesArray] = useState<CategoriesInterface[] | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
-    const [searchMode, setSearchMode] = useState<boolean>(false);
     const [choiceAddress, setChoiceAddress] = useState<AddressInterface | null>(null);
-    const searchParams = useSearchParams();
-    const productEditId = searchParams.get("id");
-
+    const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
+    const [attributesList, setAttributesList] = useState<any[]>([]);
+    const [attributeValues, setAttributeValues] = useState<{ [key: string]: string }>({});
     const [nameValue, setNameValue] = useState<string>("");
     const [condition, setCondition] = useState<string | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
@@ -54,9 +56,6 @@ const EditProductPage = () => {
         path: "/assets/account/avatar_default.png",
         publicId: "",
     });
-    const [attributeValues, setAttributeValues] = useState<{ [key: string]: string }>({});
-    const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
-    const [attributesList, setAttributesList] = useState<any[]>([]);
 
     useEffect(() => {
         if (id) {
@@ -66,7 +65,7 @@ const EditProductPage = () => {
 
     useEffect(() => {
         const fetchAttributes = async () => {
-            if (cateLabel && cateLabel.id) {
+            if (cateLabel?.id) {
                 try {
                     const res = await axiosInstance.get(`/category/getAttrByCateId/${cateLabel.id}`);
                     setAttributesList(res.data.listDataTypes);
@@ -82,9 +81,24 @@ const EditProductPage = () => {
     }, [cateLabel]);
 
     useEffect(() => {
+        if (product && categoriesArray && !cateLabel) {
+            const matchedCategory = categoriesArray.find(
+                (cate) => cate.name === product.categories?.name
+            );
+            if (matchedCategory) {
+                setCateLabel(matchedCategory);
+            }
+
+            // Gán giá trị mặc định cho các thuộc tính khi sản phẩm đã được tải
+            const attributesFromProduct = product.attributes || {};
+            setAttributeValues(attributesFromProduct);
+        }
+    }, [product, categoriesArray]);
+
+    useEffect(() => {
         if (user) setUserId(user._id);
 
-        const getCategories = async (): Promise<void> => {
+        const getCategories = async () => {
             try {
                 const res = await axiosInstance.get(`/category/getallCategories`);
                 setCategoriesArray(res.data);
@@ -93,20 +107,21 @@ const EditProductPage = () => {
             }
         };
 
-        const getAddressUser = async (): Promise<void> => {
+        const getAddressUser = async () => {
             try {
                 const res = await axiosInstance.get(`/addressInfoUser/${user?._id}`);
-                setAddresses(res?.data);
-                setChoiceAddress(res?.data.find((a) => a.default === true));
+                setAddresses(res.data);
+                setChoiceAddress(res.data.find((a) => a.default === true));
             } catch (error) {
                 console.log(error);
             }
         };
 
-        const getProduct = async (): Promise<void> => {
+        const getProduct = async () => {
             if (productEditId) {
                 try {
                     const res = await axiosInstance.get(`/products/oneProduct/${productEditId}`);
+                    setProduct(res.data);
                     setNameValue(res.data.name);
                     setCateLabel(res.data.categories);
                     setCondition(res.data.condition);
@@ -125,7 +140,7 @@ const EditProductPage = () => {
         getCategories();
         getAddressUser();
         getProduct();
-    }, [user, userId, loadingAddress, productEditId]);
+    }, [user, productEditId]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -137,7 +152,8 @@ const EditProductPage = () => {
             description: formData.get('mo_ta'),
             price: Number(formData.get('don_gia')),
             quantity: Number(formData.get('so_luong')),
-            category: formData.get('category_id'), // 👈 lấy category từ input ẩn
+            categories: cateLabel ? cateLabel : null,
+            details: attributeValues,
         };
 
         try {
@@ -154,15 +170,11 @@ const EditProductPage = () => {
     return (
         <div className="card shadow mb-4">
             <div className="card-header py-3">
-                <h4 className="mt-2">
-                    <strong>CHỈNH SỬA SẢN PHẨM</strong>&ensp;
-                    <i className="fas fa-list"></i>
-                </h4>
+                <h4 className="mt-2"><strong>CHỈNH SỬA SẢN PHẨM</strong>&ensp;<i className="fas fa-list"></i></h4>
             </div>
-
             <div className="card-body">
                 <div className="table-responsive">
-                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                    <form onSubmit={handleSubmit}>
                         <input type="hidden" name="id_sanpham" value={product.id || ''} />
                         <input type="hidden" name="category_id" value={cateLabel?._id || ''} />
 
@@ -171,12 +183,9 @@ const EditProductPage = () => {
                             <input type="text" className="form-control" name="ten_sanpham" defaultValue={product.name} required />
                         </div>
 
-                        <div className="category mb-4">
+                        <div className="category mb-4" style={{ position: 'relative' }}>
                             <label className="form-label"><b>Danh mục:</b></label>
-                            <div
-                                className="sell__form--categories border rounded px-3 py-2 cursor-pointer"
-                                onClick={() => setDisplayCategories(true)}
-                            >
+                            <div className="sell__form--categories border rounded px-3 py-2 cursor-pointer" onClick={() => setDisplayCategories(true)}>
                                 {cateLabel ? cateLabel.name : "Chọn danh mục"}
                                 <i className="fa-solid fa-angle-down float-end mt-1"></i>
                             </div>
@@ -185,36 +194,40 @@ const EditProductPage = () => {
                                     setDisplayCategories={setDisplayCategories}
                                     categories={categoriesArray}
                                     setCateLabel={setCateLabel}
-                                    setSearchMode={setSearchMode}
+                                    setSearchMode={() => { }}
                                 />
                             )}
                         </div>
-                        <div className="attribute mb-4">
-                            {attributesList.length > 0 && (
-                                <div className="dynamic-attributes mb-4 ">
+
+                        {attributesList.length > 0 && (
+                            <div className="attribute mb-4">
+                                <div className="row g-3">
                                     {attributesList.map((attr) => (
-                                        <div key={attr.name} className="attribute-select">
-                                            <label mr-10><b>{attr.label}:</b></label>
+                                        <div key={attr.name} className="col-md-4 col-sm-6 col-12">
+                                            <label className="form-label"><b>{attr.label}:</b></label>
                                             <select
-                                                value={attributeValues[attr.name] || ""}
-                                                className="attribute-select border rounded px-3 py-2 cursor-pointer"
-                                                onChange={(e) =>
+                                                value={product.details[attr.name] || ""}
+                                                className="form-select"
+                                                onChange={(e) =>{
                                                     setAttributeValues((prev) => ({
                                                         ...prev,
                                                         [attr.name]: e.target.value,
                                                     }))
-                                                }
+                                                }}
                                             >
                                                 <option value="">Chọn {attr.label}</option>
                                                 {attr.options.map((opt: any) => (
-                                                    <option key={opt._id} value={opt.value}>{opt.value}</option>
+                                                    <option key={opt._id} value={opt.value}>
+                                                        {opt.value}
+                                                    </option>
                                                 ))}
                                             </select>
                                         </div>
                                     ))}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
+
                         <div className="status mb-4">
                             <label className="mb-2"><b>Tình trạng:</b></label>
                             {["Mới", "Như mới", "Tốt", "Trung bình", "Kém"].map((status) => (
@@ -228,9 +241,7 @@ const EditProductPage = () => {
                                         defaultChecked={product.condition === status}
                                         required
                                     />
-                                    <label className="form-check-label" htmlFor={status}>
-                                        {status}
-                                    </label>
+                                    <label className="form-check-label" htmlFor={status}>{status}</label>
                                 </div>
                             ))}
                         </div>

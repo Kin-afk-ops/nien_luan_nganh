@@ -87,7 +87,7 @@ const DangBan = () => {
         const res = await axiosInstance.get(`/addressInfoUser/${user?._id}`);
         setAddresses(res?.data);
 
-        setChoiceAddress(res?.data.filter((a) => a.default === true)[0]);
+        setChoiceAddress(res?.data.filter((a: { default: boolean; }) => a.default === true)[0]);
       } catch (error) {
         console.log(error);
       }
@@ -337,29 +337,29 @@ const DangBan = () => {
             )}
           </div>
           <div className="attribute">
-          {attributesList.length > 0 && (
-          <div className="dynamic-attributes">
-            {attributesList.map((attr) => (
-              <div key={attr.name} className="attribute-select">
-                <h4>{attr.label}:</h4>
-                <select
-                  value={attributeValues[attr.name] || ""}
-                  onChange={(e) =>
-                    setAttributeValues((prev) => ({
-                      ...prev,
-                      [attr.name]: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">Chọn {attr.label}</option>
-                  {attr.options.map((opt: any) => (
-                    <option key={opt._id} value={opt.value}>{opt.value}</option>
-                  ))}
-                </select>
+            {attributesList.length > 0 && (
+              <div className="dynamic-attributes">
+                {attributesList.map((attr) => (
+                  <div key={attr.name} className="attribute-select">
+                    <h4>{attr.label}:</h4>
+                    <select
+                      value={attributeValues[attr.name] || ""}
+                      onChange={(e) =>
+                        setAttributeValues((prev) => ({
+                          ...prev,
+                          [attr.name]: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="">Chọn {attr.label}</option>
+                      {attr.options.map((opt: any) => (
+                        <option key={opt._id} value={opt.value}>{opt.value}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
           </div>
           <div className="status">
             <h4>Tình trạng:</h4>
@@ -368,10 +368,10 @@ const DangBan = () => {
                 <input
                   type="radio"
                   name="status"
-                  checked={condition === "Hàng mới"}
+                  checked={condition === "Mới"}
                   onChange={(e) => setCondition(e.target.value)}
                   id="new"
-                  value="Hàng mới"
+                  value="Mới"
                 />
                 <label htmlFor="new">Hàng mới</label>
               </div>
