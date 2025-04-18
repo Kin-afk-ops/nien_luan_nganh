@@ -47,4 +47,5 @@ export interface productFormInterface {
     publicId: string;
     path: string;
   } | null;
+  details?: { [key: string]: string };
 }

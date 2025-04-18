@@ -105,6 +105,23 @@ label[for="file-upload"]:hover {
   margin-top: 5px;
 }
 
+.attribute select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 5px 0px;
+}
+
+.attribute h4 {
+  margin: 10px 0px;
+}
+
+.status h4{
+  margin-top: 10px;
+}
+
 .status div {
   display: flex;
   justify-content: space-between;
@@ -199,7 +216,7 @@ label[for="file-upload"]:hover {
 }
 
 .price h4 {
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 #price-input {

@@ -43,6 +43,8 @@ const DangBan = () => {
   >(null);
   const [displayCategories, setDisplayCategories] = useState<boolean>(false);
   const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
+  const [attributesList, setAttributesList] = useState<any[]>([]);
+  const [attributeValues, setAttributeValues] = useState<{ [key: string]: string }>({});
   const [searchMode, setSearchMode] = useState<boolean>(false);
 
   const [condition, setCondition] = useState<string | null>(null);
@@ -106,6 +108,7 @@ const DangBan = () => {
           setDescription(res.data.description);
           setChoiceAddress(res.data.addressInfo);
           setImageProduct(res.data.image);
+          setAttributeValues(res.data.attributes || {});
         } catch (error) {
           console.log(error);
         }
@@ -118,6 +121,23 @@ const DangBan = () => {
 
     getProduct();
   }, [user, userId, loadingAddress, productEditId]);
+
+  useEffect(() => {
+    const fetchAttributes = async () => {
+      if (cateLabel && cateLabel.id) {
+        try {
+          const res = await axiosInstance.get(`/category/getAttrByCateId/${cateLabel.id}`);
+          setAttributesList(res.data.listDataTypes);
+        } catch (error) {
+          console.error("Lỗi khi lấy thuộc tính sản phẩm", error);
+        }
+      } else {
+        setAttributesList([]);
+        setAttributeValues({});
+      }
+    };
+    fetchAttributes();
+  }, [cateLabel]);
 
   // useEffect(() => {
   //   const getAttributesOfCategory = async (): Promise<void> => {
@@ -171,6 +191,7 @@ const DangBan = () => {
           description,
           addressId: choiceAddress ? choiceAddress?._id : null,
           image: image,
+          details: attributeValues,
         };
 
         await axiosInstance
@@ -197,6 +218,7 @@ const DangBan = () => {
           image: checkFile
             ? await updateImage(file, imageProduct?.publicId)
             : imageProduct,
+          details: attributeValues,
         };
 
         await axiosInstance
@@ -313,6 +335,31 @@ const DangBan = () => {
                 setSearchMode={setSearchMode}
               />
             )}
+          </div>
+          <div className="attribute">
+          {attributesList.length > 0 && (
+          <div className="dynamic-attributes">
+            {attributesList.map((attr) => (
+              <div key={attr.name} className="attribute-select">
+                <h4>{attr.label}:</h4>
+                <select
+                  value={attributeValues[attr.name] || ""}
+                  onChange={(e) =>
+                    setAttributeValues((prev) => ({
+                      ...prev,
+                      [attr.name]: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Chọn {attr.label}</option>
+                  {attr.options.map((opt: any) => (
+                    <option key={opt._id} value={opt.value}>{opt.value}</option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+        )}
           </div>
           <div className="status">
             <h4>Tình trạng:</h4>
@@ -507,3 +554,4 @@ const DangBan = () => {
 };
 
 export default DangBan;
+

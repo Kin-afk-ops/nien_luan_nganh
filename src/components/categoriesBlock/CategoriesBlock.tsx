@@ -63,6 +63,8 @@ const CategoriesBlock: React.FC<ChildProps> = ({
                   onClick={() => {
                     setCateLabel(c);
                     setSearchMode(true);
+                    setDisplayCategories(false);
+                    console.log(c)
                   }}
                 >
                   {c.name}
