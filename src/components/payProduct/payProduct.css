@@ -28,6 +28,16 @@
 .pay__product--item {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+
+.pay__product--item-item {
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
 }
 
 .pay__product--name {
@@ -90,4 +100,78 @@
 .pay__product--buyer-view:hover {
   text-decoration: underline;
   color: var(--success);
+}
+
+/* order product */
+
+.order__product--status {
+  border: 1px solid var(--primary-color);
+  font-size: 12px;
+  color: var(--primary-color);
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order__product--address {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #616161;
+}
+
+.order__receive {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.cart__product--checkbox {
+  height: 25px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+  color: #fff;
+}
+
+.cart__product--delete {
+  font-size: 20px;
+  cursor: pointer;
+  text-align: right;
+  transition: 0.2s;
+  margin-bottom: 10px;
+}
+
+.cart__product--delete:hover {
+  color: var(--primary-color);
+}
+
+.order__pay--content-wrap {
+  padding-top: 20px;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.order__pay--content {
+  display: flex;
+  padding: 10px 0;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.order__pay--content div:first-child {
+  font-size: 14px;
+  text-align: right;
+  color: #616161;
+  margin-right: 30px;
+}
+
+.order__pay--content div:last-child {
+  text-align: left;
+  width: 15%;
+}
+
+.order__pay--content-total {
+  font-size: 25px;
+  color: var(--primary-color);
 }

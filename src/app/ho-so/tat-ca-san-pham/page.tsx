@@ -32,7 +32,7 @@ const AddProductPage = () => {
 
     const getCategories = async (): Promise<void> => {
       try {
-        const res = await axiosInstance.get("/categories");
+        const res = await axiosInstance.get("/category/getallCategories");
         setCategories(res.data);
       } catch (error) {
         console.log(error);

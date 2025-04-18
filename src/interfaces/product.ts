@@ -1,4 +1,9 @@
+import { AddressInterface } from "./addressUser";
+import { CategoriesInterface } from "./categories";
+import { InfoUserInterface } from "./infoUser";
+
 export interface ICategory {
+  id: string;
   name?: string;
   slug?: string;
   parentId?: string | null;
@@ -15,8 +20,32 @@ export interface ProductInterface {
   price: number;
   description: string;
   details?: Record<string, any>;
-  addressId: string; // Sử dụng string cho ObjectId khi gửi dữ liệu
-  discount?: number;
-  createdAt?: string; // Định dạng ISO date khi gửi qua API
-  updatedAt?: string;
+  addressId: string;
+  addressInfo: AddressInterface;
+  sellerInfo: InfoUserInterface;
+  image: {
+    id: string;
+    url: string;
+  };
+  discount: number;
+
+  size: string;
+  isFreeShip: boolean;
+  sold: boolean;
+}
+
+export interface productFormInterface {
+  name: string;
+  categories: CategoriesInterface | null;
+  slug: string;
+  condition: string | null;
+  quantity: number;
+  price: number;
+  description: string;
+  addressId: string | null;
+  image: {
+    publicId: string;
+    path: string;
+  } | null;
+  details?: { [key: string]: string };
 }

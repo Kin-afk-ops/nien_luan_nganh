@@ -32,8 +32,8 @@ const ProfilePage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   // const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   // const [zoom, setZoom] = useState<number>(1.1);
-  const [checkFile, setCheckFile] = useState<boolean>(false);
   const [addressModal, setAddressModal] = useState<boolean>(false);
+  const [checkFile, setCheckFile] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
   const [avatar, setAvatar] = useState<ImageUploadInterface>({

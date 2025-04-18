@@ -1,0 +1,83 @@
+/* Reset toàn bộ margin, padding và border */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+/* Đảm bảo HTML và body chiếm toàn bộ chiều cao */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  color: #000;
+  line-height: 1.5;
+}
+
+/* Xóa style danh sách */
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Xóa style mặc định của các phần tử form */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Xóa underline của link và đặt màu mặc định */
+a {
+  text-decoration: none;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+/* Đảm bảo hình ảnh không vượt quá kích thước của container */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+/* Reset heading và paragraph */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+}
+
+/* Đặt lại cursor cho button */
+button {
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+/* Reset bảng */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}

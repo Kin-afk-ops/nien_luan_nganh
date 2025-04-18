@@ -37,7 +37,7 @@
 .customer__nav--link {
   display: flex;
   padding: 15px;
-
+  align-items: center;
   color: #616161;
   transition: 0.5s;
 }

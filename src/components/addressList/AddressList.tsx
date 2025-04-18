@@ -57,7 +57,7 @@ const AddressList: React.FC<ChildProps> = ({
   };
 
   const handleChoiceAddress = (address: AddressInterface) => {
-    if (typeComponent === "dat-hang") {
+    if (typeComponent === "dat-hang" || typeComponent === "sellform") {
       setChoiceAddress(address);
       setChoiceAddressModal(false);
     }

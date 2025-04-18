@@ -20,6 +20,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
     useSelector((state: RootState) => state.user.currentUser) || null;
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
 
   const [slug, setSlug] = useState<string | null>(null);
@@ -30,12 +31,11 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!user || !user._id) return; // Chỉ gọi API nếu user tồn tại
     if (user) {
       setUserEmail(user.email !== "none" ? user.email : "Không có thông tin");
 
       setFIrebaseIsAccount(user?.firebase);
-      console.log(user);
+      setUserId(user?._id);
     }
 
     const getInfoUser = async (): Promise<void> => {
@@ -43,7 +43,6 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
         .get(`/infoUser/${user?._id}`)
         .then((res) => {
           setName(res.data.name);
-          console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
@@ -78,8 +77,8 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
             href={"/ho-so/thong-tin"}
             className={
               slug === "thong-tin"
-                ? "customer__nav--link active"
-                : "customer__nav--link"
+                ? "link customer__nav--link active"
+                : "link customer__nav--link"
             }
           >
             <i className="customer__nav--icon fa-regular fa-user"></i>
@@ -115,7 +114,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
           </Link>
         </li>
 
-        {firebaseIsAccount && (
+        {!firebaseIsAccount && (
           <li onClick={() => setMenuToggle(false)}>
             <Link
               href={"/ho-so/thay-doi-mat-khau"}
@@ -137,7 +136,22 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
       <ul className="customer__nav--list">
         <li onClick={() => setMenuToggle(false)}>
           <Link
-            href={"/ho-so/them-san-pham"}
+            href={`/shop/${userId}`}
+            className={
+              slug === "them-san-pham"
+                ? "customer__nav--link active"
+                : "customer__nav--link"
+            }
+          >
+            <i className=" customer__nav--icon  fa-solid fa-shop"></i>
+
+            <p>Shop của tôi</p>
+          </Link>
+        </li>
+
+        <li onClick={() => setMenuToggle(false)}>
+          <Link
+            href={"/sellform"}
             className={
               slug === "them-san-pham"
                 ? "customer__nav--link active"

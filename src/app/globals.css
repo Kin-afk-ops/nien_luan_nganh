@@ -100,6 +100,9 @@ a {
   border: 1px solid #ccc;
   cursor: pointer;
 }
+.display-block {
+  display: block;
+}
 
 .display-none {
   display: none;

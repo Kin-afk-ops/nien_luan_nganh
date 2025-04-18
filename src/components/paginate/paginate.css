@@ -15,6 +15,10 @@
   background-color: var(--primary-color);
   border: 1px solid var(--primary-color);
 }
+.pagination .paginationPage.mobile {
+  display: none;
+}
+
 .pagination .paginationPage li {
   cursor: pointer;
   background-color: white;
@@ -23,6 +27,8 @@
   margin: 0 5px;
   border: 1px solid black;
 }
+
+.pagination .paginationPage li i,
 .pagination .paginationPage li a {
   display: flex;
   justify-content: center;

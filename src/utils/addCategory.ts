@@ -5,7 +5,12 @@ import { categoryModel } from "@/models/CategoryModel";
 export const getAllCategories = () => {
     const response =  axiosInstance.get("/category/getallCategories");
     return response.then(res => res.data);
- 
+}
+
+export const getCategoryById = (id: number) => {
+    console.log(id);
+    const response =  axiosInstance.get(`/category/getCategoryById/${id}`);
+    return response.then(res => res.data);
 }
 
 export const getAllCateAttr = () => {

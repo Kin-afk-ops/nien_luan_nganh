@@ -13,8 +13,13 @@ import toast from 'react-hot-toast';
 
 Modal.setAppElement("body");
 
+interface Props {
+  categoryProps?: categoryModel;
+}
 
-const AddCategoryComponent = () => {
+
+const AddCategoryComponent = (props: Props) => {
+    const { categoryProps } = props;
     const [attribute, setAttribute] = useState<CategoryAttribute[]>([]);
     const [categories, setCategories] = useState<categoryModel[]>([]);
     const [newCategory, setNewCategory] = useState<Partial<categoryModel>>({});
@@ -34,6 +39,11 @@ const AddCategoryComponent = () => {
             .then(setAttribute)
             .catch(error => console.error("Failed to fetch attribute:", error));
     }, [isChange]);
+    useEffect(() => {
+        if (categoryProps) {
+            setNewCategory(categoryProps);
+        }
+    }, [categoryProps]);
 
     useEffect(() => {
         console.log("Selected Attributes: ", selectedAttribute);

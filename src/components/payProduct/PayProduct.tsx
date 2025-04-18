@@ -6,26 +6,20 @@ import { CartInterface } from "@/interfaces/cart";
 import Link from "next/link";
 
 interface ChildProps {
-  cartProduct: any;
-  orderProductCheck: boolean | null;
+  cartProduct: CartInterface[];
 }
 
-const PayProduct: React.FC<ChildProps> = ({
-  cartProduct,
-  orderProductCheck,
-}) => {
+const PayProduct: React.FC<ChildProps> = ({ cartProduct }) => {
   console.log(cartProduct);
 
   return (
     <div className="pay__product">
-      {!orderProductCheck && (
-        <div className="row no-gutters pay__product--head">
-          <h2 className="l-6 m-12 s-12">Sản phẩm</h2>
-          <div className="l-2 m-0 s-0">Đơn giá</div>
-          <div className="l-2 m-0 s-0">Số lượng</div>
-          <div className="l-2 m-0 s-0">Thành tiền</div>
-        </div>
-      )}
+      <div className="row no-gutters pay__product--head">
+        <h2 className="l-6 m-12 s-12">Sản phẩm</h2>
+        <div className="l-2 m-0 s-0">Đơn giá</div>
+        <div className="l-2 m-0 s-0">Số lượng</div>
+        <div className="l-2 m-0 s-0">Thành tiền</div>
+      </div>
 
       {cartProduct !== null &&
         cartProduct?.map((c, index) => (
@@ -33,7 +27,7 @@ const PayProduct: React.FC<ChildProps> = ({
             <div className="l-12 pay__product--buyer">
               {" "}
               <i className="fa-solid fa-shop"></i>
-              <p>nguyen vu linh</p>
+              <p>{c.product.sellerInfo && c.product.sellerInfo.name}</p>
               <button className="pay__product--buyer-chat">Chat</button>
               <Link href={"/"} className="link pay__product--buyer-view">
                 Xem shop
@@ -65,23 +59,23 @@ const PayProduct: React.FC<ChildProps> = ({
               />
             </div>
             <div className="l-5 m-10 s-8 pay__product--name">
-              <p>{c.productId.name}</p>
+              <p>{c.product.name}</p>
               <div className="l-0 pay__product--name-item">
-                {"Đơn giá: " + formatPrice(c.productId.price)}
+                {"Đơn giá: " + formatPrice(c.product.price)}
               </div>
               <div className="l-0 pay__product--name-item">
                 {"Số lượng: " + c.quantity}
               </div>
               <div className="l-0 pay__product--name-item">
-                {"Thành tiền: " + formatPrice(c.productId.price * c.quantity)}
+                {"Thành tiền: " + formatPrice(c.product.price * c.quantity)}
               </div>
             </div>
             <div className="l-2 m-0 s-0 pay__product--item">
-              {formatPrice(c.productId.price)}
+              {formatPrice(c.product.price)}
             </div>
             <div className="l-2 m-0 s-0 pay__product--item">{c.quantity}</div>
             <div className="l-2 m-0 s-0 pay__product--item">
-              {formatPrice(c.productId.price * c.quantity)}
+              {formatPrice(c.product.price * c.quantity)}
             </div>
           </div>
         ))}

@@ -165,6 +165,7 @@ const ProductDetail = () => {
   //Thêm hàng vào giỏ hàng
   const handleAddToCart = () => {
     const cart: CartInterface = {
+      _id: "", // Provide a default or generated ID
       productId: product?._id || "", // Use the product ID if available
       quantity: count, // Use the current count as the quantity
       buyerId: currentUser?._id || "", // Use the current user's ID

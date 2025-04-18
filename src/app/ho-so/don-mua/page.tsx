@@ -1,7 +1,9 @@
 "use client";
+import Loading from "@/components/loading/Loading";
 import OrderFilter from "@/components/orderFilter/OrderFilter";
 import OrderProduct from "@/components/orderProduct/OrderProduct";
 import OrderProductPaginate from "@/components/paginate/OrderProductPaginate";
+import OrderProductContainer from "@/components/payProduct/OrderProductContainer";
 
 import axiosInstance from "@/helpers/api/config";
 import { RootState } from "@/hooks/useAppDispatch";
@@ -22,12 +24,14 @@ const PurchaseOrder = () => {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (user) {
       setUserId(user?._id);
     }
 
+    setLoading(true);
     const getOrderProduct = async (): Promise<void> => {
       if (userId) {
         try {
@@ -38,19 +42,22 @@ const PurchaseOrder = () => {
 
           setOrderProduct(res.data.data);
           setTotalItems(res.data.totalItems);
+          setLoading(false);
         } catch (error) {
           console.log(error);
         }
       }
+      setLoading(false);
     };
 
     getOrderProduct();
   }, [user, userId, filterMode, filterModeLoading, currentPage]);
 
-  console.log(totalItems);
+  console.log(orderProduct);
 
   return (
     <>
+      {loading && <Loading />}
       {userId && (
         <div>
           <h3 className="profile__header">Đơn mua</h3>
@@ -66,10 +73,18 @@ const PurchaseOrder = () => {
             currentPage={currentPage}
             setTotalItems={setTotalItems}
             setTotalPages={setTotalPages}
+            setOrderProduct={setOrderProduct}
+            setLoading={setLoading}
           />
 
           {totalItems !== 0 ? (
-            <OrderProduct orderProduct={orderProduct} />
+            <OrderProductContainer
+              orderProduct={orderProduct}
+              userId={userId}
+              setFilterModeLoading={setFilterModeLoading}
+              filterModeLoading={filterModeLoading}
+              setLoading={setLoading}
+            />
           ) : (
             <div className="display-flex-center">Không có sản phẩm</div>
           )}

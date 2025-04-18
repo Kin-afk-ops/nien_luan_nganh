@@ -24,7 +24,7 @@ import axiosInstance from "@/helpers/api/config";
 import { newUserEmail, newUserPhone } from "@/interfaces/user";
 import OtpInput from "@/components/otpInput/OtpInput";
 
-import Countdown from "@/components/countdown/Countdown";
+// import Countdown from "@/components/countdown/Countdown";
 import googleLogo from "../../../../public/assets/google_logo.png";
 import { useAppDispatch } from "@/lib/store";
 import { LoginUserGoogle } from "@/interfaces/loginUser";
