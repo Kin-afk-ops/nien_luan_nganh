@@ -21,25 +21,26 @@ export const login = async (
   dispatch(loginStart());
 
   if (phoneMode) {
-    try {
-      const res = await axiosInstance.post("/auth/login/phone", user);
-      dispatch(
-        loginSuccess({
-          accessToken: res.data.accessToken,
-          phone: res.data.phone,
-          email: res.data.email,
-          _id: res.data._id,
-          firebase: false,
-        })
-      );
-      setNoAccount(false);
-      alert("!đăng nhập thành công");
-    } catch (err) {
-      console.log(err);
-
-      dispatch(loginFailure());
-      setNoAccount(true);
-    }
+    await axiosInstance
+      .post("/auth/login/phone", user)
+      .then((res) => {
+        dispatch(
+          loginSuccess({
+            accessToken: res.data.accessToken,
+            phone: res.data.phone,
+            email: res.data.email,
+            _id: res.data._id,
+            firebase: false,
+          })
+        );
+        setNoAccount(false);
+        alert("!đăng nhập thành công");
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(loginFailure());
+        setNoAccount(true);
+      });
   } else {
     try {
       const res = await axiosInstance.post("/auth/login/email", user);

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -7,8 +7,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   return (
     <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-      <button 
-        id="sidebarToggleTop" 
+      <button
+        id="sidebarToggleTop"
         className="btn btn-link d-md-none rounded-circle mr-3"
         onClick={onToggleSidebar}
       >
@@ -33,12 +33,24 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
       <ul className="navbar-nav ml-auto">
         {/* Nav Item - Alerts */}
+
         <li className="nav-item dropdown no-arrow mx-1">
-          <a className="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a
+            className="nav-link dropdown-toggle"
+            href="#"
+            id="alertsDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
             <i className="fas fa-bell fa-fw"></i>
             <span className="badge badge-danger badge-counter">3+</span>
           </a>
-          <div className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="alertsDropdown">
+          <div
+            className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--fade-in"
+            aria-labelledby="alertsDropdown"
+          >
             <h6 className="dropdown-header">Thông báo</h6>
             <a className="dropdown-item d-flex align-items-center" href="#">
               <div className="mr-3">
@@ -62,41 +74,81 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
                 <span className="font-weight-bold">Thanh toán mới!</span>
               </div>
             </a>
-            <a className="dropdown-item text-center small text-gray-500" href="#">Hiển thị tất cả thông báo</a>
+            <a
+              className="dropdown-item text-center small text-gray-500"
+              href="#"
+            >
+              Hiển thị tất cả thông báo
+            </a>
           </div>
         </li>
-
         {/* Nav Item - Messages */}
         <li className="nav-item dropdown no-arrow mx-1">
-          <a className="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a
+            className="nav-link dropdown-toggle"
+            href="#"
+            id="messagesDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
             <i className="fas fa-envelope fa-fw"></i>
             <span className="badge badge-danger badge-counter">7</span>
           </a>
-          <div className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="messagesDropdown">
+          <div
+            className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--fade-in"
+            aria-labelledby="messagesDropdown"
+          >
             <h6 className="dropdown-header">Tin nhắn</h6>
             <a className="dropdown-item d-flex align-items-center" href="#">
               <div className="dropdown-list-image mr-3">
-                <img className="rounded-circle" src="https://source.unsplash.com/fn_BT9fwg_E/60x60" alt="" />
+                <img
+                  className="rounded-circle"
+                  src="https://source.unsplash.com/fn_BT9fwg_E/60x60"
+                  alt=""
+                />
                 <div className="status-indicator bg-success"></div>
               </div>
               <div className="font-weight-bold">
-                <div className="text-truncate">Xin chào! Tôi cần hỗ trợ về đơn hàng #12345</div>
+                <div className="text-truncate">
+                  Xin chào! Tôi cần hỗ trợ về đơn hàng #12345
+                </div>
                 <div className="small text-gray-500">David Miller · 58m</div>
               </div>
             </a>
-            <a className="dropdown-item text-center small text-gray-500" href="#">Đọc tất cả tin nhắn</a>
+            <a
+              className="dropdown-item text-center small text-gray-500"
+              href="#"
+            >
+              Đọc tất cả tin nhắn
+            </a>
           </div>
         </li>
-
         <div className="topbar-divider d-none d-sm-block"></div>
-
         {/* Nav Item - User Information */}
         <li className="nav-item dropdown no-arrow">
-          <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span className="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-            <img className="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" />
+          <a
+            className="nav-link dropdown-toggle"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span className="mr-2 d-none d-lg-inline text-gray-600 small">
+              Douglas McGee
+            </span>
+            <img
+              className="img-profile rounded-circle"
+              src="https://source.unsplash.com/QAB-WJcbgJk/60x60"
+            />
           </a>
-          <div className="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="userDropdown">
+          <div
+            className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+            aria-labelledby="userDropdown"
+          >
             <a className="dropdown-item" href="#">
               <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
               Hồ sơ
@@ -106,7 +158,12 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
               Cài đặt
             </a>
             <div className="dropdown-divider"></div>
-            <a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+            <a
+              className="dropdown-item"
+              href="#"
+              data-toggle="modal"
+              data-target="#logoutModal"
+            >
               <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
               Đăng xuất
             </a>
@@ -278,4 +335,4 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   );
 };
 
-export default Header; 
+export default Header;

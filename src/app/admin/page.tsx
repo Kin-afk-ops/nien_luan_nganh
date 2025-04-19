@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axiosInstance from "@/helpers/api/config";
-import {
-  FaCalendar,
-  FaClipboardList,
-} from "react-icons/fa";
+import { FaCalendar, FaClipboardList } from "react-icons/fa";
 
 // API call
 const getProducts = async () => {
@@ -54,15 +51,23 @@ export default function Dashboard() {
         ]);
 
         // Handle product count based on "approve"
-        const productData = Array.isArray(products) ? products : products.data || [];
-        const approved = productData.filter((p: any) => p.approve === true).length;
-        const pending = productData.filter((p: any) => p.approve === false).length;
+        const productData = Array.isArray(products)
+          ? products
+          : products.data || [];
+        const approved = productData.filter(
+          (p: any) => p.approve === true
+        ).length;
+        const pending = productData.filter(
+          (p: any) => p.approve === false
+        ).length;
         setApprovedProductCount(approved);
         setPendingProductCount(pending);
 
         // Other counts
         const userData = Array.isArray(users) ? users : users.data || [];
-        const categoryData = Array.isArray(categories) ? categories : categories.data || [];
+        const categoryData = Array.isArray(categories)
+          ? categories
+          : categories.data || [];
         setUserCount(userData.length);
         setCategoryCount(categoryData.length);
       } catch (error) {
@@ -130,7 +135,9 @@ function StatBox({ title, value, icon, border }: StatBoxProps) {
       <div className={`card border-start border-${border} shadow-sm h-100`}>
         <div className="card-body d-flex justify-content-between align-items-center">
           <div>
-            <div className={`text-muted text-uppercase small fw-bold text-${border}`}>
+            <div
+              className={`text-muted text-uppercase small fw-bold text-${border}`}
+            >
               {title}
             </div>
             <div className="h5 fw-bold text-dark">{value}</div>
