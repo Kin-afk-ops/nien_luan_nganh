@@ -53,7 +53,7 @@ useEffect(() => {
                       <td>
                         <div className="button_group">
                           <Link
-                            href={`/quan-ly-danh-muc?id=${category.id}`}
+                            href={`/admin/quan-ly-danh-muc?id=${category.id}`}
                             className="btn btn-primary"
                           >
                             Chỉnh sửa

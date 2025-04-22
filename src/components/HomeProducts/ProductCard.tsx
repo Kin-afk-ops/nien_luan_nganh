@@ -24,8 +24,8 @@ const ProductCard = (props: Props) => {
       onClick={handleReload}>
       <div className={styles.image}>
         {
-          product?.images && (
-            <img src={product?.images.url[0]} alt="product"/>
+          product?.image && (
+            <img src={product?.image.path} alt="product"/>
           )
         }
       </div>
@@ -39,7 +39,7 @@ const ProductCard = (props: Props) => {
         
         <div className={styles.location}>
           <FaLocationDot/>
-          {product?.address ? <p>{product.address.province}</p> : <p>Không có Tỉnh</p> 
+          {product?.addressInfo ? <p>{product.addressInfo.province}</p> : <p>Không có Tỉnh</p> 
         }
         </div>
       </div>

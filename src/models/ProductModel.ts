@@ -15,24 +15,25 @@ export interface ProductModel {
     description: string;
     details: Record<string, any>; // Mixed type
     sold: Boolean;
-    address: {
-        userId: string;
-        nameAddress: string;
-        phoneAddress: string;
-        province: string;
-        provinceId: string;
-        district: string;
-        districtId: string;
-        ward: string;
-        wardId: string;
-        address: string;
-        default: boolean;
-        createdAt: string; // ISO Date string
-        updatedAt: string; // ISO Date string
-      };
-    images: {
-        id: number;
-        url: string[];
+    // address: {
+    //     userId: string;
+    //     nameAddress: string;
+    //     phoneAddress: string;
+    //     province: string;
+    //     provinceId: string;
+    //     district: string;
+    //     districtId: string;
+    //     ward: string;
+    //     wardId: string;
+    //     address: string;
+    //     default: boolean;
+    //     createdAt: string; // ISO Date string
+    //     updatedAt: string; // ISO Date string
+    //   };
+    addressInfo: Record<string, any>; // Mixed type 
+    image: {
+        publicId: number;
+        path: string;
     };
     discount?: number;
     size?: string;

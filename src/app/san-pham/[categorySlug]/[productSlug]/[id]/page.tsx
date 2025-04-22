@@ -133,21 +133,21 @@ const ProductDetail = () => {
     itemRefs.current[index] = el;
   };
 
-  const handleNext = () => {
-    if (!product || !product.images) {
-      return <div>Không có hình ảnh</div>;
-    }
-    if (selectedIndex < product.images.url.length - 1) {
-      const newIndex = selectedIndex + 1;
-      setSelectedIndex(newIndex);
-      setimgIndex(newIndex);
-      if (
-        isImagePartiallyHidden(containerRef.current, itemRefs.current[newIndex])
-      ) {
-        scrollToActive(itemRefs.current[newIndex]);
-      }
-    }
-  };
+  // const handleNext = () => {
+  //   if (!product || !product.image) {
+  //     return <div>Không có hình ảnh</div>;
+  //   }
+  //   if (selectedIndex < product.images.url.length - 1) {
+  //     const newIndex = selectedIndex + 1;
+  //     setSelectedIndex(newIndex);
+  //     setimgIndex(newIndex);
+  //     if (
+  //       isImagePartiallyHidden(containerRef.current, itemRefs.current[newIndex])
+  //     ) {
+  //       scrollToActive(itemRefs.current[newIndex]);
+  //     }
+  //   }
+  // };
 
   const handlePrev = () => {
     if (selectedIndex > 0) {
@@ -183,12 +183,12 @@ const ProductDetail = () => {
   // Di chuyển ảnh
 
   if (!product) return <div style={{ height: 1000 }}></div>;
-  const detailEntries = Object.entries(product.details);
+  const detailEntries = Object.entries(product.details || {});
   const visibleDetails = showAll ? detailEntries : detailEntries.slice(0, 1);
 
   return (
     <div className={isMobile ? "container_mobile" : "container"}>
-      {product && (
+      {product.categories && (
         <BreadcrumbComponent
           id={product.categories.id}
           productName={product.name}
@@ -199,17 +199,19 @@ const ProductDetail = () => {
         <div className="main-info-container">
           <div className="product-image-container">
             <div className="product-images">
-                <img
-                  src={product.images.url[imgIndex]}
+                {product.image && (
+                  <img
+                  src={product.image.path}
                   alt={product.name}
                   className="product-image"
                 />
+                )}
             </div>
             <div className="carousel-wrapper">
               <div className="arrow left" onClick={handlePrev}>
                 &lt;
               </div>
-              <div className="carousel-container" ref={containerRef}>
+              {/* <div className="carousel-container" ref={containerRef}>
                 {product.images.url.map((img, index) => (
                   <div
                     className={`thumbnail ${
@@ -228,16 +230,16 @@ const ProductDetail = () => {
                     />
                   </div>
                 ))}
-              </div>
-              <div className="arrow right" onClick={handleNext}>
+              </div> */}
+              {/* <div className="arrow right" onClick={handleNext}>
                 &gt;
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="info">
             <h2>{product.name}</h2>
             <h2 style={{ color: "coral" }}>{`${formatPrice(product.price)}`}</h2>
-            <p>{`Vận chuyển từ: ${product.address.province}`}</p>
+            <p>{`Vận chuyển từ: ${product.addressInfo.province}`}</p>
             <div className="row-container">
               <p>Số lượng:</p>
               <div className="minus-button" onClick={handleMinus}>

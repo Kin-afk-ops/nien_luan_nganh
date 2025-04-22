@@ -13,7 +13,7 @@ export const priceData = [
 ]
 
 export const statusData = [
-    {id:1, label: "Mới", value: 'new'},
+    {id:1, label: "Mới", value: 'Mới'},
     {id:2, label: 'Đã sử dụng', value: 'used'},
     {id:4, label: 'Tốt', value: 'good'},
     {id:5, label: 'Khá', value: 'average'},
