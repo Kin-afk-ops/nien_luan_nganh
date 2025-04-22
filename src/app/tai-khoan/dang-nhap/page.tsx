@@ -5,10 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import {
-  auth,
-  googleProvider,
-} from "../../../../firebase";
+import { auth, googleProvider } from "../../../../firebase";
 import {
   ConfirmationResult,
   RecaptchaVerifier,
@@ -44,8 +41,10 @@ const LoginPage = () => {
   const router = useRouter();
 
   const [noAccount, setNoAccount] = useState(false);
-  const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [recaptchaVerifier, setRecaptchaVerifier] =
+    useState<RecaptchaVerifier | null>(null);
+  const [confirmationResult, setConfirmationResult] =
+    useState<ConfirmationResult | null>(null);
 
   const [phoneMode, setPhoneMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState("");
@@ -72,44 +71,69 @@ const LoginPage = () => {
     return () => verifier.clear();
   }, []);
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async (): Promise<void> => {
     dispatch(loginStart());
+
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
+      console.log("User Info:", user);
 
-      const res = await axiosInstance.post("/auth/register/find/email", {
-        firebaseMode: true,
-        email: user?.email,
-      });
+      // Lấy Access Token từ Firebase
+      // const idToken = await user.getIdToken();
 
-      alert(res.data.message);
-      // Optional: Navigate to verification step or homepage
-    } catch (error: any) {
-      console.error("Google login fallback", error);
-      try {
-        const user = auth.currentUser;
-        if (!user) throw new Error("No user info found");
+      // console.log("Access Token:", idToken);
 
-        const phoneRes = await axiosInstance.get(`/auth/firebase/phone/${user.uid}`);
-        const phone = phoneRes.data.phone;
+      // const res = await axiosInstance.post("/auth/firebase-login", {
+      //   token: idToken,
+      // });
 
-        const userLogin = {
-          _id: user.uid,
-          accessToken: await user.getIdToken(),
-          email: user.email || "Không có email",
-          phone,
-          firebase: true,
-        };
+      // console.log("Server Response:", res.data);
 
-        dispatch(loginSuccess(userLogin));
-        alert("Đăng nhập Google thành công!");
-        router.replace("/");
-      } catch (err) {
-        console.error("Google login failed completely", err);
-        dispatch(loginFailure());
-        alert("Đăng nhập Google thất bại.");
-      }
+      await axiosInstance
+        .post(`/auth/register/find/email`, {
+          firebaseMode: true,
+          email: user?.email,
+        })
+        .then((res) => {
+          alert(res.data.message);
+          // setCheckGoogleUser(res.data.check);
+        })
+        .catch(async (error) => {
+          console.log(error);
+
+          let googlePhoneValue: string = "";
+
+          await axiosInstance
+            .get(`/auth/firebase/phone/${user.uid}`)
+            .then((res) => {
+              googlePhoneValue = res.data.phone;
+              console.log(googlePhoneValue);
+            })
+            .catch((error) => console.log(error));
+
+          const userLogin: {
+            _id: string;
+            accessToken: string;
+            email: string;
+            phone: string;
+            firebase: boolean;
+          } = {
+            _id: user.uid,
+            accessToken: await user.getIdToken(),
+            email: user?.email ? user?.email : "Lỗi dữ liệu",
+            phone: googlePhoneValue,
+            firebase: true,
+          };
+
+          dispatch(loginSuccess(userLogin));
+
+          alert("Đăng nhập Google thành công!");
+          window.location.replace("/");
+        });
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      dispatch(loginFailure());
     }
   };
 
@@ -162,12 +186,21 @@ const LoginPage = () => {
           </div>
 
           <div className="l-4 m-8 s-12 account__container">
-            <form className="account__form" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="account__form"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className="account__head">Đăng nhập</div>
 
               {phoneMode ? (
                 <>
-                  <div className={phoneError ? "account__phone account__error" : "account__phone"}>
+                  <div
+                    className={
+                      phoneError
+                        ? "account__phone account__error"
+                        : "account__phone"
+                    }
+                  >
                     <div className="account__phone--prefix">
                       <Image
                         src="/assets/quoc_ky_VN.png"
@@ -191,13 +224,25 @@ const LoginPage = () => {
                       placeholder="Nhập số điện thoại"
                     />
                   </div>
-                  <div className="account__error--message">{phoneErrorMessage}</div>
+                  <div className="account__error--message">
+                    {phoneErrorMessage}
+                  </div>
                 </>
               ) : (
                 <>
-                  <div className={emailError ? "account__input--block account__error" : "account__input--block"}>
+                  <div
+                    className={
+                      emailError
+                        ? "account__input--block account__error"
+                        : "account__input--block"
+                    }
+                  >
                     <input
-                      className={emailError ? "account__input account__error--input" : "account__input"}
+                      className={
+                        emailError
+                          ? "account__input account__error--input"
+                          : "account__input"
+                      }
                       value={emailValue}
                       onChange={(e) => setEmailValue(e.target.value)}
                       onBlur={(e) => handleValidationEmail(e.target.value)}
@@ -209,13 +254,25 @@ const LoginPage = () => {
                       placeholder="Nhập email của bạn"
                     />
                   </div>
-                  <div className="account__error--message">{emailErrorMessage}</div>
+                  <div className="account__error--message">
+                    {emailErrorMessage}
+                  </div>
                 </>
               )}
 
-              <div className={passwordError ? "account__input--block account__error" : "account__input--block"}>
+              <div
+                className={
+                  passwordError
+                    ? "account__input--block account__error"
+                    : "account__input--block"
+                }
+              >
                 <input
-                  className={passwordError ? "account__input account__error--input" : "account__input"}
+                  className={
+                    passwordError
+                      ? "account__input account__error--input"
+                      : "account__input"
+                  }
                   type={displayPassword ? "text" : "password"}
                   placeholder="Nhập mật khẩu của bạn"
                   value={passwordValue}
@@ -228,14 +285,21 @@ const LoginPage = () => {
                     setPasswordErrorMessage("");
                   }}
                 />
-                <div className="account__password--icon" onClick={() => setDisplayPassword(!displayPassword)}>
-                  <i className={`fa-regular ${displayPassword ? "fa-eye-slash" : "fa-eye"} ${
-                    passwordError ? "account__error--icon" : ""
-                  }`}></i>
+                <div
+                  className="account__password--icon"
+                  onClick={() => setDisplayPassword(!displayPassword)}
+                >
+                  <i
+                    className={`fa-regular ${
+                      displayPassword ? "fa-eye-slash" : "fa-eye"
+                    } ${passwordError ? "account__error--icon" : ""}`}
+                  ></i>
                 </div>
               </div>
 
-              <div className="account__error--message">{passwordErrorMessage}</div>
+              <div className="account__error--message">
+                {passwordErrorMessage}
+              </div>
 
               <div className="account__forgot--password">
                 <Link className="link" href={"/"}>
@@ -243,7 +307,10 @@ const LoginPage = () => {
                 </Link>
               </div>
 
-              <button className="account__form--btn main-btn" onClick={handleLogin}>
+              <button
+                className="account__form--btn main-btn"
+                onClick={handleLogin}
+              >
                 Đăng nhập
               </button>
             </form>
@@ -254,13 +321,25 @@ const LoginPage = () => {
               className="transparent-btn account__change--btn"
               onClick={() => setPhoneMode(!phoneMode)}
             >
-              <i className={`fa-solid ${phoneMode ? "fa-envelope" : "fa-square-phone"}`}></i>
+              <i
+                className={`fa-solid ${
+                  phoneMode ? "fa-envelope" : "fa-square-phone"
+                }`}
+              ></i>
               <span>Đăng nhập với {phoneMode ? "Email" : "số điện thoại"}</span>
             </button>
 
-            <button className="transparent-btn account__change--btn" onClick={handleGoogleLogin}>
+            <button
+              className="transparent-btn account__change--btn"
+              onClick={handleGoogleLogin}
+            >
               <div className="account__change--img">
-                <Image src={googleLogo} alt="google logo" width={18} height={18} />
+                <Image
+                  src={googleLogo}
+                  alt="google logo"
+                  width={18}
+                  height={18}
+                />
               </div>
               <span>Đăng nhập với Google</span>
             </button>

@@ -5,7 +5,6 @@ const offerData = [
 
 export const priceData = [
     {id: 1, label: "Tất cả"},
-    {id: 2, label: "Sản phẩm 0đ", value:0},
     {id: 3, label: "Dưới 100.000đ", maxValue: 99999},
     {id: 4, label: "100.000đ - 200.000đ", maxValue: 200000, minValue: 100000},
     {id: 5, label: "200.000đ - 500.000đ", maxValue: 500000, minValue: 200000},
@@ -14,9 +13,8 @@ export const priceData = [
 ]
 
 export const statusData = [
-    {id:1, label: "Mới", value: 'new'},
+    {id:1, label: "Mới", value: 'Mới'},
     {id:2, label: 'Đã sử dụng', value: 'used'},
-    {id:3, label: 'Như mới', value: 'like-new'},
     {id:4, label: 'Tốt', value: 'good'},
     {id:5, label: 'Khá', value: 'average'},
     {id:6, label: 'Trung bình', value: 'fair'},

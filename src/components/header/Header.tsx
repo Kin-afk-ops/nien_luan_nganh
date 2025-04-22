@@ -1,140 +1,105 @@
 "use client";
-import Link from "next/link";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo/logo.png";
-import { useState, FormEvent, useEffect } from "react";
-
-import { FaSearch, FaShoppingCart, FaBars } from "react-icons/fa";
 import "./header.css";
-import "./responsive.css";
+import Link from "next/link";
+import { useGlobalState } from "@/data/stateStore";
+import { useRouter } from "next/navigation";
 
-import axiosInstance from "@/helpers/api/config";
+const Header = () => {
+  const [headerInputFocus, setHeaderInputFocus] = useState<boolean>(false);
+  const [searchValue, setsearchValue] = useState('');
+  const {setFilter, filterList} = useGlobalState();
+  const router = useRouter();
 
-export default function Header() {
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
-
-  const handleSearch = async (): Promise<void> => {
-    await axiosInstance
-      .get(`/product/search?searchValue=${searchValue}`)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => console.log(error));
+  const handleSearch = () => {
+    if (searchValue.trim()) {
+      setFilter('search',searchValue);
+      const query = new URLSearchParams(window.location.search);
+      query.set("search", searchValue);
+      router.push(`/mua-ban-do-cu?id=1&${query.toString()}`);
+      setsearchValue('');
+    }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  // if(!router.isReady) return null;
+  
+
   return (
-    <nav className="header">
-      <div className="grid wide header__container">
-        {/* Logo */}
-        <Link href="/">
-          <Image src={logo} alt="Logo" width={120} height={50} />
-        </Link>
-
-        {/* Nút Toggle Menu */}
-        {/* <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <FaBars />
-        </button> */}
-
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <FaBars />
-        </button>
-
-        {/* Menu Content */}
-
-        <div
-          className="header__search--mobile-icon"
-          onClick={() => setDisplaySearch(true)}
-        >
-          {" "}
-          <i className="fa-solid fa-magnifying-glass "></i>
-        </div>
-
-        {displaySearch && (
-          <>
-            <div
-              className="modal-overlay "
-              onClick={() => setDisplaySearch(false)}
-            ></div>
-            <div className="header__search--mobile">
-              {/* Ô tìm kiếm */}
-
-              <input
-                className=""
-                type="text"
-                placeholder="Tìm kiếm..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault(); // Ngăn hành động mặc định (nếu có)
-                    handleSearch();
-                  }
-                }}
-              />
-              <button className="header__search--icon" onClick={handleSearch}>
-                <FaSearch size={18} />
-              </button>
-
-              {/* Menu điều hướng */}
+    <header>
+      <div className="header__container">
+        <div className="grid wide ">
+          <div className="row header__main">
+            <div className="l-2">
+              <Link href={"/"} className="link">
+                <Image
+                  src={"/assets/oreka_logo.png"}
+                  alt="logo"
+                  width={84}
+                  height={25}
+                />
+              </Link>
             </div>
-          </>
-        )}
-        {/* Nội dung menu */}
-        <div className="header__search">
-          {/* Ô tìm kiếm */}
-
-          <input
-            type="text"
-            placeholder="Tìm kiếm..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
-                handleSearch();
-              }
-            }}
-          />
-          <button className="header__search--icon" onClick={handleSearch}>
-            <FaSearch size={18} />
-          </button>
-
-          {/* Menu điều hướng */}
-        </div>
-        <div className="header__navbar">
-          <Link
-            href="/tai-khoan/dang-nhap"
-            className="header__navbar--item"
-            style={{ border: "none" }}
-          >
-            Đăng nhập
-          </Link>
-          <Link
-            href="/tai-khoan/dang-ky"
-            className="header__navbar--item"
-            style={{ border: "none" }}
-          >
-            Đăng ký
-          </Link>
-          <Link href="/tai-khoan/dang-nhap" className="header__navbar--item">
-            Đăng bán
-          </Link>
+            <div className="l-5">
+              <div
+                className={
+                  headerInputFocus ? "header__input focus" : "header__input"
+                }
+              >
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  onChange={(e) => setsearchValue(e.target.value)}
+                  value={searchValue}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => {
+                    setHeaderInputFocus(true);
+                  }}
+                  onBlur={() => {
+                    setHeaderInputFocus(false);
+                  }}
+                />
+                <i className="fa-solid fa-magnifying-glass" onClick={handleSearch}></i>
+              </div>
+            </div>
+            {/* <div className="l-2"></div> */}
+            <div className="l-5 header__user">
+              <Link className="link" href={"/tai-khoan/dang-ky"}>
+                Đăng ký
+              </Link>
+              <Link className="link" href={"/tai-khoan/dang-nhap"}>
+                Đăng nhập
+              </Link>
+              <button className="main-btn">Đăng bán</button>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
+      <div className="header__container">
+        <div className="grid wide">
+          <div className="row no-gutters header__categories">
+            <i className="fa-solid fa-bars"></i>
+            <div>Sách</div>
+            <div>Đồ cho nam</div>
+            <div>Thời trang nữ</div>
+            <div>Đồ làm đẹp </div>
+            <div>Đồ cho mẹ và bé</div>
+            <div>Đồ chơi & trò chơi</div>
+            <div>Đồ dùng nhà cửa</div>
+            <div>Thiết bị điện tử</div>
+            <div>Đồ văn phòng</div>
+          </div>
+        </div>
+      </div>
+    </header>
   );
-}
+};
+
+export default Header;

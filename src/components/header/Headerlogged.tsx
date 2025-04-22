@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import CategoriesBlock from "../categoriesBlock/CategoriesBlock";
 import { CategoriesInterface } from "@/interfaces/categories";
+import { useGlobalState } from "@/data/stateStore";
 
 interface ChildProps {
   user: {
@@ -49,16 +50,17 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
 
   const [infoUser, setInfoUser] = useState<InfoUserInterface | null>(null);
   const [infoUserName, setInfoUserName] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [displaySearch, setDisplaySearch] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<string>("dien-thoai");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [displayCategories, setDisplayCategories] = useState<boolean>(false);
+  const [searchValue, setsearchValue] = useState('');
   const [categories, setCategories] = useState<CategoriesInterface[] | null>(
     null
   );
+  const {setFilter, filterList} = useGlobalState();
 
   const [serchMode, setSearchMode] = useState<boolean>(false);
 
@@ -88,14 +90,30 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
     getInfoUser();
   }, [user]);
 
-  const handleSearch = async (): Promise<void> => {
-    await axiosInstance
-      .get(`/product/search?searchValue=${searchValue}`)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => console.log(error));
-  };
+  // const handleSearch = async (): Promise<void> => {
+  //   await axiosInstance
+  //     .get(`/product/search?searchValue=${searchValue}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
+
+  const handleSearch = () => {
+      if (searchValue.trim()) {
+        setFilter('search',searchValue);
+        const query = new URLSearchParams(window.location.search);
+        query.set("search", searchValue);
+        router.push(`/mua-ban-do-cu?id=1&${query.toString()}`);
+        setsearchValue('');
+      }
+    };
+  
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleSearch();
+      }
+    };
 
   const handleLogout = async () => {
     dispatch(logout());
@@ -308,13 +326,8 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
                 type="text"
                 placeholder="Tìm kiếm..."
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault(); // Ngăn hành động mặc định (nếu có)
-                    handleSearch();
-                  }
-                }}
+                onChange={(e) => setsearchValue(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <button className="header__search--icon" onClick={handleSearch}>
                 <FaSearch size={18} />
@@ -333,7 +346,7 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
             type="text"
             placeholder="Tìm kiếm..."
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={(e) => setsearchValue(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // Ngăn hành động mặc định (nếu có)

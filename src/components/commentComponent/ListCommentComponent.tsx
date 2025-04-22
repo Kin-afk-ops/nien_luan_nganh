@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { AiFillLike } from "react-icons/ai";
 import "./commentStyle.css"
 import { FaEdit, FaTrashAlt  } from "react-icons/fa";
+import { useAppSelector } from '@/lib/store';
+import StarRatings from 'react-star-ratings';
 
 
 interface Props {
@@ -16,12 +18,14 @@ interface Props {
 const ListCommentComponent = (props: Props) => {
     const { productId, editComment, userId, deleteComment, forceUpdate } = props;
     const[comments, setComments] = useState<comments[]>([]);
+    const currentUser = useAppSelector((state) => state.user.currentUser);
     
 
     useEffect(() => {
         const fetchComments = async () => {
             try{
                 const reponse = await getComments(productId);
+                console.log(reponse);
                 setComments(reponse);
             }catch(error){
                 console.error('Error fetching comments', error)
@@ -67,10 +71,18 @@ const ListCommentComponent = (props: Props) => {
            <div key={index}>
                 <div className="user_info">
                     <div className="avatar">
-                        <img src={comment.user.avatar.path} alt={comment.user.name} />
+                        {comment.user ? (
+                            <img src={comment.user.avatar.path} alt={comment.user.name} />
+                        ): (
+                            <img src="/assets/unknown_avatar.jpg" alt="Default Avatar" />
+                        )}
                     </div>
                     <div className="user_name">
-                        <p>{comment.user.name}</p>
+                        {comment.user ? (
+                            <p>{comment.user.name}</p>
+                        ): (
+                            <p>{currentUser?.email}</p>
+                        )}
                     </div>
                     <div className="icon_group">
                         <div className="edit" onClick={() => editComment(comment)}>
@@ -79,6 +91,14 @@ const ListCommentComponent = (props: Props) => {
                         <div className="delete" onClick={() => deleteComment(comment._id)}>
                             {comment.userId === userId && <FaTrashAlt size={20}/>}
                         </div>
+                    </div>
+                    <div className="star_rating">
+                        <StarRatings
+                            rating={comment.ratingStar}
+                            starRatedColor="orange"
+                            starDimension='20px'
+                            starSpacing='2px'
+                        ></StarRatings>
                     </div>
                 </div>
                 <div className="comment_content">

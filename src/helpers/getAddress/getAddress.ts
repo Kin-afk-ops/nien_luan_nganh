@@ -8,7 +8,7 @@ import axios from "axios";
 export const getProvincesAddress = async (): Promise<ProvinceInterface[]> => {
   try {
     const resProvince = await axios.get(
-      "https://api.vnappmob.com/api/v2/province/"
+      "https://api.vnappmob.com/api/province/"
     );
     return resProvince.data.results;
   } catch (error) {
@@ -22,7 +22,7 @@ export const getDistrictAddress = async (
 ): Promise<DistrictInterface[]> => {
   try {
     const resDistrict = await axios.get(
-      `https://api.vnappmob.com/api/v2/province/district/${provinceID}`
+      `https://api.vnappmob.com/api/province/district/${provinceID}`
     );
     return resDistrict.data.results;
   } catch (error) {
@@ -36,7 +36,7 @@ export const getWardAddress = async (
 ): Promise<WardInterface[]> => {
   try {
     const resWard = await axios.get(
-      `https://api.vnappmob.com/api/v2/province/ward/${districtID}`
+      `https://api.vnappmob.com/api/province/ward/${districtID}`
     );
     return resWard.data.results;
   } catch (error) {

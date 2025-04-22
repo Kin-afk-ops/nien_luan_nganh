@@ -1,0 +1,14 @@
+.table_container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fc; /* để che nội dung phía sau khi sticky */
+    z-index: 10; /* đảm bảo hiển thị trên tbody */
+}
+.button_group{
+    display: flex;
+    gap: 10px;
+}

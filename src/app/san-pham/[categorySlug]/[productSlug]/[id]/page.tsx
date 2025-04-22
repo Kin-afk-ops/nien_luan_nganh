@@ -30,13 +30,22 @@ import Link from "next/link";
 import axiosInstance from "@/helpers/api/config";
 import { detailLabels } from "@/data/detailLabels";
 import CommentComponent from "@/components/commentComponent/CommentComponent";
-import { Cart } from "@/interfaces/cart";
-import { useAppSelector } from "@/lib/store";
+import { CartInterface } from "@/interfaces/cart";
+import { useAppSelector } from "@/lib/store"; 
 import { addToCart } from "@/utils/addToCart";
 import toast from "react-hot-toast";
+import formatPrice from "@/helpers/format/formatPrice";
+import { getLabelNamePairsByCateId } from "@/utils/addCategory";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import StarRatings from "react-star-ratings";
+interface LabelNamePair {
+  label: string;
+  name: string;
+}
 
 const ProductDetail = () => {
   const { categorySlug, productSlug, id } = useParams();
+  const [labelNamePairs, setLabelNamePairs] = useState<LabelNamePair[]>([]);
   const [count, setCount] = useState(1);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [sellerInfo, setSellerInfo] = useState<SellerModel>();
@@ -49,6 +58,9 @@ const ProductDetail = () => {
   const [similarProduct, setSimilarProduct] = useState<ProductModel[]>([]);
   const [showAll, setShowAll] = useState(false);
   const currentUser = useAppSelector((state) => state.user.currentUser);
+  const isMobile = useIsMobile();
+
+  
 
   useEffect(() => {
     const getProductSeller = async (): Promise<void> => {
@@ -96,6 +108,17 @@ const ProductDetail = () => {
       .catch((error) => console.error(error));
   }, [product?.sellerId]);
 
+  useEffect(() => {
+    const fetchLabelNamePairs = async () => {
+      if (product?.categories.id !== undefined) {
+        const pairs = await getLabelNamePairsByCateId(product.categories.id);
+        setLabelNamePairs(pairs);
+      }      
+    };
+    fetchLabelNamePairs();
+  }, [product?.categories?.id]);
+
+
   const handlePlus = () => {
     setCount(count + 1);
   };
@@ -110,21 +133,21 @@ const ProductDetail = () => {
     itemRefs.current[index] = el;
   };
 
-  const handleNext = () => {
-    if (!product || !product.images) {
-      return <div>Không có hình ảnh</div>;
-    }
-    if (selectedIndex < product.images.url.length - 1) {
-      const newIndex = selectedIndex + 1;
-      setSelectedIndex(newIndex);
-      setimgIndex(newIndex);
-      if (
-        isImagePartiallyHidden(containerRef.current, itemRefs.current[newIndex])
-      ) {
-        scrollToActive(itemRefs.current[newIndex]);
-      }
-    }
-  };
+  // const handleNext = () => {
+  //   if (!product || !product.image) {
+  //     return <div>Không có hình ảnh</div>;
+  //   }
+  //   if (selectedIndex < product.images.url.length - 1) {
+  //     const newIndex = selectedIndex + 1;
+  //     setSelectedIndex(newIndex);
+  //     setimgIndex(newIndex);
+  //     if (
+  //       isImagePartiallyHidden(containerRef.current, itemRefs.current[newIndex])
+  //     ) {
+  //       scrollToActive(itemRefs.current[newIndex]);
+  //     }
+  //   }
+  // };
 
   const handlePrev = () => {
     if (selectedIndex > 0) {
@@ -141,31 +164,31 @@ const ProductDetail = () => {
 
   //Thêm hàng vào giỏ hàng
   const handleAddToCart = () => {
-    const cart: {
-      productId: string;
-      quantity: number;
-    } = {
+    const cart: CartInterface = {
+      _id: "", // Provide a default or generated ID
       productId: product?._id || "", // Use the product ID if available
       quantity: count, // Use the current count as the quantity
+      buyerId: currentUser?._id || "", // Use the current user's ID
+      checked: false, // Default value for the 'checked' property
     };
 
-    if (!currentUser) {
-      toast.error("Vui lòng đăng nhập !");
+    if(!currentUser) {
+      toast.error("Vui lòng đăng nhập !")
       return;
     } else {
-      addToCart(currentUser._id, cart);
-      toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
+        addToCart(currentUser._id, cart);
+        toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
     }
-  };
+  }
   // Di chuyển ảnh
 
   if (!product) return <div style={{ height: 1000 }}></div>;
-  const detailEntries = Object.entries(product.details);
+  const detailEntries = Object.entries(product.details || {});
   const visibleDetails = showAll ? detailEntries : detailEntries.slice(0, 1);
 
   return (
-    <div className="container">
-      {product && (
+    <div className={isMobile ? "container_mobile" : "container"}>
+      {product.categories && (
         <BreadcrumbComponent
           id={product.categories.id}
           productName={product.name}
@@ -175,16 +198,48 @@ const ProductDetail = () => {
       <div className="sub-container">
         <div className="main-info-container">
           <div className="product-image-container">
-            <img
-              src={product.images.url[imgIndex]}
-              alt={product.name}
-              className="product-image"
-            />
+            <div className="product-images">
+                {product.image && (
+                  <img
+                  src={product.image.path}
+                  alt={product.name}
+                  className="product-image"
+                />
+                )}
+            </div>
+            <div className="carousel-wrapper">
+              <div className="arrow left" onClick={handlePrev}>
+                &lt;
+              </div>
+              {/* <div className="carousel-container" ref={containerRef}>
+                {product.images.url.map((img, index) => (
+                  <div
+                    className={`thumbnail ${
+                      selectedIndex === index ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => [setSelectedIndex(index), setimgIndex(index)]}
+                    ref={(el) => setItemRef(el, index)}
+                  >
+                    <img
+                      src={img}
+                      alt={`Image ${index}`}
+                      width={80}
+                      height={80}
+                      className="thumbnail-img"
+                    />
+                  </div>
+                ))}
+              </div> */}
+              {/* <div className="arrow right" onClick={handleNext}>
+                &gt;
+              </div> */}
+            </div>
           </div>
           <div className="info">
             <h2>{product.name}</h2>
-            <h2 style={{ color: "coral" }}>{`${product.price}đ`}</h2>
-            <p>{`Vận chuyển từ: ${product.address.province}`}</p>
+            <h2 style={{ color: "coral" }}>{`${formatPrice(product.price)}`}</h2>
+            <p>{`Vận chuyển từ: ${product.addressInfo.province}`}</p>
             <div className="row-container">
               <p>Số lượng:</p>
               <div className="minus-button" onClick={handleMinus}>
@@ -202,7 +257,7 @@ const ProductDetail = () => {
                 style={{ color: "gray" }}
               >{`Còn lại ${product.quantity} sản phẩm có sẵn trong kho`}</p>
             </div>
-            <div className="row-container">
+            <div className="row-container mobile-display">
               <ButtonComponent
                 label="Thêm vào giỏ hàng"
                 style={{ color: "coral", border: "2px solid coral" }}
@@ -224,35 +279,8 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        <div className="carousel-wrapper">
-          <div className="arrow left" onClick={handlePrev}>
-            &lt;
-          </div>
-          <div className="carousel-container" ref={containerRef}>
-            {product.images.url.map((img, index) => (
-              <div
-                className={`thumbnail ${
-                  selectedIndex === index ? "active" : ""
-                }`}
-                key={index}
-                onClick={() => [setSelectedIndex(index), setimgIndex(index)]}
-                ref={(el) => setItemRef(el, index)}
-              >
-                <img
-                  src={img}
-                  alt={`Image ${index}`}
-                  width={80}
-                  height={80}
-                  className="thumbnail-img"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="arrow right" onClick={handleNext}>
-            &gt;
-          </div>
-        </div>
-        <div className="row-container gap-40">
+       
+        {/* <div className="row-container gap-40 ">
           <div className="row">
             <p>Bạn có sản phẩm tương tự?</p>
             <a href="#" style={{ color: "coral", fontWeight: "bold" }}>
@@ -277,7 +305,7 @@ const ProductDetail = () => {
               Yêu thích
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
       {/* Thông tin người bán*/}
       <div className="seller-container">
@@ -285,17 +313,13 @@ const ProductDetail = () => {
           <ContainerComponent title="Thông tin người bán">
             <div className="seller-content">
               <div className="seller-info">
-                <div className="row">
+                <div className="row-info">
                   <div className="seller-avatar">
                     <img src={sellerInfo?.avatar} alt="Avatar" />
                   </div>
                   <div className="seller_main_info">
                     <h3>{sellerInfo?.name}</h3>
-                    <div className="row gap-20">
-                      <a
-                        href="#"
-                        style={{ color: "blue" }}
-                      >{`(${sellerInfo?.report} đánh giá)`}</a>
+                    <div className="item-info gap-20 mobile_info">
                       <p>{`${sellerInfo?.productQuantity} sản phẩm`}</p>
                       <p>{`${sellerInfo?.sold} đã bán`}</p>
                     </div>
@@ -363,14 +387,18 @@ const ProductDetail = () => {
                   <p>{product.condition}</p>
                 </div>
               </div>
-              {visibleDetails.map(([key, value]) => (
-                <div className="outstanding_item" key={key}>
-                  <p className="column1">{detailLabels[key] || key}</p>
+              {visibleDetails.map(([key, value]) => {
+                const labelPair = labelNamePairs.find(pair => pair.name === key );
+                const label = labelPair ? labelPair.label : key;
+                return (
+                  <div className="outstanding_item" key={key}>
+                  <p className="column1">{label}</p>
                   <div className="column2 ml">
                     <p>{value}</p>
                   </div>
                 </div>
-              ))}
+                );
+              })}
               <div className="show_all_container">
                 <p
                   className="show-all"
@@ -394,7 +422,23 @@ const ProductDetail = () => {
             </div>
           </ContainerComponent>
           <ContainerComponent title="Đánh giá">
-            <CommentComponent productId={product._id}></CommentComponent>
+              <div className="review">
+                <div className="rating">
+                  {product.ratingStar !== null && (
+                    <StarRatings 
+                        rating={product.ratingStar.average}
+                        starRatedColor="#FFD700"
+                        numberOfStars={5}
+                        starDimension="24px"  
+                        starSpacing="3px"    
+                    ></StarRatings>
+                  )}
+                </div>
+                <div className="rating_count">
+                  <p>{`(${product.ratingStar.count} đánh giá)`}</p>
+                </div>
+              </div>
+              <CommentComponent productId={product._id} starRating={product.ratingStar}></CommentComponent>
           </ContainerComponent>
           <div ref={ref}>
             {differentProduct ? (
@@ -420,7 +464,7 @@ const ProductDetail = () => {
             )}
           </div>
           <div className="link">
-            <Link href={"#"} className="link_item">
+            <Link href={`/${categorySlug}?id=${product.categories.id}`} className="link_item">
               Xem chi tiết
             </Link>
           </div>

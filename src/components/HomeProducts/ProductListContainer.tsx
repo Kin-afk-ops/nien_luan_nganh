@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./HomeProduct.module.css";
 import ProductCard from "./ProductCard";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
@@ -9,6 +9,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../styles/swiperCss.css";
 import { ProductModel } from "@/models/ProductModel";
+import {useGlobalState} from '../../data/stateStore';
+import "./style.css"
+import Link from "next/link";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Props {
   header?: string;
@@ -16,6 +20,10 @@ interface Props {
   productCatogory?: any;
   width?: string;
   uniqueId?: string;
+  canSeeAll?: boolean;
+  categoryId?: number;
+  categorySlug?: string;
+  freeCost?: boolean;
 }
 
 const ProductListContainer: React.FC<Props> = ({
@@ -24,24 +32,44 @@ const ProductListContainer: React.FC<Props> = ({
   productCatogory,
   width,
   uniqueId,
+  canSeeAll,
+  categoryId,
+  categorySlug,
+  freeCost,
 }) => {
   const swiper = useSwiper();
+  const isMobile = useIsMobile();
+
+  const {setFilter, filterList} = useGlobalState();
+
+  const handleSetFreeCost = () => {
+    if(freeCost===true && filterList['freeCost'] !== 'freeCost') {
+      setFilter('freeCost', 'freeCost');
+    }  
+  }
+  
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>{header}</h2>
-        <a href="#">Xem tất cả</a>
+        {canSeeAll && (
+          <Link href={`/${categorySlug}?id=${categoryId}`}
+            onClick={freeCost ? handleSetFreeCost : undefined}
+          >
+            Xem tất cả
+          </Link>
+        )}
       </div>
       <div className={styles.swiperContainer}>
         {productList && (
-          <div>
+          <div className={styles.swiperWrapperContainer}>
             <div className={`swiper-button-prev prev${uniqueId}`}></div>
             <Swiper
               modules={[Navigation, Pagination]} // Đảm bảo sử dụng modules đúng
               spaceBetween={10}
-              slidesPerView={5}
-              slidesPerGroup={5}
+              slidesPerView={isMobile ? 2 : 5}
+              slidesPerGroup={isMobile ? 2 : 5}
               navigation={{
                 nextEl: `.swiper-button-next.next${uniqueId}`,
                 prevEl: `.swiper-button-prev.prev${uniqueId}`,

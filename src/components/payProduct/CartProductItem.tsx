@@ -171,13 +171,16 @@ const CartProductItem: React.FC<ChildProps> = ({
         }}
       />
       <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
-        <Image
-          className="pay__product--item-image pc"
-          src={"/assets/account/avatar_default.png"}
-          alt="anh san pham"
-          width={40}
-          height={40}
-        />
+        {c.product.image && (
+          <Image
+            className="pay__product--item-image pc"
+            // src={"/assets/account/avatar_default.png"}
+            src={c?.product.image.path}
+            alt="anh san pham"
+            width={40}
+            height={40}
+          />
+        )}
 
         <Image
           className="pay__product--item-image tablet"

@@ -1,21 +1,23 @@
 import { CategoryAttribute } from '@/models/attributesModel';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaEdit } from "react-icons/fa";
 import { toast } from 'react-hot-toast';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import { FaSave } from "react-icons/fa";
-import { createCategoryAttr } from '@/utils/addCategory';
+import { createCategoryAttr, updateCategoryAttr } from '@/utils/addCategory';
 
 interface Props {
   onClick: () => void;
+  attributeData: CategoryAttribute | null;
+  isEditAttribute: boolean;
 }
 
 const AddCateAttributeComponent = (props: Props) => {
-  const { onClick } = props;
+  const { onClick, attributeData, isEditAttribute } = props;
   const [attribute, setAttribute] = useState<CategoryAttribute>({
-    attributeId: Date.now(),
-    label: "",
-    listDataTypes: [],
+    attributeId: attributeData?.attributeId || Date.now(),
+    label: attributeData?.label || "",
+    listDataTypes: attributeData?.listDataTypes || [],
   });
 
   const [isAdding, setIsAdding] = useState(false);
@@ -24,7 +26,13 @@ const AddCateAttributeComponent = (props: Props) => {
 
   const handleChange = (field: keyof CategoryAttribute, value: any) => {
     setAttribute((prev) => ({...prev, [field]: value}))
-  }
+  };
+
+  useEffect(() => {
+    if (attributeData) {
+      setAttribute(attributeData);
+    }
+  },[isEditAttribute]);
 
   const addAttribute = () => {
     setIsAdding(true);
@@ -122,15 +130,33 @@ const AddCateAttributeComponent = (props: Props) => {
   }
 
   const handleSaveCataAttribute = async () => {
-    const res = await createCategoryAttr(attribute);
-    if(res.error) {
-      toast.error(res.error);
-      return;
+    if(isEditAttribute) {
+      try {
+        await updateCategoryAttr(attribute);
+        toast.success('Cập nhật thuộc tính thành công');
+        onClick();
+      } catch (error) {
+        toast.error('Có lỗi xảy ra khi cập nhật thuộc tính');
+      }
+    } else {
+      const res = await createCategoryAttr(attribute);
+      if(res.error) {
+        toast.error(res.error);
+        return;
+      }
+      if(res) {
+        toast.success('Tạo thuộc tính thành công');
+        onClick();
+      }
     }
-    if(res) {
-      toast.success('Tạo thuộc tính thành công');
-      onClick();
-    }
+  }
+
+  const handleCancel = () => {
+    setAttribute((prev) => ({
+      ...prev,
+      listDataTypes: prev.listDataTypes.filter((_, index) => index !== attrIndex),
+    }));
+    setIsAdding(false);
   }
 
   return (
@@ -194,6 +220,21 @@ const AddCateAttributeComponent = (props: Props) => {
               {isAdding && <div className="add_option" onClick={() => addOption(attr.id)}>
                 <p>+ Thêm giá trị</p>
               </div>}
+
+              {isAdding && (
+                (
+                  <div className="add_data_button isAdding">
+                    <div className="cancle" onClick={handleCancel}>
+                      <p>Hủy</p>
+                    </div>
+                    <div className="add" onClick={() => handleSaveAttribute(attrIndex)}>
+                      <p>Thêm</p>
+                    </div>
+                    
+                  </div>
+                )
+              )}
+             
             </div>
           </div>
             ) : (
@@ -214,21 +255,12 @@ const AddCateAttributeComponent = (props: Props) => {
               </div>
             )
           ))}
-        {!isAdding ? (
-          <div className="add_data_button" onClick={addAttribute}>
-            <p>+ Thêm thuộc tính</p>
-          </div>
-        ):(
-          <div className="add_data_button isAdding">
-            <div className="cancle">
-              <p>Hủy</p>
-            </div>
-            <div className="add" onClick={() => handleSaveAttribute(attrIndex)}>
-              <p>Thêm</p>
-            </div>
-            
-          </div>
-        )}
+           {!isAdding && (
+                <div className="add_data_button" onClick={addAttribute}>
+                  <p className='add_attribute_button'>+ Thêm thuộc tính</p>
+                </div>
+              ) }
+        
       </div>
     </form>
     <div className="save_attribute_button">

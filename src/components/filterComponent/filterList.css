@@ -22,3 +22,16 @@
     font-size: 15px;
     cursor: pointer;
 }
+
+@media screen and (max-width: 768px){
+    .filter_container{
+        flex-wrap: wrap;
+    }
+    .filter_item{
+        max-width: 100%;
+    }
+    .remove_all{
+        font-size: 12px;
+    }
+    
+}

@@ -24,8 +24,8 @@ export interface ProductInterface {
   addressInfo: AddressInterface;
   sellerInfo: InfoUserInterface;
   image: {
-    id: string;
-    url: string;
+    path: string;
+    publicId: string;
   };
   discount: number;
 

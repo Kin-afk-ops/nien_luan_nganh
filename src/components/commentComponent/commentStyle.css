@@ -74,3 +74,11 @@
 .icon_group > div {
     cursor: pointer;
 }
+
+.star_rating_box{
+    margin-bottom: 10px;
+}
+
+.star_rating{
+    margin-left: 10px;
+}

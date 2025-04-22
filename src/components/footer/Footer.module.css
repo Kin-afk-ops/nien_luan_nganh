@@ -81,3 +81,21 @@
       justify-content: center;
     }
   } */
+
+  @media screen and (max-width: 768px) {
+    .footerContainer {
+      flex-direction: column;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+  
+    .footerColumn {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+    .footerLogo {
+      justify-content: center;
+  }
+    
+  }

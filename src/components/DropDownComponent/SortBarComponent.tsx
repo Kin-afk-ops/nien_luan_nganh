@@ -20,13 +20,16 @@ const SortBarComponent = (props: Props) => {
     const {setFilter, removeFilter, isResetFilterList,filterList} = useGlobalState();
 
     const [offer, setOffer] = useState('');
+    const [isFreeCost, setIsFreeCost] = useState('')
     const [price, setPrice] = useState('Tất cả');
     const [status, setStatus] = useState('');
     const [size, setSize] = useState('');
     const [categories, setCategories] = useState<categoryModel[]>();
     const [attributes, setAttributes] = useState<CategoryAttribute>();
     const [showAll, setShowAll] = useState(false);
-    const visibleAttributes = showAll ? attributes?.listDataType : attributes?.listDataType.slice(0, 1);
+    const [showAllCate, setShowAllCate] = useState(false);
+    const visibleAttributes = showAll ? attributes?.listDataTypes : attributes?.listDataTypes.slice(0, 1);
+    const visibleCategories = showAllCate ? categories : categories?.slice(0, 8);
     useEffect(() => {
         
             setOffer('');
@@ -39,12 +42,23 @@ const SortBarComponent = (props: Props) => {
         if(filterList.price === '') setPrice('Tất cả');
         if(filterList.status === '') setStatus('');
         if(filterList.size === '') setSize('');
-    },[filterList])
+        if(!('freeCost' in filterList)) setIsFreeCost('');
+    },[filterList]);
+
+    useEffect(() => {
+        if(filterList['freeCost'] === 'freeCost') setIsFreeCost('freeCost');
+    },[filterList['freeCost']])
 
     const handleSetOffer = (value: string) => {
-        const newOffer = offer === value ? "" : value;
-        setFilter('isFreeShip', newOffer);
-        setOffer(newOffer);
+            const newOffer = offer === value ? "" : value;
+            setFilter('isFreeShip', newOffer);
+            setOffer(newOffer);
+    }
+
+    const handleSetFreeCost = (value: string) => {
+        const newFreeCost = isFreeCost === value ? "" : value;
+        setFilter('freeCost', newFreeCost);
+        setIsFreeCost(newFreeCost);
     }
     const handleSetPrice = (value: string) => {
         const newPrice = price === value ? "" : value;
@@ -99,7 +113,7 @@ const SortBarComponent = (props: Props) => {
                 </li>
                 <li>
                 <label className='checkbox_label'>
-                        <input type="checkbox" checked={offer === 'zero-cost'} onChange={() => handleSetOffer('zero-cost')}/>
+                        <input type="checkbox" checked={isFreeCost === 'freeCost'} onChange={() => handleSetFreeCost('freeCost')}/>
                         <div className="row_item">
                             <FaCoins size={15} />
                             <p style={{fontSize: 15}}>Sản phẩm 0đ</p>
@@ -110,18 +124,23 @@ const SortBarComponent = (props: Props) => {
         </DropdownWrapper>
         <DropdownWrapper label='Danh mục'>
             <ul>
-                {categories?.map((item, index) => (
+                {visibleCategories?.map((item, index) => (
                     <li key={index}>
                         <Link href={`/${item.slug}?id=${item.id}`}><p style={{fontSize: 15}}>{item.name}</p></Link>
                     </li>))}
             </ul>
+            {(visibleCategories?.length ?? 0) >= 8 && (
+                <div className="show_all_button" onClick={() => setShowAllCate(!showAll)}>
+                <p>{`${showAll ? "Thu gọn"  : "Xem thêm"}`}</p>
+            </div>
+            )}
         </DropdownWrapper>
         <DropdownWrapper label='Giá'>
             <ul>
                 {priceData.map((item, index) => (
                     <li key={index}>
                         <label className='checkbox_label price'>
-                            <input type="checkbox" checked={price === item.label} onChange={() => handleSetPrice(item.label)}/>
+                            <input type="checkbox" checked={filterList.price === item.label} onChange={() => handleSetPrice(item.label)}/>
                             <p style={{fontSize: 15}}>{item.label}</p>
                         </label>
                     </li>))}
@@ -132,7 +151,7 @@ const SortBarComponent = (props: Props) => {
                 {statusData.map((item, index) => (
                     <li key={index}>
                         <label className='checkbox_label'>
-                            <input type="checkbox" checked={status === item.label} onChange={() => handleSetStatus(item.label)}/>
+                            <input type="checkbox" checked={filterList.status === item.label} onChange={() => handleSetStatus(item.label)}/>
                             <p style={{fontSize: 15}}>{item.label}</p>
                         </label>
                     </li>))}
