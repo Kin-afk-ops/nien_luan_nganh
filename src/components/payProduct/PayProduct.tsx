@@ -24,19 +24,29 @@ const PayProduct: React.FC<ChildProps> = ({ cartProduct }) => {
       {cartProduct !== null &&
         cartProduct?.map((c, index) => (
           <div className="row no-gutters pay__product--body" key={index}>
-            <div className="l-12 pay__product--buyer">
+            <div className="l-12 m-12 s-12 pay__product--buyer">
               {" "}
               <i className="fa-solid fa-shop"></i>
               <p>{c.product.sellerInfo && c.product.sellerInfo.name}</p>
-              <button className="pay__product--buyer-chat">Chat</button>
-              <Link href={"/"} className="link pay__product--buyer-view">
+              <Link
+                href={`/shop/${c.product.sellerId}`}
+                className="pay__product--buyer-chat"
+              >
+                {" "}
                 Xem shop
               </Link>
+              {/* <Link href={"/"} className="link pay__product--buyer-view">
+                Xem shop
+              </Link> */}
             </div>
             <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
               <Image
                 className="pay__product--item-image pc"
-                src={"/assets/account/avatar_default.png"}
+                src={
+                  c.product.image.path
+                    ? c.product.image.path
+                    : "/assets/account/avatar_default.png"
+                }
                 alt="anh san pham"
                 width={40}
                 height={40}
@@ -44,7 +54,11 @@ const PayProduct: React.FC<ChildProps> = ({ cartProduct }) => {
 
               <Image
                 className="pay__product--item-image tablet"
-                src={"/assets/account/avatar_default.png"}
+                src={
+                  c.product.image.path
+                    ? c.product.image.path
+                    : "/assets/account/avatar_default.png"
+                }
                 alt="anh san pham"
                 width={80}
                 height={80}
@@ -52,7 +66,11 @@ const PayProduct: React.FC<ChildProps> = ({ cartProduct }) => {
 
               <Image
                 className="pay__product--item-image mobile"
-                src={"/assets/account/avatar_default.png"}
+                src={
+                  c.product.image.path
+                    ? c.product.image.path
+                    : "/assets/account/avatar_default.png"
+                }
                 alt="anh san pham"
                 width={100}
                 height={100}

@@ -164,7 +164,10 @@ const ProfilePage = () => {
         };
         await axiosInstance
           .post(`/infoUser/${userId}`, infoUserForm)
-          .then((res) => console.log(res))
+          .then((res) => {
+            console.log(res);
+            window.location.reload();
+          })
           .catch((error) => console.log(error));
 
         setLoading(false);
@@ -182,7 +185,11 @@ const ProfilePage = () => {
         };
         await axiosInstance
           .put(`/infoUser/${userId}`, infoUserForm)
-          .then((res) => console.log(res))
+          .then((res) => {
+            console.log(res);
+
+            window.location.reload();
+          })
           .catch((error) => console.log(error));
       }
       setLoading(false);

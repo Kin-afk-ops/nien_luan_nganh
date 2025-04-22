@@ -10,16 +10,6 @@ import Loading from "@/components/loading/Loading";
 import Link from "next/link";
 
 // Gọi API lấy giỏ hàng
-const getCart = async (id: string) => {
-  try {
-    const response = await axiosInstance.get("/cart/" + id);
-
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching cart:", error);
-    throw error;
-  }
-};
 
 const CartUI: React.FC = () => {
   const router = useRouter();
@@ -27,7 +17,6 @@ const CartUI: React.FC = () => {
   const [cartData, setCartData] = useState<CartInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [refresh, setRefresh] = useState(false); // State để cập nhật giỏ hàng
   const currentUser = useAppSelector((state) => state.user.currentUser);
 
@@ -38,8 +27,10 @@ const CartUI: React.FC = () => {
         setLoading(true);
         setError(null);
         if (currentUser?._id) {
-          const data = await getCart(currentUser._id);
-          setCartData(data);
+          const res = await axiosInstance.get(`/cart/${currentUser._id}`);
+          console.log(res.data);
+
+          setCartData(res.data);
         }
       } catch (err) {
         setError("Không thể tải dữ liệu giỏ hàng. Vui lòng thử lại sau.");

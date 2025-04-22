@@ -30,8 +30,8 @@ import Link from "next/link";
 import axiosInstance from "@/helpers/api/config";
 import { detailLabels } from "@/data/detailLabels";
 import CommentComponent from "@/components/commentComponent/CommentComponent";
-import { CartInterface } from "@/interfaces/cart";
-import { useAppSelector } from "@/lib/store"; 
+import { CartFormInterface, CartInterface } from "@/interfaces/cart";
+import { useAppSelector } from "@/lib/store";
 import { addToCart } from "@/utils/addToCart";
 import toast from "react-hot-toast";
 import formatPrice from "@/helpers/format/formatPrice";
@@ -59,8 +59,6 @@ const ProductDetail = () => {
   const [showAll, setShowAll] = useState(false);
   const currentUser = useAppSelector((state) => state.user.currentUser);
   const isMobile = useIsMobile();
-
-  
 
   useEffect(() => {
     const getProductSeller = async (): Promise<void> => {
@@ -113,11 +111,10 @@ const ProductDetail = () => {
       if (product?.categories.id !== undefined) {
         const pairs = await getLabelNamePairsByCateId(product.categories.id);
         setLabelNamePairs(pairs);
-      }      
+      }
     };
     fetchLabelNamePairs();
   }, [product?.categories?.id]);
-
 
   const handlePlus = () => {
     setCount(count + 1);
@@ -164,22 +161,19 @@ const ProductDetail = () => {
 
   //Thêm hàng vào giỏ hàng
   const handleAddToCart = () => {
-    const cart: CartInterface = {
-      _id: "", // Provide a default or generated ID
+    const cart: CartFormInterface = {
       productId: product?._id || "", // Use the product ID if available
       quantity: count, // Use the current count as the quantity
-      buyerId: currentUser?._id || "", // Use the current user's ID
-      checked: false, // Default value for the 'checked' property
     };
 
-    if(!currentUser) {
-      toast.error("Vui lòng đăng nhập !")
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập !");
       return;
     } else {
-        addToCart(currentUser._id, cart);
-        toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
+      addToCart(currentUser?._id, cart);
+      toast.success("Bạn đã thêm sản phẩm vào giỏ hàng");
     }
-  }
+  };
   // Di chuyển ảnh
 
   if (!product) return <div style={{ height: 1000 }}></div>;
@@ -199,13 +193,13 @@ const ProductDetail = () => {
         <div className="main-info-container">
           <div className="product-image-container">
             <div className="product-images">
-                {product.image && (
-                  <img
+              {product.image && (
+                <img
                   src={product.image.path}
                   alt={product.name}
                   className="product-image"
                 />
-                )}
+              )}
             </div>
             <div className="carousel-wrapper">
               <div className="arrow left" onClick={handlePrev}>
@@ -238,7 +232,9 @@ const ProductDetail = () => {
           </div>
           <div className="info">
             <h2>{product.name}</h2>
-            <h2 style={{ color: "coral" }}>{`${formatPrice(product.price)}`}</h2>
+            <h2 style={{ color: "coral" }}>{`${formatPrice(
+              product.price
+            )}`}</h2>
             <p>{`Vận chuyển từ: ${product.addressInfo.province}`}</p>
             <div className="row-container">
               <p>Số lượng:</p>
@@ -279,7 +275,7 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-       
+
         {/* <div className="row-container gap-40 ">
           <div className="row">
             <p>Bạn có sản phẩm tương tự?</p>
@@ -388,15 +384,17 @@ const ProductDetail = () => {
                 </div>
               </div>
               {visibleDetails.map(([key, value]) => {
-                const labelPair = labelNamePairs.find(pair => pair.name === key );
+                const labelPair = labelNamePairs.find(
+                  (pair) => pair.name === key
+                );
                 const label = labelPair ? labelPair.label : key;
                 return (
                   <div className="outstanding_item" key={key}>
-                  <p className="column1">{label}</p>
-                  <div className="column2 ml">
-                    <p>{value}</p>
+                    <p className="column1">{label}</p>
+                    <div className="column2 ml">
+                      <p>{value}</p>
+                    </div>
                   </div>
-                </div>
                 );
               })}
               <div className="show_all_container">
@@ -422,23 +420,26 @@ const ProductDetail = () => {
             </div>
           </ContainerComponent>
           <ContainerComponent title="Đánh giá">
-              <div className="review">
-                <div className="rating">
-                  {product.ratingStar !== null && (
-                    <StarRatings 
-                        rating={product.ratingStar.average}
-                        starRatedColor="#FFD700"
-                        numberOfStars={5}
-                        starDimension="24px"  
-                        starSpacing="3px"    
-                    ></StarRatings>
-                  )}
-                </div>
-                <div className="rating_count">
-                  <p>{`(${product.ratingStar.count} đánh giá)`}</p>
-                </div>
+            <div className="review">
+              <div className="rating">
+                {product.ratingStar !== null && (
+                  <StarRatings
+                    rating={product.ratingStar.average}
+                    starRatedColor="#FFD700"
+                    numberOfStars={5}
+                    starDimension="24px"
+                    starSpacing="3px"
+                  ></StarRatings>
+                )}
               </div>
-              <CommentComponent productId={product._id} starRating={product.ratingStar}></CommentComponent>
+              <div className="rating_count">
+                <p>{`(${product.ratingStar.count} đánh giá)`}</p>
+              </div>
+            </div>
+            <CommentComponent
+              productId={product._id}
+              starRating={product.ratingStar}
+            ></CommentComponent>
           </ContainerComponent>
           <div ref={ref}>
             {differentProduct ? (
@@ -464,7 +465,10 @@ const ProductDetail = () => {
             )}
           </div>
           <div className="link">
-            <Link href={`/${categorySlug}?id=${product.categories.id}`} className="link_item">
+            <Link
+              href={`/${categorySlug}?id=${product.categories.id}`}
+              className="link_item"
+            >
               Xem chi tiết
             </Link>
           </div>

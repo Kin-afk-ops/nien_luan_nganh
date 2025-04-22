@@ -9,6 +9,7 @@ import "./responsive.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/helpers/api/config";
+import { AvatarInterface } from "@/interfaces/avatar";
 
 interface ChildProps {
   setMenuToggle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +23,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<AvatarInterface | null>(null);
 
   const [slug, setSlug] = useState<string | null>(null);
   const [firebaseIsAccount, setFIrebaseIsAccount] = useState<boolean>(false);
@@ -43,6 +45,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
         .get(`/infoUser/${user?._id}`)
         .then((res) => {
           setName(res.data.name);
+          setAvatar(res.data.avatar);
         })
         .catch((error) => {
           console.log(error);
@@ -61,7 +64,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
       <div className="customer__nav--info">
         <Image
           className="customer__nav--image"
-          src="/assets/account/avatar_default.png"
+          src={avatar ? avatar.path : "/assets/account/avatar_default.png"}
           alt="avatar"
           width={60}
           height={60}

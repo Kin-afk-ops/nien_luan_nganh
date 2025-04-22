@@ -85,10 +85,19 @@
   text-decoration: inherit;
 }
 
+.header__navbar--item-btn {
+  border: none;
+  cursor: pointer;
+}
+
 .header__navbar--image {
   display: flex;
   align-items: center;
   position: relative;
+}
+
+.header__navbar--image img {
+  border-radius: 50%;
 }
 
 .header__navbar--image:hover {

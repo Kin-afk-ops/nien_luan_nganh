@@ -56,12 +56,12 @@ const CartProductItem: React.FC<ChildProps> = ({
         if (res.data.checked) {
           setTotalPrice((prevTotal) => prevTotal + price * c.quantity);
           setTotalPriceNoShip(
-            (prevTotal) => prevTotal + price * c.quantity + 27000
+            (prevTotal) => prevTotal + price * c.quantity + 27000 * c.quantity
           );
         } else {
           setTotalPrice((prevTotal) => prevTotal - price * c.quantity);
           setTotalPriceNoShip(
-            (prevTotal) => prevTotal - price * c.quantity - 27000
+            (prevTotal) => prevTotal - price * c.quantity - 27000 * c.quantity
           );
         }
 
@@ -83,13 +83,17 @@ const CartProductItem: React.FC<ChildProps> = ({
     setLoading(true);
     if (mode === "increase") {
       try {
-        await axiosInstance.put(`/cart/${cartId}/${userId}`, {
+        const res = await axiosInstance.put(`/cart/${cartId}/${userId}`, {
           quantity: quantity + 1,
         });
-        setQuantity((q) => q + 1);
+        setQuantity(res.data.quantity);
 
-        setTotalPrice((prevTotal) => prevTotal + c.product.price);
-        setTotalPriceNoShip((prevTotal) => prevTotal + c.product.price);
+        if (res.data.checked) {
+          setTotalPrice((prevTotal) => prevTotal + c.product?.price);
+          setTotalPriceNoShip(
+            (prevTotal) => prevTotal + c.product.price + 27000
+          );
+        }
 
         setRefresh(!refresh);
         setLoading(false);
@@ -107,9 +111,13 @@ const CartProductItem: React.FC<ChildProps> = ({
             quantity: quantity - 1 > 1 ? quantity - 1 : 1,
           });
           setQuantity(res.data.quantity);
+          if (res.data.checked) {
+            setTotalPrice((prevTotal) => prevTotal - c.product.price);
+            setTotalPriceNoShip(
+              (prevTotal) => prevTotal - c.product.price - 27000
+            );
+          }
 
-          setTotalPrice((prevTotal) => prevTotal - c.product.price);
-          setTotalPriceNoShip((prevTotal) => prevTotal - c.product.price);
           setRefresh(!refresh);
 
           setLoading(false);
@@ -151,10 +159,16 @@ const CartProductItem: React.FC<ChildProps> = ({
         {" "}
         <i className="fa-solid fa-shop"></i>
         <p>{c.product.sellerInfo && c.product.sellerInfo.name}</p>
-        <button className="pay__product--buyer-chat">Chat</button>
-        <Link href={"/"} className="link pay__product--buyer-view">
+        <Link
+          href={`/shop/${c.product.sellerId}`}
+          className="pay__product--buyer-chat"
+        >
+          {" "}
           Xem shop
         </Link>
+        {/* <Link href={"/"} className="link pay__product--buyer-view">
+          Xem shop
+        </Link> */}
       </div>
       <div
         className="l-2 m-2 s-1 cart__product--delete"
@@ -171,20 +185,25 @@ const CartProductItem: React.FC<ChildProps> = ({
         }}
       />
       <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
-        {c.product.image && (
-          <Image
-            className="pay__product--item-image pc"
-            // src={"/assets/account/avatar_default.png"}
-            src={c?.product.image.path}
-            alt="anh san pham"
-            width={40}
-            height={40}
-          />
-        )}
+        <Image
+          className="pay__product--item-image pc"
+          src={
+            c?.product.image.path
+              ? c?.product.image.path
+              : "/assets/account/avatar_default.png"
+          }
+          alt="anh san pham"
+          width={40}
+          height={40}
+        />
 
         <Image
           className="pay__product--item-image tablet"
-          src={"/assets/account/avatar_default.png"}
+          src={
+            c?.product.image.path
+              ? c?.product.image.path
+              : "/assets/account/avatar_default.png"
+          }
           alt="anh san pham"
           width={80}
           height={80}
@@ -192,7 +211,11 @@ const CartProductItem: React.FC<ChildProps> = ({
 
         <Image
           className="pay__product--item-image mobile"
-          src={"/assets/account/avatar_default.png"}
+          src={
+            c?.product.image.path
+              ? c?.product.image.path
+              : "/assets/account/avatar_default.png"
+          }
           alt="anh san pham"
           width={100}
           height={100}

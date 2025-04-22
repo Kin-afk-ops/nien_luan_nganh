@@ -15,8 +15,6 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const ShopPage = () => {
-  const user =
-    useSelector((state: RootState) => state.user.currentUser) || null;
   const [phone, setPhone] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const params = useParams<{ id: string }>();
@@ -26,18 +24,16 @@ const ShopPage = () => {
   const [products, setProducts] = useState<ProductModel[] | null>(null);
 
   useEffect(() => {
-    if (params) {
-      setUserId(params.id);
-    }
-    if (user) {
-      setEmail(user?.email);
-      setPhone(user?.phone);
-    }
     const getInfoUser = async (): Promise<void> => {
+      setLoading(true);
+
       try {
-        if (userId) {
-          const res = await axiosInstance(`/infoUser/${userId}`);
-          setInfoUser(res.data);
+        if (params.id) {
+          const resInfo = await axiosInstance(`/infoUser/${params?.id}`);
+          const resUser = await axiosInstance(`/user/${params?.id}`);
+          setEmail(resUser.data.email);
+          setPhone(resUser.data.phone);
+          setInfoUser(resInfo.data);
         }
       } catch (error) {
         console.log(error);
@@ -46,25 +42,33 @@ const ShopPage = () => {
 
     const getProduct = async (): Promise<void> => {
       try {
-        if (userId) {
-          const res = await axiosInstance(`/product/seller/${userId}`);
+        if (params.id) {
+          const res = await axiosInstance(`/product/seller/${params.id}`);
           setProducts(res.data);
+          console.log(res.data);
+
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     };
 
     getInfoUser();
     getProduct();
-  }, [params, user, userId]);
+  }, [params]);
 
   return (
     <>
       {loading && <Loading />}
       <div className="grid wide shop">
         <div className="main-container">
-          <h1>Shop của {infoUser?.name}</h1>
+          <h1>
+            <i className="fa-solid fa-shop"></i>
+
+            {infoUser?.name}
+          </h1>
           {infoUser && (
             <div className="shop__top row no-gutters">
               <div className="l-4 m-5 s-12 shop__top--left">

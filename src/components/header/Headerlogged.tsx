@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import CategoriesBlock from "../categoriesBlock/CategoriesBlock";
 import { CategoriesInterface } from "@/interfaces/categories";
 import { useGlobalState } from "@/data/stateStore";
+import toast from "react-hot-toast";
 
 interface ChildProps {
   user: {
@@ -123,6 +124,24 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
 
     handleChangePageCate();
   }, [cateLabel, searchMode, router]);
+
+  const handleSellForm = async (): Promise<void> => {
+    if (user.email !== "none" && user.phone !== "none") {
+      console.log(user);
+
+      await axiosInstance
+        .get(`/infoUser/${user._id}`)
+        .then(() => router.push("/sellform"))
+        .catch((error) => {
+          console.log(error);
+          toast.error(
+            "Nhập đầy đủ thông tin và email, số điện thoại để bán hàng"
+          );
+        });
+    } else {
+      toast.error("Nhập đầy đủ thông tin và email, số điện thoại để bán hàng");
+    }
+  };
 
   return (
     <nav className=" header">
@@ -243,6 +262,7 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
                   : "/assets/account/avatar_default.png"
               }
               alt="User Avatar"
+              style={{ objectFit: "contain", borderRadius: "50%" }}
               width={40}
               height={40}
             />
@@ -278,9 +298,12 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
             </ul>
           </div>
 
-          <Link href="/sellform" className="header__navbar--item">
+          <button
+            onClick={handleSellForm}
+            className="header__navbar--item header__navbar--item-btn"
+          >
             Đăng bán
-          </Link>
+          </button>
         </div>
       </div>
     </nav>
