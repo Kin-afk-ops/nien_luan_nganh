@@ -64,7 +64,7 @@ const CategoriesBlock: React.FC<ChildProps> = ({
                     setCateLabel(c);
                     setSearchMode(true);
                     setDisplayCategories(false);
-                    console.log(c)
+                    console.log(c);
                   }}
                 >
                   {c.name}

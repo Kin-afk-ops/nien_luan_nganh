@@ -6,20 +6,35 @@ import "./header.css";
 import Link from "next/link";
 import { useGlobalState } from "@/data/stateStore";
 import { useRouter } from "next/navigation";
+import { FaSearch, FaShoppingCart } from "react-icons/fa";
+import { CategoriesInterface } from "@/interfaces/categories";
+import axiosInstance from "@/helpers/api/config";
+import CategoriesBlock from "../categoriesBlock/CategoriesBlock";
 
 const Header = () => {
-  const [headerInputFocus, setHeaderInputFocus] = useState<boolean>(false);
-  const [searchValue, setsearchValue] = useState('');
-  const {setFilter, filterList} = useGlobalState();
+  const [searchValue, setSearchValue] = useState("");
+  const { setFilter, filterList } = useGlobalState();
+
+  const [displayCategories, setDisplayCategories] = useState<boolean>(false);
+
+  const [categories, setCategories] = useState<CategoriesInterface[] | null>(
+    null
+  );
+  const [searchMode, setSearchMode] = useState<boolean>(false);
+
+  const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
+
+  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
+
   const router = useRouter();
 
   const handleSearch = () => {
     if (searchValue.trim()) {
-      setFilter('search',searchValue);
+      setFilter("search", searchValue);
       const query = new URLSearchParams(window.location.search);
       query.set("search", searchValue);
       router.push(`/mua-ban-do-cu?id=1&${query.toString()}`);
-      setsearchValue('');
+      setSearchValue("");
     }
   };
 
@@ -29,76 +44,142 @@ const Header = () => {
     }
   };
 
-  // if(!router.isReady) return null;
-  
+  useEffect(() => {
+    const getCategories = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get(`/category/getallCategories`);
+        setCategories(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCategories();
+  }, []);
+
+  useEffect(() => {
+    const handleChangePageCate = () => {
+      if (searchMode && cateLabel?.slug && cateLabel?.id) {
+        router.push(`/${cateLabel?.slug}?id=${cateLabel?.id}`);
+      }
+    };
+
+    handleChangePageCate();
+  }, [cateLabel, searchMode, router]);
 
   return (
-    <header>
-      <div className="header__container">
-        <div className="grid wide ">
-          <div className="row header__main">
-            <div className="l-2">
-              <Link href={"/"} className="link">
-                <Image
-                  src={"/assets/oreka_logo.png"}
-                  alt="logo"
-                  width={84}
-                  height={25}
-                />
-              </Link>
-            </div>
-            <div className="l-5">
-              <div
-                className={
-                  headerInputFocus ? "header__input focus" : "header__input"
-                }
-              >
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm"
-                  onChange={(e) => setsearchValue(e.target.value)}
-                  value={searchValue}
-                  onKeyDown={handleKeyDown}
-                  onFocus={() => {
-                    setHeaderInputFocus(true);
-                  }}
-                  onBlur={() => {
-                    setHeaderInputFocus(false);
-                  }}
-                />
-                <i className="fa-solid fa-magnifying-glass" onClick={handleSearch}></i>
-              </div>
-            </div>
-            {/* <div className="l-2"></div> */}
-            <div className="l-5 header__user">
-              <Link className="link" href={"/tai-khoan/dang-ky"}>
-                Đăng ký
-              </Link>
-              <Link className="link" href={"/tai-khoan/dang-nhap"}>
-                Đăng nhập
-              </Link>
-              <button className="main-btn">Đăng bán</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="header__container">
-        <div className="grid wide">
-          <div className="row no-gutters header__categories">
+    <nav className=" header">
+      <div className=" grid wide header__container">
+        {/* Logo */}
+        <Link href="/">
+          <Image src={logo} alt="Logo" width={120} height={50} />
+        </Link>
+
+        {/* Nút Toggle Menu */}
+        {/* <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
+        <FaBars />
+      </button> */}
+
+        {/* Nội dung menu */}
+
+        {/* Menu Content */}
+        <div className="header__categories" id="">
+          <button
+            className="m-0 s-0 nav-link dropdown-toggle"
+            type="button"
+            onClick={() => setDisplayCategories(true)}
+          >
+            Danh Mục
+          </button>
+
+          <button className="l-0 " onClick={() => setDisplayCategories(true)}>
             <i className="fa-solid fa-bars"></i>
-            <div>Sách</div>
-            <div>Đồ cho nam</div>
-            <div>Thời trang nữ</div>
-            <div>Đồ làm đẹp </div>
-            <div>Đồ cho mẹ và bé</div>
-            <div>Đồ chơi & trò chơi</div>
-            <div>Đồ dùng nhà cửa</div>
-            <div>Thiết bị điện tử</div>
-            <div>Đồ văn phòng</div>
-          </div>
+          </button>
+
+          {displayCategories && (
+            <CategoriesBlock
+              setDisplayCategories={setDisplayCategories}
+              categories={categories}
+              setSearchMode={setSearchMode}
+              setCateLabel={setCateLabel}
+            />
+          )}
+        </div>
+
+        <div
+          className="header__search--mobile-icon"
+          onClick={() => setDisplaySearch(true)}
+        >
+          {" "}
+          <i className="fa-solid fa-magnifying-glass "></i>
+        </div>
+
+        {displaySearch && (
+          <>
+            <div
+              className="modal-overlay "
+              onClick={() => setDisplaySearch(false)}
+            ></div>
+            <div className="header__search--mobile">
+              {/* Ô tìm kiếm */}
+
+              <input
+                className=""
+                type="text"
+                placeholder="Tìm kiếm..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <button className="header__search--icon" onClick={handleSearch}>
+                <FaSearch size={18} />
+              </button>
+
+              {/* Menu điều hướng */}
+            </div>
+          </>
+        )}
+
+        <div className="header__search">
+          {/* Ô tìm kiếm */}
+
+          <input
+            className=""
+            type="text"
+            placeholder="Tìm kiếm..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                handleSearch();
+              }
+            }}
+          />
+          <button className="header__search--icon" onClick={handleSearch}>
+            <FaSearch size={18} />
+          </button>
+
+          {/* Menu điều hướng */}
+        </div>
+        <div className="header__navbar">
+          <Link href={"/tai-khoan/dang-nhap"} className="header__navbar--item">
+            Đăng nhập
+          </Link>
+          <Link href={"/tai-khoan/dang-ky"} className="header__navbar--item">
+            Đăng ký
+          </Link>
+
+          <Link href="/sellform" className="header__navbar--item">
+            Đăng bán
+          </Link>
         </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

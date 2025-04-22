@@ -431,6 +431,7 @@ const RegisterPage: React.FC = () => {
           dispatch(loginSuccess(userLogin));
 
           alert("Đăng nhập Google thành công!");
+          window.location.replace(`/`);
         });
     } catch (error) {
       console.error("Google Login Error:", error);
