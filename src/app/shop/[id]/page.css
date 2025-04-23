@@ -1,0 +1,47 @@
+.shop__top {
+  padding: 20px;
+}
+
+.shop h1 {
+  padding: 20px;
+  color: var(--primary-color);
+}
+
+.shop__top--left {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shop__top--avatar {
+  object-fit: contain;
+}
+
+.shop__top--right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 18px;
+  color: #616161;
+}
+
+.shop__top--info {
+  display: flex;
+  padding: 10px 0;
+}
+
+.shop__top--icon {
+  margin-right: 15px;
+}
+
+.shop__top--copy {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.shop__top--introduce {
+  flex-direction: column;
+}
+
+.shop__top--introduce p {
+  font-size: 16px;
+}

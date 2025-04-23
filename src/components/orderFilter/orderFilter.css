@@ -1,0 +1,45 @@
+.order__filter {
+  padding: 30px 20px;
+}
+
+.order__filter-top {
+  display: flex;
+  padding-bottom: 20px;
+}
+
+.order__filter-top div {
+  cursor: pointer;
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #616161;
+  border-bottom: 1px solid #d9d9d9;
+  transition: 0.3s;
+}
+
+.order__filter-top div:hover {
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.order__filter--active {
+  color: var(--primary-color) !important;
+  border-bottom: 1px solid var(--primary-color) !important;
+}
+
+.order__filter--search input {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  outline: none;
+  width: 40%;
+  margin-right: 10px;
+}
+
+.order__filter--search button {
+  width: 10%;
+}

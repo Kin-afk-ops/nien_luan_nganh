@@ -1,0 +1,14 @@
+.container_component{
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+@media screen and (max-width: 768px) {
+    .container_component{
+        padding: 20px;
+        max-width: 768px;
+    }
+    
+}

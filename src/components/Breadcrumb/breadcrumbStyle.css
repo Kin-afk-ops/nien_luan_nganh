@@ -1,0 +1,41 @@
+.breadcrumb_container{
+    display: flex;
+    gap: 10px;
+}
+
+.text-small{
+    font-size: 14px;
+}
+
+li {
+    list-style: none;
+    transition: text-decoration 0.3s ease-in-out;
+}
+
+
+li:hover{
+    text-decoration: underline;
+}
+
+.item{
+    text-align: center;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    color: rgb(112, 112, 224);
+}
+
+@media screen and (max-width: 768px) {
+    .breadcrumb_container{
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    .text-small{
+        font-size: 12px;
+    }
+    .item{
+        gap: 5px;
+    }
+    
+}

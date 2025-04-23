@@ -1,0 +1,239 @@
+.auth {
+  width: 100%;
+}
+
+.account__container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0 30px;
+  box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.account__form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.account__head {
+  font-size: 18px;
+  font-weight: 700;
+  color: #aaa;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.account__input--block {
+  display: flex;
+  padding: 10px 15px;
+  margin-bottom: 0;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+}
+
+.account__input {
+  width: 90%;
+  height: 100%;
+  font-size: 16px;
+  outline: none;
+  border: none;
+}
+
+.account__password--icon {
+  width: 10%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  font-size: 16px;
+  color: #616161;
+  cursor: pointer;
+}
+.account__back--icon {
+  position: absolute;
+  top: 30px;
+  font-size: 18px;
+  color: #616161;
+  transition: 0.2s;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.account__icon--check {
+  margin-right: 5px;
+  color: #00cc33;
+}
+
+.account__back--icon:hover {
+  font-size: 25px;
+  color: #ccc;
+  border: 1px solid #ccc;
+}
+
+.account__phone {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  display: flex;
+  border-radius: 30px;
+  font-size: 16px;
+  color: #616161;
+}
+
+.account__phone--prefix {
+  margin-right: 15px;
+  position: relative;
+}
+
+.account__phone--img {
+  margin-right: 10px;
+}
+
+.account__phone--prefix::after {
+  position: absolute;
+  content: "";
+  height: 90%;
+  width: 1px;
+  background-color: #ccc;
+  left: 110%;
+}
+
+.account__phone input {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  flex: 1;
+  margin-right: 15px;
+}
+
+.account__form--btn {
+  border-radius: 30px;
+  margin-bottom: 30px;
+  transition: 0.2s;
+}
+
+.account__form--btn:hover {
+  opacity: 0.8;
+}
+
+.account__boundary {
+  font-size: 16px;
+  color: #616161;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.account__boundary::before {
+  position: absolute;
+  content: "";
+  height: 1px;
+  width: 42%;
+  background-color: #616161;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.account__boundary::after {
+  position: absolute;
+  content: "";
+  height: 1px;
+  width: 42%;
+  background-color: #616161;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.account__change--btn {
+  border-radius: 30px;
+
+  margin-bottom: 30px;
+
+  display: flex;
+  align-items: center;
+}
+
+.account__change--btn i {
+  width: 20%;
+  font-size: 18px;
+}
+
+.account__change--img {
+  width: 20%;
+}
+
+.account__change--btn span {
+  width: 80%;
+  display: flex;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.account__change--phone {
+  color: #00ff33;
+}
+
+.account__change--email {
+  color: #ff0033;
+}
+
+.account__change--facebook {
+  color: #1877f2;
+}
+
+.account__error {
+  border: 1px solid #ff3333;
+}
+
+.account__error--input {
+  color: #ff3333;
+}
+
+.account__error--input::placeholder {
+  color: #ff3333;
+}
+
+.account__error .account__password {
+  color: #ff3333;
+}
+
+.account__error .account__password::placeholder {
+  color: #ff3333;
+}
+
+.account__error--icon {
+  color: #ff3333;
+}
+
+.account__error--message {
+  color: #ff3333;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.register__login {
+  font-size: 14px;
+  font-weight: 500;
+  color: #616161;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.register__login--link {
+  cursor: pointer;
+  color: var(--primary-color);
+  text-decoration: underline;
+}

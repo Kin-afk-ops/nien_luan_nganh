@@ -1,0 +1,43 @@
+.pagination {
+  display: flex;
+  margin-top: 30px;
+  align-items: center;
+  justify-content: center;
+}
+.pagination .paginationPage {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination .paginationPage .active {
+  color: white;
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+.pagination .paginationPage.mobile {
+  display: none;
+}
+
+.pagination .paginationPage li {
+  cursor: pointer;
+  background-color: white;
+
+  border-radius: 5px;
+  margin: 0 5px;
+  border: 1px solid black;
+}
+
+.pagination .paginationPage li i,
+.pagination .paginationPage li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+.currentPage {
+  margin-top: 10px;
+  font-size: 20px;
+  color: white;
+}
