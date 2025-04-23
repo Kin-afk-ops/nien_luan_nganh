@@ -174,7 +174,7 @@ const Header = () => {
             Đăng ký
           </Link>
 
-          <Link href="/sellform" className="header__navbar--item">
+          <Link href="/tai-khoan/dang-nhap" className="header__navbar--item">
             Đăng bán
           </Link>
         </div>
