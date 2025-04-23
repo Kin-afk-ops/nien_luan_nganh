@@ -118,7 +118,7 @@ label[for="file-upload"]:hover {
   margin: 10px 0px;
 }
 
-.status h4{
+.status h4 {
   margin-top: 10px;
 }
 
@@ -302,4 +302,42 @@ label[for="file-upload"]:hover {
   padding: 10px;
   font-size: 16px;
   font-family: "Roboto", sans-serif;
+}
+
+@media (max-width: 768px) {
+  .status div {
+    gap: 5px;
+  }
+
+  .option {
+    flex: 1 1 calc(33.33% - 5px); /* Giảm số cột khi màn hình nhỏ hơn */
+    min-width: 100%;
+  }
+
+  #free-checkbox {
+    margin-left: 40px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .status div {
+    flex-direction: column; /* Chuyển sang dạng danh sách dọc */
+    align-items: center;
+  }
+
+  .option {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .option label {
+    width: 100%; /* Để label tự động điều chỉnh */
+    padding: 8px 12px;
+  }
+
+  #free-checkbox {
+    margin-left: 40px;
+    margin-right: 15px;
+  }
 }

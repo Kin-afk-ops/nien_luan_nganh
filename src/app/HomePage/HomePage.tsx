@@ -5,42 +5,46 @@ import SliderBanner from "@/components/SliderBanner.tsx/SliderBanner";
 import axiosInstance from "@/helpers/api/config";
 import { ProductModel } from "@/models/ProductModel";
 import axios from "axios";
-import {useGlobalState} from '../../data/stateStore';
+import { useGlobalState } from "../../data/stateStore";
 import React, { useEffect, useState } from "react";
 
 const HomePage = () => {
   const [productList, setProductList] = useState<ProductModel[] | null>(null);
-  const [productOutstanding1, setProductOutstanding1] = useState<ProductModel[]>([]);
-  const [productOutstanding2, setProductOutstanding2] = useState<ProductModel[]>([]);
-  const [freeProducts, setfreeProducts] = useState<ProductModel[] | null >(null)
-  const {resetFilter} = useGlobalState();
+  const [productOutstanding1, setProductOutstanding1] = useState<
+    ProductModel[]
+  >([]);
+  const [productOutstanding2, setProductOutstanding2] = useState<
+    ProductModel[]
+  >([]);
+  const [freeProducts, setfreeProducts] = useState<ProductModel[] | null>(null);
+  const { resetFilter } = useGlobalState();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axiosInstance.get("/products");
+        const response = await axiosInstance.get("/products?approve=true");
         setProductList(response.data);
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     fetchProducts();
   }, []);
 
   useEffect(() => {
-    axiosInstance.get(`/products/outstanding/${10}`)
-     .then((response) => {
+    axiosInstance
+      .get(`/products/outstanding/${10}?approve=true`)
+      .then((response) => {
         setProductOutstanding1(response.data);
-      })
-  },[]);
+      });
+  }, []);
 
   useEffect(() => {
-    axiosInstance.get(`/products/outstanding/${2}`)
-     .then((response) => {
-        setProductOutstanding2(response.data);
-      })
-  },[]);
+    axiosInstance.get(`/products/outstanding/${2}`).then((response) => {
+      setProductOutstanding2(response.data);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,13 +56,12 @@ const HomePage = () => {
       }
     };
     fetchProducts();
-  },[]);
+  }, []);
 
   useEffect(() => {
     resetFilter();
-  },[])
+  }, []);
 
-  
   return (
     <div>
       <SliderBanner />
@@ -72,38 +75,38 @@ const HomePage = () => {
         />
       )}
 
-      {productList && 
+      {productList && (
         <ProductListContainer
-        header={`Sản phẩm nổi bật: Laptop`}
-        productList={productOutstanding1}
-        uniqueId="2"
-        canSeeAll
-        categorySlug="laptop"
-        categoryId={10}
-      />
-      }
-      {productList && 
+          header={`Sản phẩm nổi bật: Laptop`}
+          productList={productOutstanding1}
+          uniqueId="2"
+          canSeeAll
+          categorySlug="laptop"
+          categoryId={10}
+        />
+      )}
+      {productList && (
         <ProductListContainer
-        header={`Sản phẩm nổi bật: Sách`}
-        productList={productOutstanding2}
-        uniqueId="3"
-        canSeeAll
-        categorySlug="sach"
-        categoryId={2}
-        freeCost = {false}
-      />
-      }
-     {freeProducts && 
-       <ProductListContainer
-       header="Đồ miễn phí"
-       productList={freeProducts}
-       uniqueId="4"
-       canSeeAll
-       categorySlug="mua-ban-do-cu"
-       categoryId={1}
-       freeCost={true}
-     />
-     }
+          header={`Sản phẩm nổi bật: Sách`}
+          productList={productOutstanding2}
+          uniqueId="3"
+          canSeeAll
+          categorySlug="sach"
+          categoryId={2}
+          freeCost={false}
+        />
+      )}
+      {freeProducts && (
+        <ProductListContainer
+          header="Đồ miễn phí"
+          productList={freeProducts}
+          uniqueId="4"
+          canSeeAll
+          categorySlug="mua-ban-do-cu"
+          categoryId={1}
+          freeCost={true}
+        />
+      )}
     </div>
   );
 };

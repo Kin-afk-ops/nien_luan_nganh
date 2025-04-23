@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import logo from "../../assets/logo/logo.png";
+
 import "./header.css";
 import Link from "next/link";
 import { useGlobalState } from "@/data/stateStore";
@@ -71,7 +71,7 @@ const Header = () => {
       <div className=" grid wide header__container">
         {/* Logo */}
         <Link href="/">
-          <Image src={logo} alt="Logo" width={120} height={50} />
+          <Image src={"/assets/logo.png"} alt="Logo" width={120} height={50} />
         </Link>
 
         {/* Nút Toggle Menu */}

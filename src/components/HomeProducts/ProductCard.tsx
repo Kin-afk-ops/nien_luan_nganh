@@ -15,44 +15,49 @@ interface Props {
 const ProductCard = (props: Props) => {
   const { product } = props;
 
+  console.log(product);
+
   const handleReload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     window.location.href = (e.currentTarget as HTMLAnchorElement).href;
   };
   return (
-    <Link className={styles.card} href={`/san-pham/${product?.categories.slug}/${product?.slug}/${product?._id}`} 
-      onClick={handleReload}>
+    <Link
+      className={styles.card}
+      href={`/san-pham/${product?.categories.slug}/${product?.slug}/${product?._id}`}
+      onClick={handleReload}
+    >
       <div className={styles.image}>
-        {
-          product?.image && (
-            <img src={product?.image.path} alt="product"/>
-          )
-        }
+        {product?.image && <img src={product?.image.path} alt="product" />}
       </div>
       <div className={styles.info}>
         <div className={styles.nameField}>
           <p>{product?.name}</p>
         </div>
-        {
-          product && <p className={styles.price}>{`${formatPrice(product?.price)}`}</p>
-        }
-        
+        {product && (
+          <p className={styles.price}>{`${formatPrice(product?.price)}`}</p>
+        )}
+
         <div className={styles.location}>
-          <FaLocationDot/>
-          {product?.addressInfo ? <p>{product.addressInfo.province}</p> : <p>Không có Tỉnh</p> 
-        }
+          <FaLocationDot />
+          {product?.addressInfo ? (
+            <p>{product.addressInfo.province}</p>
+          ) : (
+            <p>Không có Tỉnh</p>
+          )}
         </div>
       </div>
-       {product?.isFreeShip && 
+      {product?.isFreeShip && (
         <div className={styles.row_item}>
           <FaTruck size={15} />
-          <p style={{fontSize: 15}}>Freeship</p>
-        </div> }
-        {product?.price === 0 && (
-          <div className={styles.circle_item}>
-            <p>Miễn phí</p>
-          </div>
-        )}
+          <p style={{ fontSize: 15 }}>Freeship</p>
+        </div>
+      )}
+      {product?.price === 0 && (
+        <div className={styles.circle_item}>
+          <p>Miễn phí</p>
+        </div>
+      )}
     </Link>
   );
 };

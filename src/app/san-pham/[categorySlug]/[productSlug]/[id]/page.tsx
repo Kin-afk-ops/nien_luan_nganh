@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import "@/styles/globalStyle.css";
 import "./detail.css";
 import { ProductModel } from "@/models/ProductModel";
@@ -59,6 +59,8 @@ const ProductDetail = () => {
   const [showAll, setShowAll] = useState(false);
   const currentUser = useAppSelector((state) => state.user.currentUser);
   const isMobile = useIsMobile();
+
+  const router = useRouter();
 
   useEffect(() => {
     const getProductSeller = async (): Promise<void> => {
@@ -172,6 +174,12 @@ const ProductDetail = () => {
   const detailEntries = Object.entries(product.details || {});
   const visibleDetails = showAll ? detailEntries : detailEntries.slice(0, 1);
 
+  const handleBuy = (): void => {
+    router.push(
+      `/dat-hang/${currentUser?._id}?productId=${product._id}&quantity=${count}&buy=true`
+    );
+  };
+
   return (
     <div className={isMobile ? "container_mobile" : "container"}>
       {product.categories && (
@@ -254,6 +262,7 @@ const ProductDetail = () => {
               <ButtonComponent
                 label="Mua ngay"
                 style={{ backgroundColor: "coral", color: "white" }}
+                onClick={handleBuy}
               ></ButtonComponent>
             </div>
             <div className="info-footer">
@@ -306,7 +315,10 @@ const ProductDetail = () => {
                     {product.sellerInfo?.avatar ? (
                       <img src={product?.sellerInfo.avatar.path} alt="Avatar" />
                     ) : (
-                      <img src="/assets/unknown_avatar.jpg" alt="Default Avatar" />
+                      <img
+                        src="/assets/unknown_avatar.jpg"
+                        alt="Default Avatar"
+                      />
                     )}
                   </div>
                   <div className="seller_main_info">
@@ -315,10 +327,13 @@ const ProductDetail = () => {
                       <p>{`${sellerInfo?.productQuantity} sản phẩm`}</p>
                       <p>{`${sellerInfo?.sold} đã bán`}</p>
                     </div> */}
-                    <a className="visit_shop_button" href="#">
+                    <Link
+                      className="visit_shop_button"
+                      href={`/shop/${product?.sellerId}`}
+                    >
                       <BsShop size={20}></BsShop>
-                      <p style={{ color: "rgb(80, 79, 79)" }}>Xem shop</p>
-                    </a>
+                      <p style={{ color: "rgb(80, 79, 79)" }}>Xem shoLink</p>
+                    </Link>
                   </div>
                 </div>
               </div>

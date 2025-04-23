@@ -1,5 +1,5 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import PayProduct from "@/components/payProduct/PayProduct";
 import "./page.css";
 import formatPrice from "@/helpers/format/formatPrice";
@@ -17,10 +17,17 @@ import {
   OrderProductInterface,
 } from "@/interfaces/orderProduct";
 import Loading from "@/components/loading/Loading";
+import toast from "react-hot-toast";
+import { error } from "console";
 
 const OrderPage = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const productId = searchParams.get("productId");
+  const quantity = searchParams.get("quantity");
+  const buyMode = searchParams.get("buy") === "true";
 
   const [userId, setUserId] = useState<string | null>(null);
   const [addresses, setAddresses] = useState<AddressInterface[]>([]);
@@ -69,9 +76,36 @@ const OrderPage = () => {
       }
     };
 
+    const getProductBuy = async (): Promise<void> => {
+      try {
+        const res = await axiosInstance.get(
+          `/product//oneProduct/${productId}`
+        );
+
+        if (productId && quantity) {
+          const tempCart: CartInterface = {
+            _id: "temp",
+            buyerId: params.id,
+            productId: productId,
+            product: res.data,
+            quantity: parseInt(quantity),
+            checked: true,
+          };
+          setCartCheck([tempCart]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (buyMode) {
+      getProductBuy();
+    } else {
+      getCartCheck();
+    }
+
     getAddressUser();
-    getCartCheck();
-  }, [userId, params, loadingAddress]);
+  }, [userId, params, loadingAddress, productId, buyMode, quantity]);
 
   const getTotalPrice = (): number => {
     let totalPrice: number = 0;
@@ -95,47 +129,60 @@ const OrderPage = () => {
 
   const handleOrder = async (): Promise<void> => {
     setLoading(true);
-    const newOrder: OrderProductForm[] =
-      cartCheck?.map((c) => {
-        return {
-          buyerId: c?.buyerId,
-          addressId: choiceAddress?._id,
-          note: noteValue,
 
-          shippingFee: shippingFee,
-          totalAmount: getTotalPrice(),
+    try {
+      if (!cartCheck) return;
 
-          productId: c?.product._id,
-          quantity: c?.quantity,
+      for (const c of cartCheck) {
+        try {
+          const res = await axiosInstance.get(
+            `/product/oneProduct/${c.productId}`
+          );
+          const productData = res.data;
+          const newQuantity = productData.quantity - c.quantity;
 
-          paymentMethod: payMethod,
-        };
-      }) ?? [];
+          if (newQuantity < 0) {
+            toast.error("Đã hết hàng");
+            continue;
+          }
 
-    await axiosInstance
-      .post(`/order/${userId}`, newOrder)
-      .then(async (res) => {
-        console.log(res.data);
+          const newOrder: OrderProductForm = {
+            addressId: choiceAddress?._id ?? "",
+            note: noteValue,
+            shippingFee: shippingFee,
+            totalAmount: getTotalPrice(),
+            productId: c?.product._id,
+            quantity: c?.quantity,
+            paymentMethod: payMethod,
+          };
 
-        await axiosInstance
-          .delete(`/cart/deleteCheck/${userId}`)
-          .then((res) => {
-            console.log(res.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log(error);
-            setLoading(false);
+          await axiosInstance.post(`/order/${params.id}`, newOrder);
+          toast.success("Đặt hàng thành công");
+
+          await axiosInstance.put(`/product/${c.productId}`, {
+            quantity: newQuantity,
           });
-        alert("Đặt hàng thành công");
-        router.push(`/ho-so/don-mua`);
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Đặt hàng không thành công");
-        setLoading(false);
-      });
-    setLoading(false);
+          window.location.replace(`/ho-so/don-mua`);
+        } catch (error) {
+          console.error("Lỗi khi xử lý sản phẩm:", error);
+          toast.error("Có lỗi xảy ra với sản phẩm trong đơn hàng.");
+        }
+      }
+
+      if (!buyMode) {
+        try {
+          const res = await axiosInstance.delete(`/cart/deleteCheck/${userId}`);
+          console.log(res.data);
+        } catch (error) {
+          console.error("Lỗi khi xóa giỏ hàng:", error);
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi khi đặt hàng:", err);
+      toast.error("Có lỗi xảy ra khi đặt hàng.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

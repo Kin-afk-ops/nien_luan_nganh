@@ -7,6 +7,7 @@ import {
 import axiosInstance from "../helpers/api/config";
 import { LoginUser } from "@/interfaces/loginUser";
 import { AppDispatch } from "./store";
+import toast from "react-hot-toast";
 
 // Khai báo các loại (types) cho tham số
 
@@ -34,7 +35,7 @@ export const login = async (
           })
         );
         setNoAccount(false);
-        alert("!đăng nhập thành công");
+        toast.success("đăng nhập thành công");
       })
       .catch((error) => {
         console.log(error);

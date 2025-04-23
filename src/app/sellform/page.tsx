@@ -15,12 +15,13 @@ import { validationEmpty } from "@/helpers/validation/address";
 import formatSlug from "@/helpers/format/formatSlug";
 import Loading from "@/components/loading/Loading";
 import uploadImage from "@/helpers/image/uploadImage";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AvatarInterface } from "@/interfaces/avatar";
 import updateImage from "@/helpers/image/updateImage";
 import { ImageUploadInterface } from "@/interfaces/imageUpload";
 
 const DangBan = () => {
+  const router = useRouter();
   const user =
     useSelector((state: RootState) => state.user.currentUser) || null;
   const [userId, setUserId] = useState<string | null>(null);
@@ -44,7 +45,9 @@ const DangBan = () => {
   const [displayCategories, setDisplayCategories] = useState<boolean>(false);
   const [cateLabel, setCateLabel] = useState<CategoriesInterface | null>(null);
   const [attributesList, setAttributesList] = useState<any[]>([]);
-  const [attributeValues, setAttributeValues] = useState<{ [key: string]: string }>({});
+  const [attributeValues, setAttributeValues] = useState<{
+    [key: string]: string;
+  }>({});
   const [searchMode, setSearchMode] = useState<boolean>(false);
 
   const [condition, setCondition] = useState<string | null>(null);
@@ -87,7 +90,9 @@ const DangBan = () => {
         const res = await axiosInstance.get(`/addressInfoUser/${user?._id}`);
         setAddresses(res?.data);
 
-        setChoiceAddress(res?.data.filter((a: { default: boolean; }) => a.default === true)[0]);
+        setChoiceAddress(
+          res?.data.filter((a: { default: boolean }) => a.default === true)[0]
+        );
       } catch (error) {
         console.log(error);
       }
@@ -97,8 +102,10 @@ const DangBan = () => {
       if (productEditId) {
         try {
           const res = await axiosInstance.get(
-            `/products/oneProduct/${productEditId}`
+            `/product/oneProduct/${productEditId}`
           );
+
+          console.log(res.data);
 
           setNameValue(res.data.name);
           setCateLabel(res.data.categories);
@@ -126,8 +133,11 @@ const DangBan = () => {
     const fetchAttributes = async () => {
       if (cateLabel && cateLabel.id) {
         try {
-          const res = await axiosInstance.get(`/category/getAttrByCateId/${cateLabel.id}`);
-          setAttributesList(res.data.listDataTypes);
+          const res = await axiosInstance.get(
+            `/category/getAttrByCateId/${cateLabel.id}`
+          );
+
+          setAttributesList(res.data.listDataTypes ?? []);
         } catch (error) {
           console.error("Lỗi khi lấy thuộc tính sản phẩm", error);
         }
@@ -166,7 +176,7 @@ const DangBan = () => {
       validationEmpty(price) &&
       validationEmpty(description) &&
       choiceAddress &&
-      checkFile
+      validationEmpty(imageProduct.publicId)
     ) {
       return true;
     }
@@ -176,6 +186,7 @@ const DangBan = () => {
 
   const handleSubmit = async (): Promise<void> => {
     setLoading(true);
+    console.log(checkFile);
 
     if (validationForm()) {
       if (!editMode) {
@@ -198,7 +209,7 @@ const DangBan = () => {
           .post(`/products/${userId}`, newProduct)
           .then((res) => {
             setLoading(false);
-
+            window.location.replace("/ho-so/tat-ca-san-pham");
             alert("Thêm sản phẩm thành công! Chờ xét duyệt");
           })
           .catch((error) => {
@@ -206,6 +217,7 @@ const DangBan = () => {
             alert("Lỗi khi thêm");
           });
       } else {
+        setCheckFile(true);
         const newProduct: productFormInterface = {
           name: nameValue,
           categories: cateLabel ? cateLabel : null,
@@ -222,11 +234,12 @@ const DangBan = () => {
         };
 
         await axiosInstance
-          .put(`/products/${productEditId}`, newProduct)
+          .put(`/product/${productEditId}`, newProduct)
           .then((res) => {
             setLoading(false);
 
-            alert("Chỉnh sửa sản phẩm thành công! Chờ xét duyệt");
+            alert("Chỉnh sửa sản phẩm thành công");
+            window.location.replace("/ho-so/tat-ca-san-pham");
           })
           .catch((error) => {
             console.log(error);
@@ -318,7 +331,7 @@ const DangBan = () => {
               onChange={(e) => setNameValue(e.target.value)}
             />
           </div>
-
+          <h4>Danh Mục:</h4>
           <div className="category">
             <div
               className="sell__form--categories"
@@ -353,7 +366,9 @@ const DangBan = () => {
                     >
                       <option value="">Chọn {attr.label}</option>
                       {attr.options.map((opt: any) => (
-                        <option key={opt._id} value={opt.value}>{opt.value}</option>
+                        <option key={opt._id} value={opt.value}>
+                          {opt.value}
+                        </option>
                       ))}
                     </select>
                   </div>

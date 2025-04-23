@@ -103,7 +103,12 @@ const SellerProductContainer: React.FC<ChildProps> = ({
               {" "}
               <i className="fa-solid fa-user"></i>
               <p>{c?.infoUser.name}</p>
-              <button className="pay__product--buyer-chat">Chat</button>
+              <Link
+                href={`/shop/${c.buyerId}`}
+                className="pay__product--buyer-chat"
+              >
+                Thông tin
+              </Link>
             </div>
             <div className="l-2 m-3 s-12">
               <div className="order__product--status">{c.status}</div>{" "}
@@ -111,7 +116,11 @@ const SellerProductContainer: React.FC<ChildProps> = ({
             <div className="l-1 m-2 s-4 pay__product--item pay__product--image">
               <Image
                 className="pay__product--item-image pc"
-                src={"/assets/account/avatar_default.png"}
+                src={
+                  c.product.image.path
+                    ? c.product.image.path
+                    : "/assets/account/avatar_default.png"
+                }
                 alt="anh san pham"
                 width={40}
                 height={40}
@@ -119,7 +128,11 @@ const SellerProductContainer: React.FC<ChildProps> = ({
 
               <Image
                 className="pay__product--item-image tablet"
-                src={"/assets/account/avatar_default.png"}
+                src={
+                  c.product.image.path
+                    ? c.product.image.path
+                    : "/assets/account/avatar_default.png"
+                }
                 alt="anh san pham"
                 width={80}
                 height={80}
@@ -127,7 +140,11 @@ const SellerProductContainer: React.FC<ChildProps> = ({
 
               <Image
                 className="pay__product--item-image mobile"
-                src={"/assets/account/avatar_default.png"}
+                src={
+                  c.product.image.path
+                    ? c.product.image.path
+                    : "/assets/account/avatar_default.png"
+                }
                 alt="anh san pham"
                 width={100}
                 height={100}

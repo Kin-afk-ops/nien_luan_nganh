@@ -6,6 +6,7 @@ import { ProductInterface } from "@/interfaces/product";
 import axiosInstance from "@/helpers/api/config";
 import formatDate from "@/helpers/format/formattedDate";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface ChildProps {
   userId: string | null;
@@ -97,12 +98,18 @@ const ProductTable: React.FC<ChildProps> = ({
             products?.map((p, index) => (
               <tr key={p._id}>
                 <td>{index + 1}</td>
-                <td className="product__table--name">{p.name}</td>
+                <td className="product__table--name">
+                  <Link
+                    href={`/san-pham/${p.categories?.slug}/${p.slug}/${p._id}`}
+                  >
+                    {p.name}
+                  </Link>
+                </td>
                 <td>{p.categories?.name || "N/A"}</td>
 
                 <td>{p?.updatedAt ? formatDate(p?.updatedAt) : "N/A"}</td>
 
-                <td>{p.condition}</td>
+                <td>{p?.approve ? "Đã duyệt" : "Chưa duyệt"}</td>
                 <td>
                   <button
                     onClick={() =>

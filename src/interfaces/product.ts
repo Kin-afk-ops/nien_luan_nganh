@@ -32,6 +32,7 @@ export interface ProductInterface {
   size: string;
   isFreeShip: boolean;
   sold: boolean;
+  approve: boolean;
 }
 
 export interface productFormInterface {

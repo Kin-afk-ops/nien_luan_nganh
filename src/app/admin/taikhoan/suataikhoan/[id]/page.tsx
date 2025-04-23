@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axiosInstance from '@/helpers/api/config';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import axiosInstance from "@/helpers/api/config";
+import Link from "next/link";
 
 export type User = {
   email: string;
@@ -12,10 +13,10 @@ export type User = {
 
 export const editUser = async (user: User, id: string) => {
   try {
-    const response = await axiosInstance.put('/user/' + id, user);
+    const response = await axiosInstance.put("/user/" + id, user);
     return response.data;
   } catch (error) {
-    console.error('❌ Lỗi khi cập nhật user:', error);
+    console.error("❌ Lỗi khi cập nhật user:", error);
     throw error;
   }
 };
@@ -23,26 +24,26 @@ export const editUser = async (user: User, id: string) => {
 export default function SuaTaiKhoan() {
   const { id } = useParams();
   const [formData, setFormData] = useState<User>({
-    email: '',
-    phone: '',
-    password: ''
+    email: "",
+    phone: "",
+    password: "",
   });
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   // Lấy dữ liệu user hiện tại từ server
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axiosInstance.get('/user/' + id);
+        const res = await axiosInstance.get("/user/" + id);
         setFormData({
-          email: res.data.email || '',
-          phone: res.data.phone || '',
-          password: '', // Không show mật khẩu ra ngoài
+          email: res.data.email || "",
+          phone: res.data.phone || "",
+          password: "", // Không show mật khẩu ra ngoài
         });
       } catch (err) {
-        console.error('❌ Lỗi khi lấy dữ liệu user:', err);
-        setMessage('❌ Không thể tải dữ liệu tài khoản.');
+        console.error("❌ Lỗi khi lấy dữ liệu user:", err);
+        setMessage("❌ Không thể tải dữ liệu tài khoản.");
       }
     };
 
@@ -52,9 +53,9 @@ export default function SuaTaiKhoan() {
   }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -65,18 +66,21 @@ export default function SuaTaiKhoan() {
       const res = await editUser(formData, id as string);
       console.log("✅ Phản hồi từ server:", res);
 
-      setMessage('✅ Tài khoản được cập nhật thành công!');
+      setMessage("✅ Tài khoản được cập nhật thành công!");
       // Giữ lại formData nếu muốn
     } catch (err: any) {
       console.error("❌ Lỗi khi gửi dữ liệu:", err);
-      setMessage('❌ Lỗi cập nhật tài khoản.');
+      setMessage("❌ Lỗi cập nhật tài khoản.");
     }
   };
 
   return (
     <div className="card shadow mb-4 mt-4">
       <div className="card-header py-3">
-        <h4 className="m-0 font-weight-bold text-primary" style={{ marginTop: '10px' }}>
+        <h4
+          className="m-0 font-weight-bold text-primary"
+          style={{ marginTop: "10px" }}
+        >
           <strong>CHỈNH SỬA TÀI KHOẢN</strong>&ensp;
           <i className="fas fa-user"></i>
         </h4>
@@ -96,7 +100,6 @@ export default function SuaTaiKhoan() {
                 required
               />
             </div>
-
             <div className="form-outline mb-4">
               <label className="form-label">Số điện thoại</label>
               <input
@@ -108,7 +111,6 @@ export default function SuaTaiKhoan() {
                 required
               />
             </div>
-
             <div className="form-outline mb-4">
               <label className="form-label">Mật khẩu mới</label>
               <input
@@ -120,11 +122,17 @@ export default function SuaTaiKhoan() {
                 required
               />
             </div>
-
-            <button type="submit" className="btn btn-primary">Lưu</button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ width: "90px", height: "100%" }}
+            >
+              Lưu
+            </button>
             &nbsp;
-            <a href="/admin/taikhoan" className="btn btn-info">Quay lại</a>
-
+            <Link href="/admin/taikhoan" className="btn btn-info">
+              Quay lại
+            </Link>
             {message && <div className="alert alert-info mt-3">{message}</div>}
           </form>
         </div>

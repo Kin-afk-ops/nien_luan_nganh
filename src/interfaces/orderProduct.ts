@@ -36,7 +36,6 @@ export interface SellerProductInterface {
 }
 
 export interface OrderProductForm {
-  buyerId: string;
   addressId: string;
 
   note: string;

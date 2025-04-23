@@ -21,7 +21,7 @@ const ShopPage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [infoUser, setInfoUser] = useState<InfoUserInterface | null>(null);
-  const [products, setProducts] = useState<ProductModel[] | null>(null);
+  const [products, setProducts] = useState<ProductModel[]>([]);
 
   useEffect(() => {
     const getInfoUser = async (): Promise<void> => {
@@ -43,9 +43,10 @@ const ShopPage = () => {
     const getProduct = async (): Promise<void> => {
       try {
         if (params.id) {
-          const res = await axiosInstance(`/product/seller/${params.id}`);
+          const res = await axiosInstance(
+            `/product/seller/${params.id}?approve=true`
+          );
           setProducts(res.data);
-          console.log(res.data);
 
           setLoading(false);
         }
@@ -130,7 +131,9 @@ const ShopPage = () => {
         </div>
 
         <div className="main-container">
-          {products && <ProductListContainer productList={products} />}
+          {products.length !== 0 && (
+            <ProductListContainer productList={products} />
+          )}
         </div>
       </div>
     </>

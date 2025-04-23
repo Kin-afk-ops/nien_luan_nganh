@@ -105,7 +105,7 @@ const LoginPage = () => {
           let googlePhoneValue: string = "none";
 
           await axiosInstance
-            .get(`/auth/firebase/phone/${user.uid}`)
+            .get(`/auth/firebase/phone/${user?.uid}`)
             .then((res) => {
               googlePhoneValue = res.data.phone;
               console.log(googlePhoneValue);

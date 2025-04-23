@@ -89,7 +89,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
           </Link>
         </li>
 
-        <li onClick={() => setMenuToggle(false)}>
+        {/* <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/tin-nhan"}
             className={
@@ -101,9 +101,9 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
             <i className="customer__nav--icon fa-regular fa-comments"></i>
             <p>Tin nhắn</p>
           </Link>
-        </li>
+        </li> */}
 
-        <li onClick={() => setMenuToggle(false)}>
+        {/* <li onClick={() => setMenuToggle(false)}>
           <Link
             href={"/ho-so/thong-bao"}
             className={
@@ -115,7 +115,7 @@ const CustomerNav: React.FC<ChildProps> = ({ setMenuToggle }) => {
             <i className="customer__nav--icon fa-regular fa-bell"></i>
             <p>Thông báo</p>
           </Link>
-        </li>
+        </li> */}
 
         {!firebaseIsAccount && (
           <li onClick={() => setMenuToggle(false)}>

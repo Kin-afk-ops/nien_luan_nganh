@@ -2,7 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import logo from "../../assets/logo/logo.png";
 // import userAvatar from '../../assets/avatar/default-avatar.png';
 import { useState, useEffect } from "react";
 
@@ -148,7 +147,7 @@ const HeaderLogged: React.FC<ChildProps> = ({ user }) => {
       <div className=" grid wide header__container">
         {/* Logo */}
         <Link href="/">
-          <Image src={logo} alt="Logo" width={120} height={50} />
+          <Image src={"/assets/logo.png"} alt="Logo" width={120} height={50} />
         </Link>
 
         {/* Nút Toggle Menu */}

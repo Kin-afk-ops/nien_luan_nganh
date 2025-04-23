@@ -73,6 +73,7 @@ const ProfilePage = () => {
       if (user.email !== "none") setEmail(user.email);
 
       if (user.phone !== "none") setPhone(user.phone);
+
       setFirebaseIsAccount(user?.firebase);
     }
     const getInfoUser = async (): Promise<void> => {
