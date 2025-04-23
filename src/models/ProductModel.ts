@@ -31,6 +31,7 @@ export interface ProductModel {
     //     updatedAt: string; // ISO Date string
     //   };
     addressInfo: Record<string, any>; // Mixed type 
+    sellerInfo: sellerInfo; // Mixed type
     image: {
         publicId: number;
         path: string;
@@ -59,5 +60,17 @@ export interface ProductCardModel {
 const products: ProductModel[] = [
    
 ];
+
+export interface sellerInfo {
+    userId: string;
+    name: string;
+    gender: string;
+    birthday: string;
+    introduce: string;
+    avatar: {
+        publicId: string;
+        path: string;
+    }
+}
 
 export default products;

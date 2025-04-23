@@ -57,3 +57,8 @@ export const getLabelNamePairsByCateId = async (cateId: number): Promise<{ label
         return [];
     }
 };
+
+export const deleteCategory = (id: number) => {
+    const response = axiosInstance.delete(`/category/deleteCate/${id}`);
+    return response.then(res => res.data);
+}

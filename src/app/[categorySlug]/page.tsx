@@ -40,6 +40,7 @@ const FillerProductByCategory = () => {
   const [search, setsearch] = useState(searchParams.get("search") || "");
   const [isOpen, setIsOpen] = useState(false)
   const isMobile = useIsMobile();
+  const [isLoading, setIsLoading] = useState(false)
 
 
   
@@ -71,82 +72,24 @@ const FillerProductByCategory = () => {
     });
 
     const fetchData = async () => {
-        try {
-            const res = await axiosInstance.get(
-                `/categories/products/${category?.id}?${queryParams.toString()}`
-            );
-            setData(res.data);
-        } catch (err) {
-            console.log(err);
-        }
+      try {
+        setIsLoading(true); // ⏳ Bắt đầu tải
+        const res = await axiosInstance.get(
+          `/categories/products/${category?.id}?${queryParams.toString()}`
+        );
+        setData(res.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false); // ✅ Kết thúc tải
+      }
     };
 
-    fetchData();
+    if (category?.id) {
+      fetchData();
+    }
 }, [category?.id, page, sort, minPrice, maxPrice, status, filterList]);
 
-
-//   useEffect(() => {
-//     const query = new URLSearchParams(window.location.search);
-//     const priceRange = priceData.find(p => p.label === filterList.price);
-
-//     if (priceRange) {
-//         const min = priceRange.minValue || 0;
-//         const max = priceRange.maxValue || 1000000000;
-        
-//         setMinPrice(min);
-//         setMaxPrice(max);
-
-//         // Cập nhật URL với minPrice và maxPrice nếu tồn tại
-//         if (priceRange.minValue) {
-//             query.set("minPrice", String(min));
-//         } else {
-//             query.delete("minPrice");
-//         }
-
-//         if (priceRange.maxValue) {
-//             query.set("maxPrice", String(max));
-//         } else {
-//             query.delete("maxPrice");
-//         }
-
-//     } else {
-//         // Nếu filterList.price bị reset, xóa cả minPrice và maxPrice khỏi URL
-//         setMinPrice(0);
-//         setMaxPrice(1000000000);
-//         query.delete("minPrice");
-//         query.delete("maxPrice");
-//     }
-
-//     router.push(`?${query.toString()}`);
-// }, [filterList.price]);
-
-//   useEffect(() => {
-//     const query = new URLSearchParams(window.location.search);
-//     const statusValue = statusData.find(s => s.label === filterList.status);
-
-//     if (statusValue) {
-//         setStatus(statusValue.value);
-//         query.set("conditions", statusValue.value);
-//     } else {
-//         setStatus("all");
-//         query.delete("conditions");
-//     }
-
-//     router.push(`?${query.toString()}`);
-//     }, [filterList.status]);
-
-//     useEffect(() => {
-//       const query = new URLSearchParams(window.location.search);
-//       if(filterList.isFreeShip) {
-//         setFreeShip(filterList.isFreeShip);
-//         query.set("isFreeShip", filterList.isFreeShip);
-//       }else {
-//         setFreeShip("");
-//         query.delete("isFreeShip");
-//       }
-
-//       router.push(`?${query.toString()}`);
-//     },[filterList.isFreeShip]);
 
     useEffect(() => {
       // Tạo một đối tượng URLSearchParams để xây dựng query string
@@ -256,18 +199,27 @@ const FillerProductByCategory = () => {
               
             <FilterListComponent></FilterListComponent>
             
-            <div className="product_list">
-              {data?.products ? (
-                data.products.map((product, index) => (
-                  <ProductCard product={product} key={index}></ProductCard>
-                ))
-              ) : (
-                <div></div>
-              )}
+           {isLoading ? (
+            <div className="loading_container">
+              
             </div>
+           ) : (
+                <div className="product_list_container">
+                  {data?.products?.length ?? 0 > 0 ? (
+                    <div className="product_list">
+                      {data?.products.map((product, index) => (
+                      <ProductCard product={product} key={index}></ProductCard>
+                    ))}
+                    </div>
+                  ) : (
+                    <div className="not_products_found">
+                      <h3>Noop!! Không tìm thấy sản phẩm nào</h3>
+                    </div>
+                  )}
+                </div>
+                )}
             <div className="pagination">
               <PaginationComponent currentPage={page} totalPages={data?.totalPages ?? 0} onPageChange={setPage}></PaginationComponent>
-              
             </div>
           </main>
         </div>

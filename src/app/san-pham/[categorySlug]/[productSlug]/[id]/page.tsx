@@ -99,14 +99,6 @@ const ProductDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!product?.sellerId) return;
-    axiosInstance
-      .get(`/seller/${product?.sellerId}`)
-      .then((res) => setSellerInfo(res.data))
-      .catch((error) => console.error(error));
-  }, [product?.sellerId]);
-
-  useEffect(() => {
     const fetchLabelNamePairs = async () => {
       if (product?.categories.id !== undefined) {
         const pairs = await getLabelNamePairsByCateId(product.categories.id);
@@ -311,14 +303,18 @@ const ProductDetail = () => {
               <div className="seller-info">
                 <div className="row-info">
                   <div className="seller-avatar">
-                    <img src={sellerInfo?.avatar} alt="Avatar" />
+                    {product.sellerInfo?.avatar ? (
+                      <img src={product?.sellerInfo.avatar.path} alt="Avatar" />
+                    ) : (
+                      <img src="/assets/unknown_avatar.jpg" alt="Default Avatar" />
+                    )}
                   </div>
                   <div className="seller_main_info">
-                    <h3>{sellerInfo?.name}</h3>
-                    <div className="item-info gap-20 mobile_info">
+                    <h3>{product.sellerInfo?.name}</h3>
+                    {/* <div className="item-info gap-20 mobile_info">
                       <p>{`${sellerInfo?.productQuantity} sản phẩm`}</p>
                       <p>{`${sellerInfo?.sold} đã bán`}</p>
-                    </div>
+                    </div> */}
                     <a className="visit_shop_button" href="#">
                       <BsShop size={20}></BsShop>
                       <p style={{ color: "rgb(80, 79, 79)" }}>Xem shop</p>

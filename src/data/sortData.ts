@@ -9,7 +9,6 @@ export const priceData = [
     {id: 4, label: "100.000đ - 200.000đ", maxValue: 200000, minValue: 100000},
     {id: 5, label: "200.000đ - 500.000đ", maxValue: 500000, minValue: 200000},
     {id: 6, label: "Trên 500.000đ", minValue: 500000},
-    {id: 7, label: "Chọn trong khoảng"},
 ]
 
 export const statusData = [

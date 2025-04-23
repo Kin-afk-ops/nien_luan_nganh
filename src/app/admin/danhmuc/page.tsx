@@ -2,16 +2,19 @@
 
 import { CategoryAttribute } from "@/models/attributesModel";
 import { categoryModel } from "@/models/CategoryModel";
-import { getAllCateAttr, getAllCategories } from "@/utils/addCategory";
+import { deleteCategory, getAllCateAttr, getAllCategories } from "@/utils/addCategory";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import "./styles.css";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const DanhMuc = () => {
   const [categories, setCategories] = useState<categoryModel[]>([]);
   const [attribute, setAttribute] = useState<CategoryAttribute[]>([]);
   const [isChange, setisChange] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const MySwal = withReactContent(Swal);
 
 useEffect(() => {
         getAllCategories()
@@ -22,8 +25,37 @@ useEffect(() => {
             .then(setAttribute)
             .catch(error => console.error("Failed to fetch attribute:", error));
     }, [isChange]);
-    const handleEditCategory = (category: categoryModel) => {
-      
+
+    const handleDetele = async (id: number) => {
+        MySwal.fire({
+            title: 'Bạn có chắc chắn muốn xóa danh mục này?',
+            text: "Danh mục sẽ bị xóa vĩnh viễn!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa!'
+        }).then((result) => {
+            if(result.isConfirmed){
+              deleteCategory(id)
+                .then(() => {
+                    setisChange(!isChange);
+                    MySwal.fire(
+                        'Đã xóa!',
+                        'Danh mục đã được xóa thành công.',
+                        'success'
+                    )
+                })
+                .catch(error => {
+                    console.error("Failed to delete category:", error);
+                    MySwal.fire(
+                        'Lỗi!',
+                        'Xóa danh mục không thành công.',
+                        'error'
+                    )
+                });
+            }
+        });
     }
 
   return (
@@ -61,7 +93,7 @@ useEffect(() => {
                           <button
                             className="btn btn-warning"
                             onClick={() => {
-                              setisChange(!isChange);
+                              handleDetele(category.id);
                             }}
                           >
                             Xóa

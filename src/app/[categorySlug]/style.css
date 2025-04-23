@@ -55,3 +55,6 @@ main {
   gap: 20px;
 }
 
+.not_products_found{
+  width: 100%;
+}
