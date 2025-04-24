@@ -4,4 +4,5 @@ export interface CategoriesInterface {
   name: string;
   slug: string;
   parentId?: number | null;
+  attributeId?: number;
 }

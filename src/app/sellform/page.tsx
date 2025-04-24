@@ -131,7 +131,7 @@ const DangBan = () => {
 
   useEffect(() => {
     const fetchAttributes = async () => {
-      if (cateLabel && cateLabel.id) {
+      if (cateLabel && cateLabel.id && cateLabel.attributeId) {
         try {
           const res = await axiosInstance.get(
             `/category/getAttrByCateId/${cateLabel.id}`

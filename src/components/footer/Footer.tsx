@@ -23,6 +23,7 @@ const Footer: React.FC = () => {
         alt="Footer Banner"
         className={styles.footer_banner}
       ></Image>
+      <div className={styles.footerContainerDiv}>
       <div className={styles.footerContainer}>
         {/* Contact Section */}
         <div className={styles.footerColumn}>
@@ -126,6 +127,7 @@ const Footer: React.FC = () => {
             </a>
           </div>
         </div>
+      </div>
       </div>
     </footer>
   );

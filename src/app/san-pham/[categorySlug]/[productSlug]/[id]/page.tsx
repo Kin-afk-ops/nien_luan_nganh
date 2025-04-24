@@ -202,9 +202,6 @@ const ProductDetail = () => {
               )}
             </div>
             <div className="carousel-wrapper">
-              <div className="arrow left" onClick={handlePrev}>
-                &lt;
-              </div>
               {/* <div className="carousel-container" ref={containerRef}>
                 {product.images.url.map((img, index) => (
                   <div
@@ -450,6 +447,7 @@ const ProductDetail = () => {
             <CommentComponent
               productId={product._id}
               starRating={product.ratingStar}
+              reloadPage={() => window.location.reload()}
             ></CommentComponent>
           </ContainerComponent>
           <div ref={ref}>

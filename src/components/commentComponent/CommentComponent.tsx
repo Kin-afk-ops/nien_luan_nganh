@@ -12,10 +12,11 @@ import { RatingStar } from '@/models/ProductModel';
 interface Props {
     productId: string;
     starRating?: RatingStar;
+    reloadPage?: () => void;
 }
 
 const CommentComponent = (props: Props) => {
-    const { productId, starRating} = props;
+    const { productId, starRating, reloadPage} = props;
     const currentUser = useAppSelector((state) => state.user.currentUser);
     const [content, setContent] = useState('');
     const [like, setLike] = useState(0);
@@ -30,7 +31,7 @@ const CommentComponent = (props: Props) => {
 
     const handleSubmitComment = async () => {
         if(!currentUser?._id) {
-            alert("Bạn cần phải đăng nhập để đánh giá");
+            toast.error("Bạn cần phải đăng nhập để đánh giá");
         }else if(content === '') {
             toast.error("Bạn cần nhập bình luận để đánh giá");
         }else if(ratingStar === 0) {
@@ -47,6 +48,7 @@ const CommentComponent = (props: Props) => {
                 await createComment(productId, currentUser._id, comment);
                 toast.success("Bạn đã gửi đánh giá thành công");
                 setForceUpdate(!forceUpdate); // Tự đông refresh lại danh sách bình luận khi gửi bình luận thành công
+                reloadPage?.();
            }catch(error) {
              
              console.error(error);
@@ -78,6 +80,7 @@ const CommentComponent = (props: Props) => {
             setContent("");
             toast.success("Bạn đã sửa bình luận thành công");
             setForceUpdate(!forceUpdate); // Tự đông refresh lại danh sách bình luận khi sửa bình luận thành công
+            reloadPage?.();
         } catch(error) {
             toast.error("Có lỗi xải ra, vui lòng thử lại!")
             console.error(error);
@@ -94,6 +97,7 @@ const CommentComponent = (props: Props) => {
             }
             toast.success("Bạn đã xóa bình luận thành công");
             setForceUpdate(!forceUpdate); // Tự đông refresh lại danh sách bình luận khi xóa bình luận thành công
+            reloadPage?.()
         } catch(error) {
            toast.error("Có lỗi xảy ra, vui lòng thử lại");
             console.error(error);

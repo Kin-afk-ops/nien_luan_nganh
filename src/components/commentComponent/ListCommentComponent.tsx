@@ -71,7 +71,7 @@ const ListCommentComponent = (props: Props) => {
            <div key={index}>
                 <div className="user_info">
                     <div className="avatar">
-                        {comment.user ? (
+                        {comment.user.avatar ? (
                             <img src={comment.user.avatar.path} alt={comment.user.name} />
                         ): (
                             <img src="/assets/unknown_avatar.jpg" alt="Default Avatar" />

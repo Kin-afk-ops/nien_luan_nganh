@@ -12,12 +12,11 @@ export const priceData = [
 ]
 
 export const statusData = [
-    {id:1, label: "Mới", value: 'Mới'},
-    {id:2, label: 'Đã sử dụng', value: 'used'},
-    {id:4, label: 'Tốt', value: 'good'},
-    {id:5, label: 'Khá', value: 'average'},
-    {id:6, label: 'Trung bình', value: 'fair'},
-    {id:7, label: 'Kém', value: 'poor'},
+    {id:1, label: "Hàng mới", value: 'Hàng mới'},
+    {id:2, label: 'Như mới', value: 'Như mới'},
+    {id:4, label: 'Tốt', value: 'Tốt'},
+    {id:6, label: 'Trung bình', value: 'Trung bình'},
+    {id:7, label: 'Kém', value: 'Kém'},
 ]
 
 export const clothSize = [
